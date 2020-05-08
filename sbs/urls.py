@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from sbs.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
-    CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration
+    CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration,ActivityView
 
 app_name = 'sbs'
 
@@ -305,6 +305,15 @@ urlpatterns = [
         name='kullanici-aktifet'),
     url(r'kullanici/kullanicilar/kullanici-bilgi-gonder/(?P<pk>\d+)$', UserViews.send_information,
         name='kullanici-bilgi-gonder'),
+    # Activity
+    url(r'faliyet/faliyetler/$', ActivityView.return_activity, name='faaliyet'),
+    url(r'faliyet/faliyet-ekle/$', ActivityView.faliyet_ekle, name='faaliyet-ekle'),
+    url(r'faliyet/faaliyet-sil(?P<pk>\d+)$', ActivityView.faaliyet_sil, name='faliyet-sil'),
+    url(r'faliyet/faliyet-duzenle/(?P<pk>\d+)$', ActivityView.faliyet_duzenle, name='faliyet-duzenle'),
+
+
+
+
 
     # Competition
     url(r'musabaka/musabakalar/$', CompetitionViews.return_competitions, name='musabakalar'),
