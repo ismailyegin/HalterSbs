@@ -46,9 +46,8 @@ def return_coach_dashboard(request):
 
 @login_required
 def return_directory_dashboard(request):
-    perm = general_methods.control_access(request)
-
-    if not perm:
+    group = request.user.groups.all()[0]
+    if not group.name == "Yonetim":
         logout(request)
         return redirect('accounts:login')
     return render(request, 'anasayfa/federasyon.html')
