@@ -42,6 +42,18 @@ def categori_ekle(request):
 
     return render(request, 'musabaka/müsabaka-Simplecategori.html',
                   {'category_item_form': simplecategoryForm, 'categoryitem': categoryitem})
+@login_required
+def return_competition(request):
+
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    competitions = Competition.objects.filter(startDate__year=timezone.now().year)
+    year=timezone.now().year
+    year=Competition.objects.values('year').distinct()
+    return render(request, 'musabaka/sonuclar.html',{'competitions': competitions,'year':year})
 
 
 @login_required

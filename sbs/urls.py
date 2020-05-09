@@ -312,7 +312,8 @@ urlpatterns = [
     url(r'faliyet/faliyet-duzenle/(?P<pk>\d+)$', ActivityView.faliyet_duzenle, name='faliyet-duzenle'),
 
 
-
+    # Test
+    url(r'sonuclar$', CompetitionViews.return_competition, name='sonuclar'),
 
 
     # Competition
