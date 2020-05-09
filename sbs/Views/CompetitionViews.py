@@ -52,7 +52,7 @@ def return_competition(request):
         return redirect('accounts:login')
     competitions = Competition.objects.filter(startDate__year=timezone.now().year)
     year=timezone.now().year
-    year=Competition.objects.values('year').distinct()
+    year=Competition.objects.values('year').distinct().order_by('year')
     return render(request, 'musabaka/sonuclar.html',{'competitions': competitions,'year':year})
 
 
@@ -203,6 +203,7 @@ def musabaka_sporcu_sec(request, pk):
 
 @login_required
 def return_sporcu(request):
+    # print('ben geldim')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     # /datatablesten gelen veri kümesi datatables degiskenine alindi
@@ -397,3 +398,127 @@ def musabaka_sporcu_sil(request, pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+
+@login_required
+def result_list(request, pk):
+    print('ben geldim')
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+
+    athletes=CompAthlete.objects.filter(competition=pk).distinct()
+    print(athletes)
+    # if request.method == 'POST':
+
+
+    return render(request, 'musabaka/musabaka-sporcu-tamamla.html', {'athletes': athletes})
+
+
+
+@login_required
+def return_competition_ajax(request):
+    # print('ben geldim')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    # /datatablesten gelen veri kümesi datatables degiskenine alindi
+    if request.method == 'GET':
+        datatables = request.GET
+        pk = request.GET.get('cmd').strip()
+        print('pk beklenen deger =',pk)
+
+    elif request.method == 'POST':
+        datatables = request.POST
+        # print(datatables)
+        # print("post islemi gerceklesti")
+
+    # /Sayfanın baska bir yerden istenmesi durumunda degerlerin None dönmemesi icin degerler try boklari icerisine alindi
+    try:
+        draw = int(datatables.get('draw'))
+        # print("draw degeri =", draw)
+        # Ambil start
+        start = int(datatables.get('start'))
+        # print("start degeri =", start)
+        # Ambil length (limit)
+        length = int(datatables.get('length'))
+        # print("lenght  degeri =", length)
+        # Ambil data search
+        search = datatables.get('search[value]')
+        # print("search degeri =", search)
+    except:
+        draw = 1
+        start = 0
+        length = 10
+    modeldata=Competition.objects.none()
+    if length == -1:
+        print('hepsini göster')
+        # if user.groups.filter(name='KulupUye'):
+        #     sc_user = SportClubUser.objects.get(user=user)
+        #     clubsPk = []
+        #     clubs = SportsClub.objects.filter(clubUser=sc_user)
+        #     for club in clubs:
+        #         clubsPk.append(club.pk)
+        #
+        #     modeldata = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+        #     total = modeldata.count()
+        #
+        # elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        #     modeldata = Athlete.objects.all()
+        #     total = Athlete.objects.all().count()
+
+
+    else:
+        if search:
+            modeldata =Competition.objects.filter(
+                Q(name=search))
+            total = modeldata.count();
+
+        else:
+            # compAthlete=CompAthlete.objects.filter(competition=competition)
+            # athletes = []
+            # for comp in compAthlete:
+            #     if comp.athlete:
+            #             athletes.append(comp.athlete.pk)
+            if user.groups.filter(name='KulupUye'):
+                print('klüp üye ')
+                # sc_user = SportClubUser.objects.get(user=user)
+                # clubsPk = []
+                # clubs = SportsClub.objects.filter(clubUser=sc_user)
+                # for club in clubs:
+                #     clubsPk.append(club.pk)
+                # modeldata = Athlete.objects.exclude(pk__in=athletes).filter(licenses__sportsClub__in=clubsPk).distinct()[start:start + length]
+                # total = mAthlete.objects.exclude(pk__in=athletes).filter(licenses__sportsClub__in=clubsPk).distinct().count()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                print('ben admin')
+                modeldata =Competition.objects.filter(startDate__year=pk)
+                total =modeldata.count()
+
+
+    say = start + 1
+    start = start + length
+    page = start / length
+
+    beka = []
+    for item in modeldata:
+        data = {
+            'say': say,
+            'pk': item.pk,
+            'name': item.name,
+
+        }
+        beka.append(data)
+        say += 1
+
+    print(beka)
+    response = {
+
+        'data': beka,
+        'draw': draw,
+        'recordsTotal': total,
+        'recordsFiltered': total,
+
+    }
+    return JsonResponse(response)

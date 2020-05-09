@@ -314,6 +314,8 @@ urlpatterns = [
 
     # Test
     url(r'sonuclar$', CompetitionViews.return_competition, name='sonuclar'),
+    url(r'sonuc/sonuc-liste/(?P<pk>\d+)$', CompetitionViews.result_list, name='sonuc-liste'),
+    url(r'sonuc/year',CompetitionViews.return_competition_ajax,name='sonuclar-ajax'),
 
 
     # Competition
