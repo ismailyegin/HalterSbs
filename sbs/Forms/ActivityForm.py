@@ -12,25 +12,16 @@ class ActivityForm(ModelForm):
         model = Activity
 
         fields = (
-            'name', 'startDate', 'finishDate','compType','compGeneralType','eventPlace','eventDate','registerStartDate','registerFinishDate','type')
+            'name', 'startDate', 'finishDate','eventPlace','type')
 
-        labels = {'name': 'İsim', 'startDate': 'Başlangıç Tarihi', 'finishDate': 'Bitiş Tarihi', 'compType': 'Türü', 'compGeneralType': 'Genel Türü',
-                  'eventPlace':'Etkinlik Yeri','eventDate':'Etkinlik tarihi','registerStartDate':'Ön Kayıt Başlangıç Tarihi',
-                  'registerFinishDate':'Ön Kayıt Bitiş Tarihi','type':'Faaliyet Türü '}
+        labels = {'name': 'Tanımı', 'startDate': 'Başlangıç Tarihi', 'finishDate': 'Bitiş Tarihi',
+                  'eventPlace':'Etkinlik Yeri','type':'Faaliyet Türü ',}
 
         widgets = {
 
 
 
-            'registerStartDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right datepicker6',  'autocomplete': 'on',
-                       'onkeydown': 'return true'}),
-            'registerFinishDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
-                       'onkeydown': 'return true'}),
-            'eventDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
-                       'onkeydown': 'return true'}),
+
             'eventPlace': forms.TextInput(attrs={'class': 'form-control'}),
 
             'startDate': forms.DateInput(
@@ -43,10 +34,6 @@ class ActivityForm(ModelForm):
 
             'name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
 
-            'compType': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                          'style': 'width: 100%; '}),
-            'compGeneralType': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                            'style': 'width: 100%; '}),
             'type': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                    'style': 'width: 100%; '}),
 

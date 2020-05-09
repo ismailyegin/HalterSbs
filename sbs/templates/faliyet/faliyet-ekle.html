@@ -73,15 +73,16 @@
                                 <div class="col-lg-12">
                                     <div class="form-group">
 
-                                                                                                                <div class="form-group">
+                                        <label> {{ competition_form.name.label }}</label>
+                                        {{ competition_form.name }}
+                                    </div>
+
+
+                                    <div class="form-group">
                                         <label> {{ competition_form.eventPlace.label }}</label>
                                         {{ competition_form.eventPlace }}
                                     </div>
 
-
-                                        <label> {{ competition_form.name.label }}</label>
-                                        {{ competition_form.name }}
-                                    </div>
 
                                     <div class="form-group">
                                         <label> {{ competition_form.startDate.label }}</label>
@@ -93,19 +94,11 @@
                                         {{ competition_form.finishDate }}
                                     </div>
 
+
                                     <div class="form-group">
-                                        <label> {{ competition_form.compType.label }}</label>
-                                        {{ competition_form.compType }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ competition_form.compGeneralType.label }}</label>
-                                        {{ competition_form.compGeneralType }}
-                                    </div>
-                                                                        <div class="form-group">
                                         <label> {{ competition_form.type.label }}</label>
                                         {{ competition_form.type }}
                                     </div>
-
 
 
                                 </div>

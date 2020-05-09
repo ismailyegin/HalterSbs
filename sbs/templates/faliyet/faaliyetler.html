@@ -127,7 +127,16 @@
 
 
 
+
+
+
     <section class="content">
+
+
+
+
+
+
         <div class="row">
             <section class="col-lg-12 ">
 
@@ -196,7 +205,7 @@
 
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Faliyetler</h3>
+                            <h3 class="box-title center-block">Faliyetler</h3>
                         </div>
                         <div class="box-header with-border">
                             <div class="btn-group">
@@ -207,6 +216,23 @@
                                     </a>
                                 {% endif %}
                             </div>
+{#                            <div class="btn-group">#}
+{##}
+{#                                    <ul class="nav nav-tabs nav-justified nav-inverse ">#}
+{##}
+{#            <li class=""><a href="#tab_2012" data-toggle="tab" aria-expanded="false"><strong>2012</strong></a></li>#}
+{#            <li class=""><a href="#tab_2013" data-toggle="tab" aria-expanded="false"><strong>2013</strong></a></li>#}
+{#			<li class=""><a href="#tab_2014" data-toggle="tab" aria-expanded="false"><strong>2014</strong></a></li>#}
+{#			<li class=""><a href="#tab_2015" data-toggle="tab" aria-expanded="false"><strong>2015</strong></a></li>#}
+{#			<li class=""><a href="#tab_2016" data-toggle="tab" aria-expanded="false"><strong>2016</strong></a></li>#}
+{#			<li class=""><a href="#tab_2017" data-toggle="tab" aria-expanded="false"><strong>2017</strong></a></li>#}
+{#			<li class="active"><a href="#tab_2017" data-toggle="tab" aria-expanded="true"><strong>2018</strong></a></li>#}
+{#			<li class=""><a href="#tab_2019" data-toggle="tab" aria-expanded="false"><strong>2019</strong></a></li>#}
+{#			<li class=""><a href="#tab_2020" data-toggle="tab" aria-expanded="false"><strong>2020</strong></a></li>#}
+{#          </ul>#}
+{##}
+{##}
+{#                            </div>#}
                         </div>
                         <div class="box-body">
                             <table id="musabakalar" class="table table-bordered table-hover">
@@ -217,7 +243,7 @@
                                     <th>Faaliyet Yeri</th>
                                     <th>Başl. Tarihi</th>
                                     <th>Bitiş. Tarihi</th>
-                                    <th>Genel Türü</th>
+                                    <th>Yıl</th>
                                     <th>Türü</th>
                                     <td>işlemler</td>
 
@@ -233,8 +259,9 @@
                                             <td>{{ competition.eventPlace }}</td>
                                             <td>{{ competition.startDate | date }} </td>
                                             <td>{{ competition.finishDate | date }}</td>
-                                            <td>{{ competition.get_compGeneralType_display }}</td>
-                                            <td>{{ competition.get_compType_display }}</td>
+                                           <td>{{ competition.year}}</td>
+                                           <td>{{ competition.type }}</td>
+
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{% url "sbs:faliyet-duzenle" competition.pk %}"
