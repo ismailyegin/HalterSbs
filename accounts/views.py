@@ -413,7 +413,7 @@ def referenceAthlete(request):
     logout(request)
     athlete = RefereeAthleteForm()
     if request.method == 'POST':
-        athlete = RefereeCoachForm(request.POST, request.FILES)
+        athlete = RefereeAthleteForm(request.POST, request.FILES)
         if athlete.is_valid():
             athlete.save()
             return redirect("accounts:login")

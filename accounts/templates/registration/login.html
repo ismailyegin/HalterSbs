@@ -81,30 +81,36 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-xs-4">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">Giriş Yap</button>
+                    <button type="submit" class="btn btn-primary ">Giriş Yap</button>
+
                 </div>
+
                 <!-- /.col -->
             </div>
         </form>
         {#        <a href="{% url 'accounts:forgot' %}" class="text-center">Şifremi Unuttum</a>#}
-        <button class="btn btn-primary my-2 " type="button">Şifremi Unuttum
-        </button>
-
+        <a type="button" href="{% url 'accounts:forgot' %} " class="text-center">Şifremi
+            Unuttum
+        </a>
         <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle my-2" type="button" data-toggle="dropdown">Kayıt Ol
-                <span class="caret"></span></button>
+            <a class=" dropdown-toggle" type="button" data-toggle="dropdown">Kayıt
+                Ol
+                <span class="caret"></span></a>
+
             <ul class="dropdown-menu">
 
 
-                <li><a href="{% url 'accounts:referee' %} " class="text-center">Hakem</a></li>
-                <li><a href="{% url 'accounts:coach' %} " class="text-center">Antrenör</a></li>
-                <li><a href="{% url 'accounts:athlete' %} " class="text-center">Sporcu</a></li>
-                <li><a href="{% url 'accounts:pre-registration' %} " class="text-center">Klüp Üyesi</a></li>
+                <li><a href="{% url 'accounts:referee' %} ">Hakem</a></li>
+                <li><a href="{% url 'accounts:coach' %} ">Antrenör</a></li>
+                <li><a href="{% url 'accounts:athlete' %} ">Sporcu</a></li>
+                <li><a href="{% url 'accounts:pre-registration' %} ">Klüp Üyesi</a></li>
                 {#      <li class="divider"></li>#}
 
 
             </ul>
         </div>
+
+
     </div>
 
 
