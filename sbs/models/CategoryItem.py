@@ -10,7 +10,7 @@ class CategoryItem(models.Model):
     forWhichClazz = models.CharField(blank=False, null=False, max_length=255)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     branch = models.CharField(max_length=128, choices=EnumFields.BRANCH.value,null=True,blank=True,verbose_name='Seçiniz')
-    isFirst = models.BooleanField()
+    isFirst = models.BooleanField(null=True, blank=True)
     creationDate = models.DateTimeField(auto_now_add=True)
     operationDate = models.DateTimeField(auto_now=True)
 
