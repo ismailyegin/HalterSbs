@@ -8,16 +8,19 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
     {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="{% static 'bower_components/Ionicons/css/ionicons.min.css' %} ">
+    {#    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">#}
+    {#    <!-- Font Awesome -->#}
+    {#    <link rel="stylesheet" href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}">#}
+    {#    <!-- Ionicons -->#}
+    {#    <link rel="stylesheet" href="{% static 'bower_components/Ionicons/css/ionicons.min.css' %} ">#}
     <link rel="shortcut icon" type="image/png" href="/media/favicon.png"/>
-    <!-- Theme style -->
+    {#    <!-- Theme style -->#}
     <link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %}">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="{% static 'plugins/iCheck/square/blue.css' %}">
+    {#    <!-- iCheck -->#}
+    {#    <link rel="stylesheet" href="{% static 'plugins/iCheck/square/blue.css' %}">#}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -42,12 +45,6 @@
 
 
         {% if messages %}
-
-
-
-
-
-
 
             <ul class="messages">
 
@@ -89,32 +86,33 @@
                 <!-- /.col -->
             </div>
         </form>
+        {#        <a href="{% url 'accounts:forgot' %}" class="text-center">Şifremi Unuttum</a>#}
+        <button class="btn btn-primary my-2 " type="button">Şifremi Unuttum
+        </button>
+
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle my-2" type="button" data-toggle="dropdown">Kayıt Ol
+                <span class="caret"></span></button>
+            <ul class="dropdown-menu">
 
 
-        <a href="/pre-registration" class="text-center">Kayıt Ol</a><br>
-        <a href="/forgot" class="text-center">Şifremi Unuttum</a><br>
+                <li><a href="{% url 'accounts:referee' %} " class="text-center">Hakem</a></li>
+                <li><a href="{% url 'accounts:coach' %} " class="text-center">Antrenör</a></li>
+                <li><a href="{% url 'accounts:athlete' %} " class="text-center">Sporcu</a></li>
+                <li><a href="{% url 'accounts:pre-registration' %} " class="text-center">Klüp Üyesi</a></li>
+                {#      <li class="divider"></li>#}
 
 
+            </ul>
+        </div>
     </div>
-    <div style="margin-top: 20px"><p style="text-align: center">Designed by <a href="http://www.kobiltek.com">KOBILTEK Informatics & Technology</a></p></div>
-    <!-- /.login-box-body -->
+
+
+</div>
+<div style="margin-top: 20px"><p style="text-align: center">Designed by <a href="http://www.kobiltek.com">KOBILTEK
+    Informatics & Technology</a></p></div>
+<!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
-
-<!-- jQuery 3 -->
-<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- iCheck -->
-<script src="../../plugins/iCheck/icheck.min.js"></script>
-<script>
-    $(function () {
-        $('input').iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' /* optional */
-        });
-    });
-</script>
 </body>
 </html>

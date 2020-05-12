@@ -1,7 +1,6 @@
 # import patterns as patterns
 from django.conf.urls import url
 from django.urls import path
-
 from . import views
 
 app_name = "accounts"
@@ -20,6 +19,9 @@ urlpatterns = [
     url(r'mail/$', views.mail, name='mail'),
     url(r'newpassword$', views.updateUrlProfile, name='newPassword'),
     url(r'newlogin/(?P<pk>\d+)$', views.newlogin, name='newlogin'),
+    url(r'referee/$', views.referenceReferee, name='referee'),
+    url(r'coach/$', views.referenceCoach, name='coach'),
+    url(r'athlete/$', views.referenceAthlete, name='athlete'),
 
 
 

@@ -30,6 +30,9 @@ from sbs.Forms.DisabledUserForm import DisabledUserForm
 from sbs.Forms.PersonForm import PersonForm
 from sbs.Forms.SportClubUserForm import SportClubUserForm
 from sbs.Forms.UserForm import UserForm
+from sbs.Forms.ReferenceRefereeForm import RefereeForm
+from sbs.Forms.ReferenceCoachForm import RefereeCoachForm
+from sbs.Forms.ReferenceAthleteForm import RefereeAthleteForm
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
@@ -373,14 +376,47 @@ def newlogin(request, pk):
             messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
             return redirect("accounts:login")
 
-        # try:
-        #
-        #
-        # except:
-        #     messages.warning(request, 'Lütfen Yeniden Deneyiniz')
-        #     return redirect("accounts:login")
-
     return render(request, 'registration/newlogin.html',
                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
                    'sportClubUser_form': sportClubUser_form, 'club_form': club_form,
                    'communication_formclup': communication_formclup})
+
+
+def referenceReferee(request):
+    logout(request)
+    hakem = RefereeForm()
+
+    if request.method == 'POST':
+        referee = RefereeForm(request.POST, request.FILES)
+        if referee.is_valid():
+            referee.save()
+            return redirect("accounts:login")
+            messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
+    return render(request, 'registration/Referee.html',
+                  {'preRegistrationform': hakem})
+
+
+def referenceCoach(request):
+    logout(request)
+    antrenor = RefereeCoachForm()
+    if request.method == 'POST':
+        antrenor = RefereeCoachForm(request.POST, request.FILES)
+        if antrenor.is_valid():
+            antrenor.save()
+            messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
+            return redirect("accounts:login")
+    return render(request, 'registration/Coach.html',
+                  {'preRegistrationform': antrenor})
+
+
+def referenceAthlete(request):
+    logout(request)
+    athlete = RefereeAthleteForm()
+    if request.method == 'POST':
+        athlete = RefereeCoachForm(request.POST, request.FILES)
+        if athlete.is_valid():
+            athlete.save()
+            return redirect("accounts:login")
+            messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
+    return render(request, 'registration/Coach.html',
+                  {'preRegistrationform': athlete})
