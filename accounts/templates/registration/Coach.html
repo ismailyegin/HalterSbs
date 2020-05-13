@@ -84,6 +84,7 @@
 <!-- /.login-logo -->
 {% block content %}
 
+
     {% if messages %}
         {% for message in messages %}
 
@@ -107,7 +108,6 @@
             {% endif %}
 
 
-
             {% if message.tags == 'success' %}
 
                 <div class="alert alert-success alert-dismissible">
@@ -129,6 +129,9 @@
 
 
     {% endif %}
+
+
+
     <div class="login-box-body ">
 
         <section class="content-header">
@@ -136,8 +139,7 @@
                 ANTRENÖR KAYIT OL
 
             </h1>
-            <br>
-            <h3>Üyeliginiz federasyon görevlileri tarafından onaylıgında mail adresinize gönderilecektir. </h3>
+
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> ANTRENÖR KAYIT OL </a></li>
 

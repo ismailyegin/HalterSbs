@@ -3,6 +3,7 @@ from sbs.models.ReferenceAthlete import ReferenceAthlete
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.db import models
+from django.contrib import auth, messages
 
 
 class RefereeAthleteForm(ModelForm):
@@ -12,10 +13,13 @@ class RefereeAthleteForm(ModelForm):
         'first_name', 'last_name', 'email', 'is_active', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
         'country', 'iban',
         'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
-        'fatherName')
+        'fatherName', 'startDate', 'branch', 'licenseNo', 'cityHeadShip', 'expireDate', 'lisansPhoto')
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
-                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet'}
+                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet', 'startDate': 'Başlangıç Tarihi',
+                  'branch': 'Branş',
+                  'licenseNo': 'Lisans No', 'cityHeadShip': 'Verildiği İl', 'expireDate': 'Geçer. Süresi',
+                  'lisansPhoto': 'Lisans Foto'}
         widgets = {
 
             'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
@@ -66,6 +70,21 @@ class RefereeAthleteForm(ModelForm):
 
             'country': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                            'style': 'width: 100%;', 'required': 'required'}),
+            'startDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker2', 'autocomplete': 'on',
+                       'onkeydown': 'return true'}),
+
+            'expireDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'on',
+                       'onkeydown': 'return true'}),
+
+            'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                          'style': 'width: 100%; '}),
+
+            'licenseNo': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+
+            'cityHeadShip': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                'style': 'width: 100%;', 'required': 'required'}),
 
         }
 

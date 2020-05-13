@@ -107,7 +107,6 @@
             {% endif %}
 
 
-
             {% if message.tags == 'success' %}
 
                 <div class="alert alert-success alert-dismissible">
@@ -129,6 +128,9 @@
 
 
     {% endif %}
+
+
+
     <div class="login-box-body ">
 
         <section class="content-header">
@@ -136,8 +138,7 @@
                 SPORCU KAYIT OL
 
             </h1>
-            <br>
-            <h3>Üyeliginiz federasyon görevlileri tarafından onaylıgında mail adresinize gönderilecektir. </h3>
+
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> SPORCU KAYIT OL </a></li>
 
@@ -277,9 +278,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="box-footer">
-                                    <button class="btn btn-primary btn-lg" type="submit">Onaya gönder</button>
-                                </div>
 
 
                             </div>
@@ -287,11 +285,63 @@
                         </div>
 
                     </div>
-                    <div class="row">
 
+
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Lisans Bilgileri</h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group col-lg-4">
+                                            <label> {{ preRegistrationform.startDate.label }}</label>
+                                            {{ preRegistrationform.startDate }}
+                                        </div>
+
+                                        <div class="form-group col-lg-4">
+                                            <label> {{ preRegistrationform.expireDate.label }}</label>
+                                            {{ preRegistrationform.expireDate }}
+                                        </div>
+
+
+                                        <div class="form-group col-lg-4">
+                                            <label> {{ preRegistrationform.licenseNo.label }}</label>
+                                            {{ preRegistrationform.licenseNo }}
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <label> {{ preRegistrationform.branch.label }}</label>
+                                            {{ preRegistrationform.branch }}
+                                        </div>
+
+
+                                        <div class="form-group col-lg-4">
+                                            <label> {{ preRegistrationform.cityHeadShip.label }}</label>
+                                            {{ preRegistrationform.cityHeadShip }}
+                                        </div>
+
+                                        <div class="form-group col-lg-4">
+                                            <label> {{ preRegistrationform.lisansPhoto.label }}</label>
+                                            {{ preRegistrationform.lisansPhoto }}
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <button class="btn btn-primary btn-lg" type="submit">Onaya gönder</button>
+                            </div>
+
+
+                        </div>
 
                     </div>
-
                 </div>
             </form>
 

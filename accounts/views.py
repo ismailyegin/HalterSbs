@@ -86,7 +86,7 @@ def login(request):
             except:
                 print()
 
-            messages.add_message(request, messages.SUCCESS, 'Mail Adresi Ve Şifre Uyumsuzluğu')
+            messages.warning(request, 'Mail Adresi Ve Şifre Uyumsuzluğu')
             return render(request, 'registration/login.html')
 
     return render(request, 'registration/login.html')
@@ -384,16 +384,22 @@ def newlogin(request, pk):
 
 def referenceReferee(request):
     logout(request)
-    hakem = RefereeForm()
+    referee = RefereeForm()
 
     if request.method == 'POST':
         referee = RefereeForm(request.POST, request.FILES)
+        if User.objects.filter(email=request.POST.get('email')):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'registration/Referee.html', {'preRegistrationform': referee})
         if referee.is_valid():
             referee.save()
+            messages.success(request,
+                             'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
             return redirect("accounts:login")
-            messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
+        else:
+            messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Referee.html',
-                  {'preRegistrationform': hakem})
+                  {'preRegistrationform': referee})
 
 
 def referenceCoach(request):
@@ -401,10 +407,17 @@ def referenceCoach(request):
     antrenor = RefereeCoachForm()
     if request.method == 'POST':
         antrenor = RefereeCoachForm(request.POST, request.FILES)
+        if User.objects.filter(email=request.POST.get('email')):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'registration/Coach.html', {'preRegistrationform': antrenor})
         if antrenor.is_valid():
-            antrenor.save()
-            messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
+            athlete.save()
+            messages.success(request,
+                             'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
             return redirect("accounts:login")
+
+        else:
+            messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Coach.html',
                   {'preRegistrationform': antrenor})
 
@@ -414,9 +427,17 @@ def referenceAthlete(request):
     athlete = RefereeAthleteForm()
     if request.method == 'POST':
         athlete = RefereeAthleteForm(request.POST, request.FILES)
+        if User.objects.filter(email=request.POST.get('email')):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'registration/Athlete.html', {'preRegistrationform': athlete})
         if athlete.is_valid():
             athlete.save()
+            messages.success(request,
+                             'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
             return redirect("accounts:login")
-            messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
-    return render(request, 'registration/Coach.html',
+
+        else:
+            messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
+
+    return render(request, 'registration/Athlete.html',
                   {'preRegistrationform': athlete})
