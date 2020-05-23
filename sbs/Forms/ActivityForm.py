@@ -12,15 +12,16 @@ class ActivityForm(ModelForm):
         model = Activity
 
         fields = (
-            'name', 'startDate', 'finishDate','eventPlace','type')
+            'name', 'startDate', 'finishDate', 'eventPlace', 'type', 'year')
 
         labels = {'name': 'Tanımı', 'startDate': 'Başlangıç Tarihi', 'finishDate': 'Bitiş Tarihi',
-                  'eventPlace':'Etkinlik Yeri','type':'Faaliyet Türü ',}
+                  'eventPlace': 'Etkinlik Yeri', 'type': 'Faaliyet Türü ', 'year': 'Yılı ', }
 
         widgets = {
 
-
-
+            'year': forms.DateInput(
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker5', 'autocomplete': 'on',
+                       'onkeydown': 'return true'}),
 
             'eventPlace': forms.TextInput(attrs={'class': 'form-control'}),
 
