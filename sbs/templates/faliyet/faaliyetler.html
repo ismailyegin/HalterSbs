@@ -133,10 +133,6 @@
     <section class="content">
 
 
-
-
-
-
         <div class="row">
             <section class="col-lg-12 ">
 
@@ -216,23 +212,23 @@
                                     </a>
                                 {% endif %}
                             </div>
-{#                            <div class="btn-group">#}
-{##}
-{#                                    <ul class="nav nav-tabs nav-justified nav-inverse ">#}
-{##}
-{#            <li class=""><a href="#tab_2012" data-toggle="tab" aria-expanded="false"><strong>2012</strong></a></li>#}
-{#            <li class=""><a href="#tab_2013" data-toggle="tab" aria-expanded="false"><strong>2013</strong></a></li>#}
-{#			<li class=""><a href="#tab_2014" data-toggle="tab" aria-expanded="false"><strong>2014</strong></a></li>#}
-{#			<li class=""><a href="#tab_2015" data-toggle="tab" aria-expanded="false"><strong>2015</strong></a></li>#}
-{#			<li class=""><a href="#tab_2016" data-toggle="tab" aria-expanded="false"><strong>2016</strong></a></li>#}
-{#			<li class=""><a href="#tab_2017" data-toggle="tab" aria-expanded="false"><strong>2017</strong></a></li>#}
-{#			<li class="active"><a href="#tab_2017" data-toggle="tab" aria-expanded="true"><strong>2018</strong></a></li>#}
-{#			<li class=""><a href="#tab_2019" data-toggle="tab" aria-expanded="false"><strong>2019</strong></a></li>#}
-{#			<li class=""><a href="#tab_2020" data-toggle="tab" aria-expanded="false"><strong>2020</strong></a></li>#}
-{#          </ul>#}
-{##}
-{##}
-{#                            </div>#}
+                            {#                            <div class="btn-group">#}
+                            {##}
+                            {#                                    <ul class="nav nav-tabs nav-justified nav-inverse ">#}
+                            {##}
+                            {#            <li class=""><a href="#tab_2012" data-toggle="tab" aria-expanded="false"><strong>2012</strong></a></li>#}
+                            {#            <li class=""><a href="#tab_2013" data-toggle="tab" aria-expanded="false"><strong>2013</strong></a></li>#}
+                            {#			<li class=""><a href="#tab_2014" data-toggle="tab" aria-expanded="false"><strong>2014</strong></a></li>#}
+                            {#			<li class=""><a href="#tab_2015" data-toggle="tab" aria-expanded="false"><strong>2015</strong></a></li>#}
+                            {#			<li class=""><a href="#tab_2016" data-toggle="tab" aria-expanded="false"><strong>2016</strong></a></li>#}
+                            {#			<li class=""><a href="#tab_2017" data-toggle="tab" aria-expanded="false"><strong>2017</strong></a></li>#}
+                            {#			<li class="active"><a href="#tab_2017" data-toggle="tab" aria-expanded="true"><strong>2018</strong></a></li>#}
+                            {#			<li class=""><a href="#tab_2019" data-toggle="tab" aria-expanded="false"><strong>2019</strong></a></li>#}
+                            {#			<li class=""><a href="#tab_2020" data-toggle="tab" aria-expanded="false"><strong>2020</strong></a></li>#}
+                            {#          </ul>#}
+                            {##}
+                            {##}
+                            {#                            </div>#}
                         </div>
                         <div class="box-body">
                             <table id="musabakalar" class="table table-bordered table-hover">
@@ -259,8 +255,14 @@
                                             <td>{{ competition.eventPlace }}</td>
                                             <td>{{ competition.startDate | date }} </td>
                                             <td>{{ competition.finishDate | date }}</td>
-                                           <td>{{ competition.year}}</td>
-                                           <td>{{ competition.type }}</td>
+                                            <td>{{ competition.year }}</td>
+                                            {% if competition.type == 0 %}
+                                                <td>YURT İÇİ FAALİYETLERİ</td>
+                                            {% elif competition.type == 1 %}
+                                                <td>YURT DIŞI FAALİYETLERİ</td>
+                                            {% elif competition.type == 2 %}
+                                                <td>EGİTİM FAALİYETLERİ</td>
+                                            {% endif %}
 
                                             <td>
                                                 <div class="btn-group">
