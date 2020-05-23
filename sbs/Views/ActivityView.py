@@ -35,7 +35,6 @@ def return_activity(request):
 
     comquery=CompetitionSearchForm()
     activity = Activity.objects.all()
-
     if request.method == 'POST':
         name= request.POST.get('name')
         startDate= request.POST.get('startDate')

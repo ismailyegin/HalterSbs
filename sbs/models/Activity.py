@@ -28,7 +28,5 @@ class Activity(models.Model):
     def save(self, force_insert=False, force_update=False):
         if self.name:
             self.name = self.name.upper()
-        if self.startDate:
-            self.year=self.startDate.year
 
         super(Activity, self).save(force_insert, force_update)
