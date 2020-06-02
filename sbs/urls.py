@@ -316,7 +316,7 @@ urlpatterns = [
     url(r'sonuclar$', CompetitionViews.return_competition, name='sonuclar'),
     url(r'sonuc/sonuc-liste/(?P<pk>\d+)$', CompetitionViews.result_list, name='sonuc-liste'),
     url(r'sonuc/year',CompetitionViews.return_competition_ajax,name='sonuclar-ajax'),
-
+    url(r'musabaka/basvuru/(?P<pk>\d+)$', CompetitionViews.aplication, name='basvuru'),
 
     # Competition
     url(r'musabaka/musabakalar/$', CompetitionViews.return_competitions, name='musabakalar'),
@@ -326,6 +326,8 @@ urlpatterns = [
     url(r'musabaka/musabaka-sporcu-sec/(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,name='musabaka-sporcu-sec'),
     url(r'musabaka/sporcu-sec/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.choose_athlete,
         name='catagori-sporcu-sec-ajax'),
+    url(r'musabaka/sporcu-guncelle/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.update_athlete,
+        name='catagori-sporcu-guncelle-ajax'),
     url(r'musabaka/KategorilerinSporculari/$', CompetitionViews.return_sporcu, name='Kategorilerin-Sporculari'),
     url(r'musabaka/musabaka-duzenle/musabaka_sporcu_ekle/(?P<athlete_pk>\d+)/(?P<competition_pk>\d+)$',
         CompetitionViews.musabaka_sporcu_ekle,

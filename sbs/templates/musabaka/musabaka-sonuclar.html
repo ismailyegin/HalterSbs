@@ -1,0 +1,434 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+
+    <style>
+
+
+        .ui-widget-overlay {
+            height: 100%;
+            left: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #000000;
+            opacity: 0.7;
+        }
+
+
+    </style>
+
+
+
+
+    <!-- success modal -->
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags == 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+    {% endif %}
+
+
+
+
+
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <section class="content">
+
+
+        <div class="ui red segment" style="background-color:white">
+            <center>
+                <h2 class="ui mobile icon header">
+                    <div class="content">
+                        ERKEK 109 KG
+                    </div>
+                </h2>
+            </center>
+            <table class="ui mobile  small table" id="sonuclar">
+                <thead>
+                <tr>
+                    <th rowspan="2">
+                        <center>Derece</center>
+                    </th>
+                    <th rowspan="2">
+                        <center>Ad Soyad</center>
+                    </th>
+                    <th rowspan="2">
+                        <center>Doğum <br> Yılı</center>
+                    </th>
+                    <th rowspan="2">
+                        <center>Kilo</center>
+                    </th>
+                    <th rowspan="2">
+                        <center>İl/Kulüp</center>
+                    </th>
+                    <th colspan="3">
+                        <center>Koparma</center>
+                    </th>
+                    <th rowspan="2">
+                        <center>Koparma <br> Toplam</center>
+                    </th>
+                    <th colspan="3">
+                        <center>Silkme</center>
+                    </th>
+                    <th rowspan="2">
+                        <center>Silkme <br> Toplam</center>
+                    </th>
+
+                    <th rowspan="2">
+                        <center>Toplam</center>
+                    </th>
+
+                </tr>
+                <tr>
+                    <th>
+                        <center>1</center>
+                    </th>
+                    <th>
+                        <center>2</center>
+                    </th>
+                    <th>
+                        <center>3</center>
+                    </th>
+                    <th>
+                        <center>1</center>
+                    </th>
+                    <th>
+                        <center>2</center>
+                    </th>
+                    <th>
+                        <center>3</center>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>
+                        <div align="right" class="ui tiny header">0</div>
+                    </th>
+                    <th>MUSTAFA AHMAD</th>
+                    <th>
+                        <center>1990</center>
+                    </th>
+                    <th>
+                        <center>106.5</center>
+                    </th>
+                    <th></th>
+                    <th>
+                        <center>41</center>
+                    </th>
+                    <th>
+                        <center>42</center>
+                    </th>
+                    <th>
+                        <center>43</center>
+                    </th>
+                    <th>
+                        <center>43</center>
+                    </th>
+                    <th>
+                        <center>219</center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">220</font></center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th>
+                        <center>219</center>
+                    </th>
+                    <th>
+                        <center>262</center>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <div align="right" class="ui tiny header">0</div>
+                    </th>
+                    <th>ALFRARJH SOHAEB</th>
+                    <th>
+                        <center>1987</center>
+                    </th>
+                    <th>
+                        <center>0</center>
+                    </th>
+                    <th></th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">43</font></center>
+                    </th>
+                    <th>
+                        <center>43</center>
+                    </th>
+                    <th>
+                        <center>44</center>
+                    </th>
+                    <th>
+                        <center>44</center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">220</font></center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th>
+                        <center>0</center>
+                    </th>
+                    <th>
+                        <center>0</center>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <div align="right" class="ui tiny header">0</div>
+                    </th>
+                    <th>CAKAJ DRİN</th>
+                    <th>
+                        <center>2002</center>
+                    </th>
+                    <th>
+                        <center>60</center>
+                    </th>
+                    <th></th>
+                    <th>
+                        <center>45</center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th>
+                        <center>45</center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th>
+                        <center>0</center>
+                    </th>
+                    <th>
+                        <center>0</center>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <div align="right" class="ui tiny header">0</div>
+                    </th>
+                    <th>BABAYEV TARMENKHAN</th>
+                    <th>
+                        <center>2002</center>
+                    </th>
+                    <th>
+                        <center>65</center>
+                    </th>
+                    <th></th>
+                    <th>
+                        <center>47</center>
+                    </th>
+                    <th>
+                        <center>48</center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">49</font></center>
+                    </th>
+                    <th>
+                        <center>48</center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th style="background-color:rgba(255, 0, 0, 0.6);">
+                        <center><font color="white">0</font></center>
+                    </th>
+                    <th>
+                        <center>0</center>
+                    </th>
+                    <th>
+                        <center>48</center>
+                    </th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+    </section>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        $(function () {
+            //Enable iCheck plugin for checkboxes
+            //iCheck for checkbox and radio inputs
+            $('.berktug input[type="checkbox"]').iCheck({
+
+                checkboxClass: 'icheckbox_flat-blue',
+
+            });
+
+        });
+    </script>
+
+    <script>
+        $(function () {
+            $('#sporcular').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true
+            });
+            $('#sonuclar').DataTable({
+                'paging': false,
+                'lengthChange': false,
+                'searching': false,
+                'ordering': true,
+                'info': false,
+                'autoWidth': true
+            })
+
+        })
+    </script>
+
+{% endblock %}
+

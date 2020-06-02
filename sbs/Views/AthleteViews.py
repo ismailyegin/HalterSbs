@@ -49,6 +49,7 @@ def return_add_athlete(request):
 
     # lisans ekleme baslangıç
     # klüp üyesi sadece kendi klüplerini görebiliyor
+
     user = request.user
     license_form = LicenseForm(request.POST, request.FILES or None)
 
