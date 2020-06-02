@@ -3,6 +3,129 @@
 {% block content %}
 
 
+    <style>
+
+
+        /***** PROFILE USER *****/
+        .profile-left-heading {
+            padding: 20px;
+            background-color: #3b4354;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+        }
+
+        .profile-left-heading .panel-options > li > a {
+            font-size: 14px;
+        }
+
+        .profile-left-heading .profile-photo {
+            width: 128px;
+            display: block;
+            margin: auto;
+        }
+
+        .profile-left-heading .profile-photo img {
+            padding: 5px;
+            background-color: #262b36;
+            border: 2px solid #505b72;
+        }
+
+        .profile-left-heading .profile-name {
+            color: #fff;
+            font-weight: 300;
+            font-size: 20px;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .profile-left-heading .profile-designation {
+            color: #9fa8bc;
+            font-weight: 300;
+            font-size: 14px;
+            letter-spacing: 1px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .profile-left-heading .list-group {
+            margin: 20px 0;
+        }
+
+        .profile-left-heading .list-group .list-group-item {
+            background-color: transparent;
+            border-width: 0 0 1px;
+            border-color: #464f63;
+            padding-left: 0;
+            padding-right: 0;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: none;
+            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
+            font-weight: 600;
+            letter-spacing: .5px;
+        }
+
+        .profile-left-heading .list-group .list-group-item a {
+            float: right;
+            color: #fff;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+        }
+
+        .profile-left-heading .list-group .list-group-item a:hover,
+        .profile-left-heading .list-group .list-group-item a:focus {
+            color: #46b8da;
+        }
+
+        .profile-left-heading .list-group .list-group-item:first-child {
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+            border-top-width: 1px;
+        }
+
+        .profile-left-heading .list-group .list-group-item:last-child {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .profile-left-body {
+            padding: 20px;
+            background-color: #464f63;
+            color: #9fa8bc;
+            border-bottom-right-radius: 2px;
+            border-bottom-left-radius: 2px;
+        }
+
+        .profile-left-body .panel-title {
+            color: #fff;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .profile-left-body .profile-social > li a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 28px;
+            -webkit-transition: all 0.2s ease-out 0s;
+            -o-transition: all 0.2s ease-out 0s;
+            transition: all 0.2s ease-out 0s;
+        }
+
+        .profile-left-body .profile-social > li a:hover,
+        .profile-left-body .profile-social > li a:focus {
+            color: #fff;
+        }
+
+        .profile-btn-follow {
+            margin-top: 20px;
+        }
+
+
+    </style>
+
+
+
+
+
 
 
     <!-- success modal -->
@@ -128,7 +251,81 @@
 
 
     <section class="content">
+
+        {% if application.all %}
+            {% for competition in application %}
+
                 <div class="row">
+                    <section class="col-lg-12 ">
+
+                        <div class=" dash-center">
+                            <div class="profile-left mb20">
+                                <h4><span class="label pull-left label-danger mr5"
+                                          style="margin: 0px 0px 0px 0px">Güncel Müsabaka</span></h4>
+
+
+                                <div class="profile-left-heading">
+                                    <h2 class="profile-name">{{ competition.name }}</h2>
+                                    <h4 class="profile-designation">{{ competition.startDate |date:"d " }}
+                                        - {{ competition.finishDate | date }}</h4>
+                                    <center><a href="http://halter.gov.tr/thf_musabaka_detay.php?id=4">
+                                        <button class="btn btn-danger btn-quirk profile-btn-follow">&nbsp;&nbsp;&nbsp;
+                                            BAŞVURU YAP
+                                            &nbsp;&nbsp;&nbsp;
+                                        </button>
+                                    </a></center>
+
+                                </div>
+                                <div class="profile-left-body">
+
+
+                                    <div class="row">
+                                        <div class="col-xs-5 col-sm-3">
+                                            <div class="pull-left">
+                                                <h4 class="panel-title">MÜSABAKANIN YERİ</h4>
+                                                <p>
+                                                    <i class="glyphicon glyphicon-map-marker mr5"></i>{{ competition.eventPlace }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-5 col-sm-3">
+                                            <div class="pull-left">
+                                                <h4 class="panel-title">MÜSABAKANIN TARİHİ</h4>
+                                                <p>
+                                                    <i class="fa fa-calendar mr5"></i> {{ competition.startDate |date:"d " }}
+                                                    - {{ competition.finishDate | date }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-5 col-sm-3">
+                                            <div class="pull-left">
+                                                <h4 class="panel-title">ONLİNE BAŞVURU TARİHİ</h4>
+                                                <p>
+                                                    <i class="fa fa-calendar mr5"></i>{{ competition.registerStartDate |date:"d " }}
+                                                    - {{ competition.registerFinishDate | date }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-5 col-sm-3">
+                                            <div class="pull-left">
+                                                <h4 class="panel-title">TEKNİK TOPLANTI </h4>
+                                                <p><i class="glyphicon glyphicon-map-marker mr5"></i></p>
+                                            </div>
+                                        </div>
+                                    </div><!-- row -->
+
+
+                                </div>
+                            </div><!-- profile-left -->
+                            <br>
+                        </div>
+
+
+                    </section>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+
+        <div class="row">
             <section class="col-lg-12 ">
 
 
@@ -155,19 +352,18 @@
                                         {{ query.compType }}
                                     </div>
                                 </div>
-                                                                <div class="col-md-3">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ query.compGeneralType.label }}</label>
                                         {{ query.compGeneralType }}
                                     </div>
                                 </div>
-                                                                <div class="col-md-3">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ query.startDate.label }}</label>
                                         {{ query.startDate }}
                                     </div>
                                 </div>
-
 
 
                             </div>
@@ -388,7 +584,7 @@
                         success: function (result) {
 
                             html = 'Müsabaka Başarıyla Silindi';
-                        debugger;
+                            debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {
@@ -411,6 +607,9 @@
 
         }
     </script>
+
+
+
 
 
 

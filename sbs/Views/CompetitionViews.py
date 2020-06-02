@@ -65,7 +65,10 @@ def return_competitions(request):
         logout(request)
         return redirect('accounts:login')
     comquery=CompetitionSearchForm()
-    competitions = Competition.objects.filter(registerStartDate__lte=timezone.now(),registerFinishDate__gte=timezone.now())
+    competition = Competition.objects.filter(registerStartDate__lte=timezone.now(),
+                                             registerFinishDate__gte=timezone.now())
+    competitions = Competition.objects.none()
+
 
     if request.method == 'POST':
         name= request.POST.get('name')
@@ -85,7 +88,8 @@ def return_competitions(request):
             competitions=Competition.objects.filter(query).distinct()
         else:
             competitions = Competition.objects.all()
-    return render(request, 'musabaka/musabakalar.html', {'competitions': competitions,'query':comquery})
+    return render(request, 'musabaka/musabakalar.html',
+                  {'competitions': competitions, 'query': comquery, 'application': competition})
 
 
 @login_required
