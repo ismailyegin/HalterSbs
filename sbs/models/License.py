@@ -2,6 +2,7 @@ import enum
 
 from django.db import models
 
+from sbs.models.Coach import Coach
 from sbs.models.City import City
 from sbs.models.EnumFields import EnumFields
 from sbs.models.SportsClub import SportsClub
@@ -33,6 +34,7 @@ class License(models.Model):
     lisansPhoto = models.FileField(upload_to='lisans/', null=False, blank=False, verbose_name='Lisans')
     reddetwhy=models.CharField(blank=True, null=True, max_length=255)
     isFerdi = models.BooleanField(default=False)
+    coach = models.ForeignKey(Coach, on_delete=models.CASCADE, blank=True, null=True)
 
 
     def __str__(self):

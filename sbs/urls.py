@@ -18,7 +18,9 @@ urlpatterns = [
 
     # Sporcular
     url(r'sporcu/sporcu-ekle/$', AthleteViews.return_add_athlete, name='sporcu-ekle'),
+    url(r'sporcu/sporcu-ekle-antrenor/$', AthleteViews.return_add_athlete_antrenor, name='sporcu-ekle-antrenor'),
     url(r'sporcu/sporcular/$', AthleteViews.return_athletes, name='sporcular'),
+    url(r'sporcu/sporcular/antrenor/$', AthleteViews.return_athletes_antrenor, name='sporcular-antrenor'),
 
     # pagenation deneme
     url(r'page/$', PageViews.deneme, name='deneme'),
@@ -28,8 +30,13 @@ urlpatterns = [
     url(r'sporcu/sporcuKusakDuzenle/(?P<belt_pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_kusak_duzenle,
         name='sporcu-kusak-duzenle'),
     url(r'sporcu/sporcuLisansEkle/(?P<pk>\d+)$', AthleteViews.sporcu_lisans_ekle, name='sporcu-lisans-ekle'),
+    url(r'sporcu/sporcuLisansEkle/antrenor/(?P<pk>\d+)$', AthleteViews.sporcu_lisans_ekle_antrenor,
+        name='sporcu-lisans-ekle-antrenor'),
     url(r'sporcu/sporcuLisansDuzenle/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$', AthleteViews.sporcu_lisans_duzenle,
         name='sporcu-lisans-duzenle'),
+    url(r'sporcu/sporcuLisansDuzenle/antrenor/(?P<license_pk>\d+)/(?P<athlete_pk>\d+)$',
+        AthleteViews.sporcu_lisans_duzenle_antrenor,
+        name='sporcu-lisans-duzenle-antrenor'),
     url(r'sporcu/sporcuLisansDuzenleMobil/(?P<count>\d+)$', AthleteViews.sporcu_lisans_duzenle_mobil,
         name='sporcu-lisans-duzenle-mobil'),
     # ilk degeri verebilmek icin yönlendirme amaci ile kullanildi.
@@ -343,6 +350,5 @@ urlpatterns = [
     url(r'reference/referee$', ReferenceView.hakemler, name='basvuru-referee'),
     url(r'reference/coach$', ReferenceView.antroner, name='basvuru-coach'),
     url(r'reference/athlete$', ReferenceView.sporcular, name='basvuru-athlete'),
-
 
 ]

@@ -283,10 +283,23 @@
                             <div class="box-header with-border">
                                 <div class="btn-group">
 
-                                    <a href="{% url "sbs:sporcu-lisans-ekle"  athlete.pk %}"
-                                       type="button" class="btn btn-success"><i
-                                            class="fa fa-edit"></i> Yeni Lisans Ekle
-                                    </a>
+                                    {% if user.groups.all.0.name == 'Antrenor' %}
+
+
+                                        <a href="{% url "sbs:sporcu-lisans-ekle-antrenor" athlete.pk %}"
+                                           type="button" class="btn btn-success"><i
+                                                class="fa fa-edit"></i>Yeni Lisans Ekle
+                                        </a>
+
+
+
+                                    {% else %}
+
+                                        <a href="{% url "sbs:sporcu-lisans-ekle"  athlete.pk %}"
+                                           type="button" class="btn btn-success"><i
+                                                class="fa fa-edit"></i> Yeni Lisans Ekle
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                             <table id="license" class="table table-bordered table-hover">
@@ -340,8 +353,9 @@
 
 
                                                         <button type="button" class="btn btn-danger"
-                                                                onclick="reddetwhy({{ license.pk }},{{ athlete.pk }})"><i
-                                                                class="fa fa-trash"></i>Reddet
+                                                                onclick="reddetwhy({{ license.pk }},{{ athlete.pk }})">
+                                                            <i
+                                                                    class="fa fa-trash"></i>Reddet
                                                         </button>
 
 
@@ -355,11 +369,27 @@
                                                     {% endif %}
                                                     {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}
 
+                                                        {% if user.groups.all.0.name == 'Antrenor' %}
 
-                                                        <a href="{% url "sbs:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
-                                                           type="button" class="btn btn-warning"><i
-                                                                class="fa fa-edit"></i>Güncelle
-                                                        </a>
+
+                                                            <a href="{% url "sbs:sporcu-lisans-duzenle-antrenor" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                               type="button" class="btn btn-warning"><i
+                                                                    class="fa fa-edit"></i>Güncelle
+                                                            </a>
+
+
+
+                                                        {% else %}
+
+
+                                                            <a href="{% url "sbs:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                               type="button" class="btn btn-warning"><i
+                                                                    class="fa fa-edit"></i>Güncelle
+                                                            </a>
+
+
+                                                        {% endif %}
+
                                                     {% endif %}
 
 
@@ -399,7 +429,7 @@
                 'ordering': false,
                 'info': true,
                 'autoWidth': true,
-                'responsive':true
+                'responsive': true
             })
 
         })
@@ -490,53 +520,53 @@
 
         }
     </script>
-       <script>
+    <script>
 
-            function reddetwhy(id,athlete) {
-                $("#reddetwhy").on("shown.bs.modal", function (e) {
+        function reddetwhy(id, athlete) {
+            $("#reddetwhy").on("shown.bs.modal", function (e) {
 
-                    $("#btn-gonder").click(function () {
-                        $.ajax({
+                $("#btn-gonder").click(function () {
+                    $.ajax({
 
-                             url: "{% url "sbs:sporcu-lisans-reddet" license_pk=212121223232323232 athlete_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, athlete.toString()),
+                        url: "{% url "sbs:sporcu-lisans-reddet" license_pk=212121223232323232 athlete_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, athlete.toString()),
 
-                            type: "POST",
-                            data: {
-                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                                 reddetwhy:$('#reddetwhytext').val(),
-                                isActive: 'False',
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            reddetwhy: $('#reddetwhytext').val(),
+                            isActive: 'False',
 
 
-                            },
-                            success: function (result) {
+                        },
+                        success: function (result) {
 
-                                html = 'Lisans reddedildi .';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                            html = 'Lisans reddedildi .';
+                            debugger;
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function (e) {
+                                $(".btn-ok").click(function () {
 
-                                        window.location.replace("{%  url "sbs:update-athletes" athlete.pk %}");
+                                    window.location.replace("{%  url "sbs:update-athletes" athlete.pk %}");
 
-                                    });
+                                });
 
-                                }).modal('show');
-                            }
-                        });
+                            }).modal('show');
+                        }
                     });
-
-
-                }).modal('show');
-                $('#btn-closereddet').click(function () {
-                    $('#modal-warning').modal('hide');
-                    $('.modal').modal('hide');
-
                 });
 
-            }
+
+            }).modal('show');
+            $('#btn-closereddet').click(function () {
+                $('#modal-warning').modal('hide');
+                $('.modal').modal('hide');
+
+            });
+
+        }
 
 
-        </script>
+    </script>
 
 
 {% endblock %}

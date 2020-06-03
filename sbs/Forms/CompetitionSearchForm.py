@@ -14,7 +14,8 @@ class CompetitionSearchForm(ModelForm):
         fields = (
             'name', 'startDate', 'finishDate','compType','compGeneralType')
 
-        labels = {'name': 'İsim', 'startDate': 'Başlangıç Tarihi', 'finishDate': 'Yılı ', 'compType': 'Türü', 'compGeneralType': 'Genel Türü'}
+        labels = {'name': 'İsim', 'startDate': 'Başlangıç Yılı', 'finishDate': 'Yılı ', 'compType': 'Türü',
+                  'compGeneralType': 'Genel Türü'}
 
         widgets = {
 
