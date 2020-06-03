@@ -231,7 +231,7 @@ def updateReferee(request, pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    judge = Judge.objects.get(pk=pk)
+    # judge = Judge.objects.get(pk=pk)
     user = User.objects.get(pk=judge.user.pk)
     person = Person.objects.get(pk=judge.person.pk)
     communication = Communication.objects.get(pk=judge.communication.pk)

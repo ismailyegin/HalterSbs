@@ -16,6 +16,8 @@ class CompCategory(models.Model):
     starttime = models.CharField(db_column='startTime', max_length=45, blank=True, null=True)  # Field name made lowercase.
     grupforreport = models.ForeignKey(GrupForReport, models.DO_NOTHING, db_column='grupForReport', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return '%s' % (self.name)
     class Meta:
         db_table = 'compcategory'
         managed = False

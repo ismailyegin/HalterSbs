@@ -129,7 +129,7 @@ def return_add_athlete(request):
 
 @login_required
 def return_athletes(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
 
     if not perm:
         logout(request)
@@ -915,7 +915,7 @@ def sporcu_kusak_listesi(request):
 
 @login_required
 def sporcu_lisans_listesi(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
 
     if not perm:
         logout(request)

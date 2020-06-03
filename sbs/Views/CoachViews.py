@@ -425,7 +425,7 @@ def coachUpdate(request, pk):
 
 @login_required
 def updateCoachProfile(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
 
     if not perm:
         logout(request)

@@ -25,6 +25,7 @@ class SportsClub(models.Model):
     dataAccessControl=models.BooleanField(blank=True, null=True)
     password=models.CharField(blank=True, null=True, max_length=120)
     username=models.CharField(blank=True, null=True, max_length=120)
+    isRegister = models.BooleanField(default=False)
 
 
 

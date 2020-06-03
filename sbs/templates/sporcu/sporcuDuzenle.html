@@ -311,8 +311,8 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ license.sportsClub }}</td>
-                                            <td>{{ license.startDate }}  </td>
-                                            <td>{{ license.expireDate }}  </td>
+                                            <td>{{ license.startDate | date }}  </td>
+                                            <td>{{ license.expireDate | date }}  </td>
                                             <td>{{ license.branch }}  </td>
                                             <td>{{ license.licenseNo }}  </td>
                                             <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <img

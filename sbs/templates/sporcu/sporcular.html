@@ -254,13 +254,7 @@
 
                                             {% endif %}
 
-                                            <td>
-                                                {% for license in athlete.licenses.all %}
-                                                    {% if  license.status == 'Onaylandı' %}
-                                                        <p>{{ license.branch }}</p>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </td>
+
 
 
                                             {% comment %}<td>

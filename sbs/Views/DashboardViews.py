@@ -86,9 +86,26 @@ def return_club_user_dashboard(request):
     for club in clubs:
         clubsPk.append(club.pk)
     total_athlete = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct().count()
+
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubsPk = []
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        for club in clubs:
+            clubsPk.append(club.pk)
+        athletes = Athlete.objects.filter(user__last_name='')
+        athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+        athletes = athletes.filter(user__last_name='') | athletes.filter(user__first_name='') | athletes.filter(
+            user__email='') | athletes.filter(person__tc='') | athletes.filter(
+            person__birthDate=None) | athletes.filter(person__bloodType='') | athletes.filter(
+            person__gender=None) | athletes.filter(person__birthplace='') | athletes.filter(
+            person__motherName='') | athletes.filter(person__fatherName='') | athletes.filter(
+            communication__city__name='') | athletes.filter(communication__country__name='')
+
+
     return render(request, 'anasayfa/kulup-uyesi.html',
                   {'total_club_user': total_club_user, 'total_coach': total_coach, 'belts': belts,
-                   'total_athlete': total_athlete})
+                   'total_athlete': total_athlete, 'athletes': athletes})
 
 
 @login_required

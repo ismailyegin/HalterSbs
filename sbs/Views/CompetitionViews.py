@@ -52,11 +52,30 @@ def aplication(request, pk):
         logout(request)
         return redirect('accounts:login')
 
+
     musabaka = Competition.objects.get(pk=pk)
-    athletes = CompAthlete.objects.filter(competition=pk)
+
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubsPk = []
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        for club in clubs:
+            clubsPk.append(club.pk)
+
+        comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__sportsClub__in=clubsPk)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        comAthlete = CompAthlete.objects.filter(competition=pk)
+
+    for item in comAthlete:
+        print(item.athlete.user.get_full_name())
+
+
     weights = Weight.objects.all()
 
-    return render(request, 'musabaka/basvuru.html', {'athletes': athletes, 'competition': musabaka, 'weights': weights})
+    return render(request, 'musabaka/basvuru.html',
+                  {'athletes': comAthlete, 'competition': musabaka, 'weights': weights})
 
 
 
@@ -349,7 +368,7 @@ def return_sporcu(request):
 
 @login_required
 def update_athlete(request, pk, competition):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
     login_user = request.user
 
     if not perm:
@@ -384,7 +403,7 @@ def update_athlete(request, pk, competition):
 
 @login_required
 def choose_athlete(request, pk, competition):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
     login_user = request.user
 
     if not perm:
@@ -392,17 +411,21 @@ def choose_athlete(request, pk, competition):
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
 
+        print('ben ekledim ')
+        user = User.objects.get(pk=login_user.pk)
+        competition = Competition.objects.get(pk=competition)
+        athlete = Athlete.objects.get(pk=pk)
+        compAthlete = CompAthlete()
+        compAthlete.athlete = athlete
+        compAthlete.competition = competition
+        compAthlete.total = request.POST.get('total')
+        compAthlete.weight = request.POST.get('weight')
+        compAthlete.sıklet = Weight.objects.get(pk=request.POST.get('weight'))
+        compAthlete.save()
+
         try:
-            user = User.objects.get(pk=login_user.pk)
-            competition = Competition.objects.get(pk=competition)
-            athlete = Athlete.objects.get(pk=pk)
-            compAthlete = CompAthlete()
-            compAthlete.athlete = athlete
-            compAthlete.competition = competition
-            compAthlete.total = request.POST.get('total')
-            compAthlete.weight = request.POST.get('weight')
-            compAthlete.sıklet = Weight.objects.get(pk=request.POST.get('weight'))
-            compAthlete.save()
+            print()
+
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except SandaAthlete.DoesNotExist:
@@ -446,7 +469,7 @@ def musabaka_sporcu_tamamla(request, athletes):
 
 @login_required
 def musabaka_sporcu_sil(request, pk):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
 
     if not perm:
         logout(request)
@@ -472,9 +495,15 @@ def result_list(request, pk):
         return redirect('accounts:login')
     competition = Competition.objects.filter(pk=pk)
 
-    compcategori = CompCategory.objects.filter(competition=pk)
+    compAthlete = CompAthlete.objects.filter(competition=pk).distinct()
+    compCategory = CompCategory.objects.filter(competition=pk)
+    print(compAthlete)
+    # for item in compAthlete:
+    #     print(item)
+    # print(item.athlete.user.get_full_name())
 
-    return render(request, 'musabaka/musabaka-sonuclar.html', {'compathlete': compcategori})
+    return render(request, 'musabaka/musabaka-sonuclar.html',
+                  {'compCategory': compCategory, 'compAthlete': compAthlete})
 
 
 
