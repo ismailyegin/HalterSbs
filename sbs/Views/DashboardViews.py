@@ -88,32 +88,34 @@ def return_club_user_dashboard(request):
     total_athlete = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct().count()
 
     # Sporcu bilgilerinde eksik var mı diye control
+    athletes = Athlete.objects.none()
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
-        clubsPk = []
-        clubs = SportsClub.objects.filter(clubUser=sc_user)
-        for club in clubs:
-            if club.dataAccessControl or club.dataAccessControl is None:
-                clubsPk.append(club.pk)
-
-        athletes = Athlete.objects.filter(user__last_name='')
-        athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
-        athletes = athletes.filter(user__last_name='') | athletes.filter(user__first_name='') | athletes.filter(
-            user__email='') | athletes.filter(person__tc='') | athletes.filter(
-            person__birthDate=None) | athletes.filter(person__bloodType='') | athletes.filter(
-            person__gender=None) | athletes.filter(person__birthplace='') | athletes.filter(
-            person__motherName='') | athletes.filter(person__fatherName='') | athletes.filter(
-            communication__city__name='') | athletes.filter(communication__country__name='')
-    # false degerinde clubun eksigi yok anlamında kulanilmistir.
-    for club in clubs:
-        if athletes:
-            club.dataAccessControl = True
-        else:
-            club.dataAccessControl = False
-
-
-
-
+        if sc_user.dataAccessControl == False or sc_user.dataAccessControl == None:
+            clubsPk = []
+            clubs = SportsClub.objects.filter(clubUser=sc_user)
+            for club in clubs:
+                if club.dataAccessControl == False or club.dataAccessControl is None:
+                    clubsPk.append(club.pk)
+            print(len(clubsPk))
+            if len(clubsPk) != 0:
+                athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+                athletes = athletes.filter(user__last_name='') | athletes.filter(user__first_name='') | athletes.filter(
+                    user__email='') | athletes.filter(person__tc='') | athletes.filter(
+                    person__birthDate=None) | athletes.filter(person__bloodType='') | athletes.filter(
+                    person__gender=None) | athletes.filter(person__birthplace='') | athletes.filter(
+                    person__motherName='') | athletes.filter(person__fatherName='') | athletes.filter(
+                    communication__city__name='') | athletes.filter(communication__country__name='')
+                # false degerinde clubun eksigi yok anlamında kulanilmistir.
+                for club in clubs:
+                    if athletes:
+                        club.dataAccessControl = False
+                    else:
+                        club.dataAccessControl = True
+                    club.save()
+            else:
+                sc_user.dataAccessControl = True
+                sc_user.save()
 
     return render(request, 'anasayfa/kulup-uyesi.html',
                   {'total_club_user': total_club_user, 'total_coach': total_coach, 'belts': belts,

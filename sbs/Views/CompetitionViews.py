@@ -57,22 +57,26 @@ def aplication(request, pk):
 
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-    if user.groups.filter(name='KulupUye'):
-        sc_user = SportClubUser.objects.get(user=user)
-        clubsPk = []
-        clubs = SportsClub.objects.filter(clubUser=sc_user)
-        for club in clubs:
-            clubsPk.append(club.pk)
+    sc_user = SportClubUser.objects.get(user=user)
+    if sc_user.dataAccessControl == True:
+        if user.groups.filter(name='KulupUye'):
+            clubsPk = []
+            clubs = SportsClub.objects.filter(clubUser=sc_user)
+            for club in clubs:
+                clubsPk.append(club.pk)
 
-        comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__sportsClub__in=clubsPk)
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        comAthlete = CompAthlete.objects.filter(competition=pk)
+            comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__sportsClub__in=clubsPk)
+        elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+            comAthlete = CompAthlete.objects.filter(competition=pk)
+        #
+        # for item in comAthlete:
+        #     print(item.athlete.user.get_full_name())
 
-    for item in comAthlete:
-        print(item.athlete.user.get_full_name())
+        weights = Weight.objects.all()
+    else:
+        messages.warning(request, 'Lütfen Eksik olan Sporcu Bilgilerini tamamlayiniz.')
+        return redirect('sbs:musabakalar')
 
-
-    weights = Weight.objects.all()
 
     return render(request, 'musabaka/basvuru.html',
                   {'athletes': comAthlete, 'competition': musabaka, 'weights': weights})

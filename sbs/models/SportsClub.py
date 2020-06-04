@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import default
 
 from sbs.models.SportClubUser import SportClubUser
 from sbs.models.Coach import Coach
@@ -22,7 +23,7 @@ class SportsClub(models.Model):
     coachs = models.ManyToManyField(Coach)
     isFormal = models.BooleanField(default=True,choices=IsFormal)
     clubUser = models.ManyToManyField(SportClubUser)
-    dataAccessControl=models.BooleanField(blank=True, null=True)
+    dataAccessControl = models.BooleanField(blank=True, null=True, default=False)
     password=models.CharField(blank=True, null=True, max_length=120)
     username=models.CharField(blank=True, null=True, max_length=120)
     isRegister = models.BooleanField(default=False)

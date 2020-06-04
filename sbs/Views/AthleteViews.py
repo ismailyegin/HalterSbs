@@ -967,10 +967,11 @@ def sporcu_lisans_duzenle_antrenor(request, license_pk, athlete_pk):
     license_form = LicenseFormAntrenor(request.POST or None, request.FILES or None, instance=license)
     if request.method == 'POST':
         if license_form.is_valid():
-            license_form.save()
-            if license.status != 'Onaylandı':
+            license = license_form.save(commit=False)
+            if license.status != License.APPROVED:
                 license.status = License.WAITED
-                license.save()
+            license.isActive = True
+            license.save()
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('sbs:update-athletes', pk=athlete_pk)
 

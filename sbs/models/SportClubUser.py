@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.template.defaultfilters import default
 
 from sbs.models import SportsClub
 from sbs.models.Person import Person
@@ -14,6 +15,7 @@ class SportClubUser(models.Model):
     role = models.ForeignKey(ClubRole, on_delete=models.CASCADE, verbose_name='Üye Rolü')
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
+    dataAccessControl = models.BooleanField(blank=True, null=True, default=False)
     def __str__(self):
         return '%s %s' % (self.user.first_name, self.user.last_name)
 
