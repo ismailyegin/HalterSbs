@@ -55,7 +55,7 @@ def return_directory_dashboard(request):
 
 @login_required
 def return_club_user_dashboard(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
     # x = general_methods.import_csv()
 
     if not perm:
@@ -110,9 +110,21 @@ def return_club_user_dashboard(request):
                 for club in clubs:
                     if athletes:
                         club.dataAccessControl = False
+
                     else:
+
                         club.dataAccessControl = True
                     club.save()
+
+                if athletes:
+                    sc_user.dataAccessControl = False
+
+                else:
+                    sc_user.dataAccessControl = True
+
+                sc_user.save()
+
+
             else:
                 sc_user.dataAccessControl = True
                 sc_user.save()
