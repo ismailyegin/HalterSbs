@@ -415,20 +415,18 @@ def choose_athlete(request, pk, competition):
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
 
-        print('ben ekledim ')
-        user = User.objects.get(pk=login_user.pk)
-        competition = Competition.objects.get(pk=competition)
-        athlete = Athlete.objects.get(pk=pk)
-        compAthlete = CompAthlete()
-        compAthlete.athlete = athlete
-        compAthlete.competition = competition
-        compAthlete.total = request.POST.get('total')
-        compAthlete.weight = request.POST.get('weight')
-        compAthlete.sıklet = Weight.objects.get(pk=request.POST.get('weight'))
-        compAthlete.save()
+
 
         try:
-            print()
+            user = User.objects.get(pk=login_user.pk)
+            competition = Competition.objects.get(pk=competition)
+            athlete = Athlete.objects.get(pk=pk)
+            compAthlete = CompAthlete()
+            compAthlete.athlete = athlete
+            compAthlete.competition = competition
+            compAthlete.total = request.POST.get('total')
+            compAthlete.sıklet = Weight.objects.get(pk=request.POST.get('weight'))
+            compAthlete.save()
 
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
