@@ -394,7 +394,7 @@ def updateathletes(request, pk):
     person = Person.objects.get(pk=athlete.person.pk)
     communication = Communication.objects.get(pk=athlete.communication.pk)
     user_form = UserForm(request.POST or None, instance=user)
-    person_form = PersonForm(request.POST or None, instance=person)
+    person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     say=0
     say=athlete.licenses.all().filter(status='Onaylandı').count()
@@ -403,8 +403,9 @@ def updateathletes(request, pk):
     if request.method == 'POST':
 
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid():
-            user = user_form.save(commit=False)
-            print('user=', user.first_name)
+            # user = user_form.save(commit=False)
+            # print('user=', user.first_name)
+            user = user_form.save()
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name'].upper()
             user.last_name = user_form.cleaned_data['last_name'].upper()

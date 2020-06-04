@@ -388,7 +388,6 @@ def update_athlete(request, pk, competition):
             if total is not None:
                 compAthlete.total = total
             if siklet is not None:
-                compAthlete.weight = siklet
                 compAthlete.sıklet = Weight.objects.get(pk=siklet)
             compAthlete.save()
 

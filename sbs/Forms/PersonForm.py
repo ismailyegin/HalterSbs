@@ -10,8 +10,9 @@ class PersonForm(ModelForm):
 
         fields = (
             'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
+            'profileImage',
             'fatherName')
-        labels = {'tc': 'T.C.', 'gender': 'Cinsiyet'}
+        labels = {'tc': 'T.C.', 'gender': 'Cinsiyet', 'profileImage': 'Profil Resmi'}
 
         widgets = {
 

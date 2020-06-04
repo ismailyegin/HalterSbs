@@ -1,5 +1,4 @@
 {% extends 'base_layout.html' %}
-
 {% block content %}
 
 
@@ -394,7 +393,9 @@
                 $("#btn-gonder").click(function () {
 
                     console.log('buradan girdi', competitionId)
-                    alert();
+                    if (e.handled !== true) { // This will prevent event triggering more then once
+                        e.handled = true;
+
                     $.ajax({
                         url: "{% url "sbs:catagori-sporcu-sec-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
                         type: "POST",
@@ -424,6 +425,7 @@
                             }).modal('show');
                         }
                     });
+                    }
                 });
 
 
