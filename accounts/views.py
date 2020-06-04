@@ -32,7 +32,6 @@ from sbs.Forms.SportClubUserForm import SportClubUserForm
 from sbs.Forms.UserForm import UserForm
 from sbs.Forms.ReferenceRefereeForm import RefereeForm
 from sbs.Forms.ReferenceCoachForm import RefereeCoachForm
-from sbs.Forms.ReferenceAthleteForm import RefereeAthleteForm
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
@@ -81,8 +80,10 @@ def login(request):
             try:
                 user = SportsClub.objects.get(username=request.POST.get('username'),
                                               password=request.POST.get('password'))
-                if user is not None:
+                if user is not None and user.isRegister == False:
+
                     return redirect('accounts:newlogin', user.pk)
+
             except:
                 print()
 
@@ -265,8 +266,6 @@ def forgot(request):
     if request.method == 'POST':
         mail = request.POST.get('username')
         obj = User.objects.filter(username=mail)
-        print('ben geldim ')
-
         if obj.count() != 0:
             user = User.objects.get(username=mail)
             print(user)
@@ -274,7 +273,7 @@ def forgot(request):
             fdk.save()
 
             html_content = ''
-            subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', mail
+            subject, from_email, to = 'THF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', mail
             html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
             html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
             # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://127.0.0.1:8000/newpassword?query=' + str(
@@ -296,7 +295,6 @@ def forgot(request):
 
 
 def newlogin(request, pk):
-    print('ben geldim')
     clup = SportsClub.objects.get(pk=pk)
     # clüp
     club_form = ClubForm(instance=clup)
@@ -327,9 +325,6 @@ def newlogin(request, pk):
             communication = communication_formclup.save(commit=False)
             communication.save()
             clup.communication = communication
-            clup.save()
-
-            messages.success(request, 'Bilgileriniz Başarıyla Güncellenmiştir.')
 
             user = User()
             user.username = user_form.cleaned_data['email']
@@ -372,7 +367,10 @@ def newlogin(request, pk):
 
             clup.clubUser.add(club_person)
             clup.dataAccessControl = True
+            clup.isRegister = True
+
             clup.save()
+
             messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
             return redirect("accounts:login")
 
@@ -411,7 +409,7 @@ def referenceCoach(request):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Coach.html', {'preRegistrationform': antrenor})
         if antrenor.is_valid():
-            athlete.save()
+            antrenor.save()
             messages.success(request,
                              'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
             return redirect("accounts:login")
