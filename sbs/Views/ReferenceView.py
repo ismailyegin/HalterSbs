@@ -14,7 +14,6 @@ from django.db.models import Q
 from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
-from sbs.models.ReferenceAthlete import ReferenceAthlete
 from sbs.models.SimpleCategory import SimpleCategory
 from sbs.models.EnumFields import EnumFields
 from sbs.services import general_methods

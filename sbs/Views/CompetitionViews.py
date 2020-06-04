@@ -495,12 +495,14 @@ def result_list(request, pk):
         return redirect('accounts:login')
     competition = Competition.objects.filter(pk=pk)
 
-    compAthlete = CompAthlete.objects.filter(competition=pk).distinct()
-    compCategory = CompCategory.objects.filter(competition=pk)
+    compAthlete = CompAthlete.objects.filter(competition=pk).order_by('degree')
+    compCategory = CompCategory.objects.filter(competition=pk).order_by('-name')
     print(compAthlete)
-    # for item in compAthlete:
-    #     print(item)
-    # print(item.athlete.user.get_full_name())
+    print(compCategory)
+    for item in compAthlete:
+        print(item.pk)
+        print(item.compcategory)
+        print(item.athlete.user.get_full_name())
 
     return render(request, 'musabaka/musabaka-sonuclar.html',
                   {'compCategory': compCategory, 'compAthlete': compAthlete})
