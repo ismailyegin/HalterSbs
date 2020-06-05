@@ -178,6 +178,16 @@
                                     </div>
                                 </div>
 
+                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label> {{ Sportclup.coach.label }}</label>
+                                            {{ Sportclup.coach }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+
 
                             </div>
 
@@ -228,7 +238,7 @@
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>Kulüp</th>
                                     {% endif %}
-{#                                    <th>Branş</th>#}
+                                    {#                                    <th>Branş</th>#}
                                     <th>İşlemler</th>
 
 
@@ -405,8 +415,6 @@
             });
 
         });
-
-
 
 
     </script>
