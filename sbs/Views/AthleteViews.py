@@ -320,11 +320,13 @@ def return_athletes(request):
         user_form = UserSearchForm(request.POST)
         brans=request.POST.get('branch')
         sportsclup=request.POST.get('sportsClub')
+        coach = request.POST.get('coach')
+
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
-            if  not (firstName or lastName or email or brans or sportsclup):
+            if not (firstName or lastName or email or brans or sportsclup or coach):
 
                 if user.groups.filter(name='KulupUye'):
                     sc_user = SportClubUser.objects.get(user=user)
@@ -335,7 +337,7 @@ def return_athletes(request):
                     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                     athletes = Athlete.objects.all()
-            elif firstName or lastName or email or sportsclup or brans:
+            elif firstName or lastName or email or sportsclup or brans or coach:
                 query = Q()
                 clubsPk = []
                 clubs = SportsClub.objects.filter(name=request.POST.get('sportsClub'))
@@ -352,6 +354,9 @@ def return_athletes(request):
                     query &=Q(licenses__sportsClub__in=clubsPk)
                 if brans:
                     query &= Q(licenses__branch=brans, licenses__status='Onaylandı')
+                if user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    if coach:
+                        query &= Q(licenses__coach_id__in=coach)
 
                 if user.groups.filter(name='KulupUye'):
                     sc_user = SportClubUser.objects.get(user=user)
@@ -374,6 +379,7 @@ def return_athletes(request):
         sportclup.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
     elif user.groups.filter(name__in=['Yonetim', 'Admin']):
         sportclup.fields['sportsClub'].queryset = SportsClub.objects.all()
+
     return render(request, 'sporcu/sporcular.html', {'athletes': athletes, 'user_form': user_form,'Sportclup': sportclup})
 @login_required
 def updateathletes(request, pk):
