@@ -708,7 +708,7 @@ def visaSeminar_onayla(request, pk):
     if seminar.status == VisaSeminar.WAITED:
         visa = Level(dekont='Federasyon', branch=seminar.branch)
         visa.startDate = date(timezone.now().year, 1, 1)
-        visa.definition = CategoryItem.objects.get(forWhichClazz='VISA_REFEREE')
+        visa.definition = CategoryItem.objects.get(forWhichClazz='VISA')
         visa.levelType = EnumFields.LEVELTYPE.VISA
         visa.status = Level.APPROVED
         visa.isActive = True
@@ -837,7 +837,7 @@ def vize_list(request):
         logout(request)
         return redirect('accounts:login')
     coa = []
-    for item in CategoryItem.objects.filter(forWhichClazz='VISA_REFEREE'):
+    for item in CategoryItem.objects.filter(forWhichClazz='VISA'):
         coa.append(item.pk)
     grade = Level.objects.filter(definition_id__in=coa, levelType=EnumFields.VISA).distinct()
     return render(request, 'hakem/hakem-Vize-Listesi.html',

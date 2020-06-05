@@ -11,7 +11,7 @@ from django.urls import reverse
 from sbs.Forms.CompetitionForm import CompetitionForm
 from sbs.Forms.CompetitionSearchForm import CompetitionSearchForm
 from django.db.models import Q
-from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight, CompCategory
+from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight, CompCategory, Coach
 from sbs.models.SimpleCategory import SimpleCategory
 from sbs.models.EnumFields import EnumFields
 from sbs.models.SandaAthlete import SandaAthlete
@@ -57,27 +57,29 @@ def aplication(request, pk):
 
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-    sc_user = SportClubUser.objects.get(user=user)
-    if sc_user.dataAccessControl == True:
-        if user.groups.filter(name='KulupUye'):
-            clubsPk = []
-            clubs = SportsClub.objects.filter(clubUser=sc_user)
-            for club in clubs:
-                clubsPk.append(club.pk)
+    weights = Weight.objects.all()
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        if sc_user.dataAccessControl == True:
+            if user.groups.filter(name='KulupUye'):
+                clubsPk = []
+                clubs = SportsClub.objects.filter(clubUser=sc_user)
+                for club in clubs:
+                    clubsPk.append(club.pk)
 
-            comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__sportsClub__in=clubsPk)
-        elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-            comAthlete = CompAthlete.objects.filter(competition=pk)
-        #
-        # for item in comAthlete:
-        #     print(item.athlete.user.get_full_name())
-
-        weights = Weight.objects.all()
-    else:
-        messages.warning(request, 'Lütfen Eksik olan Sporcu Bilgilerini tamamlayiniz.')
-        return redirect('sbs:musabakalar')
+                comAthlete = CompAthlete.objects.filter(competition=pk,
+                                                        athlete__licenses__sportsClub__in=clubsPk).distinct()
 
 
+        else:
+            messages.warning(request, 'Lütfen Eksik olan Sporcu Bilgilerini tamamlayiniz.')
+            return redirect('sbs:musabakalar')
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        comAthlete = CompAthlete.objects.filter(competition=pk).distinct()
+
+    elif user.groups.filter(name='Antrenor'):
+        coach = Coach.objects.get(user=user)
+        comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__coach=coach).distinct()
     return render(request, 'musabaka/basvuru.html',
                   {'athletes': comAthlete, 'competition': musabaka, 'weights': weights})
 
@@ -121,7 +123,7 @@ def return_competitions(request):
             if name:
                 query &= Q(name__icontains=name)
             if startDate:
-                query &= Q(startDate__year=int(startDate))
+                query &= Q(year=int(startDate))
             if compType:
                 query &= Q(compType__in=compType)
             if compGeneralType:
@@ -228,6 +230,10 @@ def musabaka_sporcu_sec(request, pk):
         return redirect('accounts:login')
 
     weights = Weight.objects.all()
+
+    competition = Competition.objects.filter(registerStartDate__lte=timezone.now(),
+                                             registerFinishDate__gte=timezone.now())
+
     # login_user = request.user
     # user = User.objects.get(pk=login_user.pk)
     # competition = Competition.objects.get(pk=pk)
@@ -243,7 +249,7 @@ def musabaka_sporcu_sec(request, pk):
     #     athletes = Athlete.objects.all()
 
     return render(request, 'musabaka/musabaka-sporcu-sec.html',
-                  {'pk':pk,'weights': weights})
+                  {'pk': pk, 'weights': weights, 'application': competition})
                   # ,{'athletes': athletes, 'competition': competition, })
 
 @login_required
@@ -323,6 +329,12 @@ def return_sporcu(request):
             elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                 modeldata = Athlete.objects.exclude(pk__in=athletes)[start:start + length]
                 total = Athlete.objects.exclude(pk__in=athletes).distinct().count()
+            elif user.groups.filter(name='Antrenor'):
+                modeldata = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()[
+                            start:start + length]
+
+                total = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct().count()
+
 
 
 
@@ -584,7 +596,7 @@ def return_competition_ajax(request):
                 # total = mAthlete.objects.exclude(pk__in=athletes).filter(licenses__sportsClub__in=clubsPk).distinct().count()
             elif user.groups.filter(name__in=['Yonetim', 'Admin']):
 
-                modeldata =Competition.objects.filter(startDate__year=pk)
+                modeldata = Competition.objects.filter(year=pk)
                 total =modeldata.count()
 
 

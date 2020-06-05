@@ -264,7 +264,7 @@ def return_athletes_antrenor(request):
             if not (firstName or lastName or email):
 
                 if user.groups.filter(name='Antrenor'):
-                    athletes = Athlete.objects.filter(licenses__coach__user=user)
+                    athletes = Athlete.objects.filter(licenses__coach__user=user).distinct()
 
                 elif user.groups.filter(name='Admin'):
                     athletes = Athlete.objects.all()

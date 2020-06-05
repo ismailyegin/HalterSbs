@@ -398,7 +398,7 @@ def coachUpdate(request, pk):
     if request.method == 'POST':
         user = User.objects.get(pk=coach.user.pk)
         user_form = UserForm(request.POST or None, instance=user)
-        # person_form = PersonForm(request.POST,request.FILES, instance=person)
+        person_form = PersonForm(request.POST, request.FILES, instance=person)
         communication_form = CommunicationForm(request.POST or None, instance=communication)
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
 
@@ -414,7 +414,7 @@ def coachUpdate(request, pk):
             communication_form.save()
 
             messages.success(request, 'Antrenör Başarıyla Güncellendi')
-            return redirect('sbs:antrenorler')
+            # return redirect('sbs:antrenorler')
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 

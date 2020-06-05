@@ -176,6 +176,20 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">Sporcu Seç</h3>
                         </div>
+                        {% if application.all %}
+                            {% for competition in application %}
+                                <div class="box-header with-border">
+                                    <div class="btn-group">
+                                        <a href="{% url "sbs:basvuru" pk=competition.pk %}"
+                                           type="button" class="btn btn-success"><i
+                                                class="fa fa-edit"></i> Başvurularim
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+
+                        {% endif %}
                         <div class="box-body berktug">
                             <form method="post" enctype="multipart/form-data" role="form">
                                 {% csrf_token %}
@@ -393,38 +407,38 @@
                 $("#btn-gonder").click(function () {
 
                     console.log('buradan girdi', competitionId)
-                    if (e.handled !== true) { // This will prevent event triggering more then once
+                    if (e.handled !== true) {
+                        // This will prevent event triggering more then once
                         e.handled = true;
+                        $.ajax({
+                            url: "{% url "sbs:catagori-sporcu-sec-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                total: $('#total').val(),
+                                weight: $('#weight').val(),
+                                isActive: 'False'
 
-                    $.ajax({
-                        url: "{% url "sbs:catagori-sporcu-sec-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            total: $('#total').val(),
-                            weight: $('#weight').val(),
-                            isActive: 'False'
+                            },
+                            success: function (result) {
 
-                        },
-                        success: function (result) {
+                                html = 'Sporcu Başarıyla Eklendi .';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
 
-                            html = 'Sporcu Başarıyla Eklendi .';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
+                                        {#window.location.replace("{% url "sbs:musabaka-sporcu-sec"  competition.pk  %}");#}
 
-                                    {#window.location.replace("{% url "sbs:musabaka-sporcu-sec"  competition.pk  %}");#}
+                                        $('#modal-warning').modal('hide');
+                                        $('.modal').modal('hide');
+                                        Playerlist();
 
-                                    $('#modal-warning').modal('hide');
-                                    $('.modal').modal('hide');
-                                    Playerlist();
+                                    });
 
-                                });
-
-                            }).modal('show');
-                        }
-                    });
+                                }).modal('show');
+                            }
+                        });
                     }
                 });
 
