@@ -22,6 +22,10 @@ from sbs.Forms.SearchClupForm import SearchClupForm
 
 from sbs.Forms.VisaForm import VisaForm
 from sbs.Forms.VisaSeminarForm import VisaSeminarForm
+
+from sbs.Forms.ReferenceRefereeForm import RefereeForm
+from sbs.models.ReferenceReferee import ReferenceReferee
+
 from sbs.models import Judge, CategoryItem, Person, Communication, Level
 from sbs.models.VisaSeminar import VisaSeminar
 from sbs.models.EnumFields import EnumFields
@@ -223,6 +227,54 @@ def deleteReferee(request, pk):
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
+
+@login_required
+def refencedeleteReferee(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = ReferenceReferee.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Judge.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def referenceUpdateReferee(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    # judge = Judge.objects.get(pk=pk)
+    # user = User.objects.get(pk=judge.user.pk)
+    # person = Person.objects.get(pk=judge.person.pk)
+    # communication = Communication.objects.get(pk=judge.communication.pk)
+    # user_form = UserForm(request.POST or None, instance=user)
+    # person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
+    # communication_form = CommunicationForm(request.POST or None, instance=communication)
+    # grade_form = judge.grades.all()
+    # visa_form = judge.visa.all()
+    refere = ReferenceReferee.objects.get(pk=pk)
+    refere_form = RefereeForm(request.POST or None, request.FILES or None, instance=refere)
+    if request.method == 'POST':
+        if refere_form.is_valid():
+            refere_form.save()
+            messages.success(request, 'Hakem Başvurusu Güncellendi')
+            # return redirect('sbs:hakemler')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'hakem/HakemBasvuruUpdate.html',
+                  {'preRegistrationform': refere_form})
 
 @login_required
 def updateReferee(request, pk):

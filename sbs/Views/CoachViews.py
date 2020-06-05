@@ -24,10 +24,14 @@ from sbs.Forms.PersonForm import PersonForm
 from sbs.Forms.CoachSearchForm import CoachSearchForm
 from sbs.Forms.SearchClupForm import SearchClupForm
 
+from sbs.Forms.ReferenceCoachForm import RefereeCoachForm
+
 from sbs.Forms.UserSearchForm import UserSearchForm
 from sbs.Forms.CompetitionForm import CompetitionForm
 from sbs.Forms.VisaSeminarForm import VisaSeminarForm
 from sbs.models import Coach, Athlete, Person, Communication, SportClubUser, Level, SportsClub
+
+from sbs.models.ReferenceCoach import ReferenceCoach
 from sbs.models.CategoryItem import CategoryItem
 from sbs.models.VisaSeminar import VisaSeminar
 from sbs.models.EnumFields import EnumFields
@@ -376,6 +380,48 @@ def deleteCoach(request, pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def referencedeleteCoach(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = ReferenceCoach.objects.get(pk=pk)
+            obj.delete()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Coach.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def coachreferenceUpdate(request, pk):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    coach = ReferenceCoach.objects.get(pk=pk)
+    coach_form = RefereeCoachForm(request.POST or None, request.FILES or None, instance=coach)
+    if request.method == 'POST':
+
+        if coach_form.is_valid():
+            coach_form.save()
+
+            messages.success(request, 'Antrenör Başvurusu Güncellendi')
+        else:
+            messages.warning(request, 'Alanları Kontrol Ediniz')
+
+    return render(request, 'antrenor/AntronerBasvuruUpdate.html',
+                  {'preRegistrationform': coach_form})
+
+
 
 
 @login_required
