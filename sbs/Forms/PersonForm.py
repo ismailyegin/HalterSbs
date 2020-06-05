@@ -16,6 +16,7 @@ class PersonForm(ModelForm):
 
         widgets = {
 
+            'profileImage': forms.FileInput(),
 
             'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 

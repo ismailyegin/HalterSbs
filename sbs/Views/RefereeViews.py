@@ -231,12 +231,12 @@ def updateReferee(request, pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    # judge = Judge.objects.get(pk=pk)
+    judge = Judge.objects.get(pk=pk)
     user = User.objects.get(pk=judge.user.pk)
     person = Person.objects.get(pk=judge.person.pk)
     communication = Communication.objects.get(pk=judge.communication.pk)
     user_form = UserForm(request.POST or None, instance=user)
-    person_form = PersonForm(request.POST or None, instance=person)
+    person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     grade_form = judge.grades.all()
     visa_form = judge.visa.all()
@@ -252,7 +252,7 @@ def updateReferee(request, pk):
             communication_form.save()
 
             messages.success(request, 'Hakem Başarıyla Güncellendi')
-            return redirect('sbs:hakemler')
+            # return redirect('sbs:hakemler')
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 

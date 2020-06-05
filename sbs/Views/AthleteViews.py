@@ -320,9 +320,6 @@ def return_athletes(request):
         user_form = UserSearchForm(request.POST)
         brans=request.POST.get('branch')
         sportsclup=request.POST.get('sportsClub')
-
-
-
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
@@ -338,8 +335,6 @@ def return_athletes(request):
                     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                     athletes = Athlete.objects.all()
-                elif user.groups.filter(name='Antrenor'):
-                    athletes = Athlete.objects.filter(licenses__coach__user=user)
             elif firstName or lastName or email or sportsclup or brans:
                 query = Q()
                 clubsPk = []
@@ -383,7 +378,6 @@ def return_athletes(request):
 @login_required
 def updateathletes(request, pk):
     perm = general_methods.control_access_klup(request)
-
     if not perm:
         logout(request)
         return redirect('accounts:login')
@@ -393,6 +387,8 @@ def updateathletes(request, pk):
     user = User.objects.get(pk=athlete.user.pk)
     person = Person.objects.get(pk=athlete.person.pk)
     communication = Communication.objects.get(pk=athlete.communication.pk)
+    if user.email == 'deneme@halter.gov.tr':
+        user.email = ''
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
@@ -405,12 +401,12 @@ def updateathletes(request, pk):
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid():
             # user = user_form.save(commit=False)
             # print('user=', user.first_name)
-            user = user_form.save()
-            user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
-            user.email = user_form.cleaned_data['email']
-            user.save()
+            kisi = user_form.save(commit=False)
+            kisi.username = user_form.cleaned_data['email']
+            kisi.first_name = user_form.cleaned_data['first_name'].upper()
+            kisi.last_name = user_form.cleaned_data['last_name'].upper()
+            kisi.email = kisi.username
+            kisi.save()
             person_form.save()
             communication_form.save()
 
@@ -997,10 +993,13 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
         logout(request)
         return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
+    try:
+        license_form = LicenseForm(request.POST or None, request.FILES or None, instance=license,
+                                   initial={'sportsClub': license.sportsClub})
+    except:
+        license_form = LicenseForm(request.POST or None, request.FILES or None, instance=license)
 
 
-    license_form = LicenseForm(request.POST or None, request.FILES or None, instance=license,
-                               initial={'sportsClub': license.sportsClub})
     user = request.user
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)
@@ -1015,10 +1014,11 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 
     if request.method == 'POST':
         if license_form.is_valid():
-            license_form.save()
+            license = license_form.save(commit=False)
+            license.isActive = False
             if license.status !='Onaylandı':
                 license.status =License.WAITED
-                license.save()
+            license.save()
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('sbs:update-athletes', pk=athlete_pk)
 
