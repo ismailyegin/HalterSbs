@@ -217,7 +217,7 @@ def updateClubPersons(request, pk):
     communication = Communication.objects.get(pk=athlete.communication.pk)
     # sportClub = athlete.sportClub
     user_form = UserForm(request.POST or None, instance=user)
-    person_form = PersonForm(request.POST or None, instance=person)
+    person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     sportClubUser_form = SportClubUserForm(request.POST or None, instance=athlete)
     clubs = SportsClub.objects.filter(clubUser__user=user)
@@ -238,7 +238,7 @@ def updateClubPersons(request, pk):
 
             messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
 
-            return redirect('sbs:kulup-uyeleri')
+            # return redirect('sbs:kulup-uyeleri')
 
         else:
 

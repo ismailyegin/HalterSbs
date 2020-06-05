@@ -73,6 +73,13 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label> {{ person_form.profileImage.label }}</label>
+
+
+                                        <img
+                                                src="/media/{{ person_form.instance.profileImage }}"
+                                                class="img-responsive img-bordered" alt="Resim Yok"
+                                        ><br>
+
                                         {{ person_form.profileImage }}
                                     </div>
 
