@@ -167,7 +167,7 @@ def update_directory_member(request, pk):
             member_form.save()
 
             messages.success(request, 'Yönetim Kurulu Üyesi Başarıyla Güncellendi')
-            return redirect('sbs:kurul-uyeleri')
+            # return redirect('sbs:kurul-uyeleri')
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
