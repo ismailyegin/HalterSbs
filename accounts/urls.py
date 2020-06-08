@@ -21,8 +21,5 @@ urlpatterns = [
     url(r'newlogin/(?P<pk>\d+)$', views.newlogin, name='newlogin'),
     url(r'referee/$', views.referenceReferee, name='referee'),
     url(r'coach/$', views.referenceCoach, name='coach'),
-    url(r'athlete/$', views.referenceAthlete, name='athlete'),
-
-
 
 ]

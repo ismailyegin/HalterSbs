@@ -41,6 +41,8 @@ from sbs.services import general_methods
 from datetime import date,datetime
 from django.utils import timezone
 
+from accounts.models import Forgot
+
 # visaseminer ekle
 @login_required
 def visaSeminar_ekle(request):
@@ -390,6 +392,7 @@ def referenceCoachStatus(request, pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+
     try:
         referenceCoach = ReferenceCoach.objects.get(pk=pk)
 
@@ -432,6 +435,20 @@ def referenceCoachStatus(request, pk):
             messages.success(request, 'Antrenör Başarıyla Eklenmiştir')
             referenceCoach.status = ReferenceCoach.APPROVED
             referenceCoach.save()
+
+            fdk = Forgot(user=user, status=False)
+            fdk.save()
+
+            html_content = ''
+            subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81/newpassword?query=' + str(
+                fdk.uuid) + '">http://sbs.twf.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
         else:
             messages.success(request, 'Antrenör daha önce onylanmıştır.')
 
