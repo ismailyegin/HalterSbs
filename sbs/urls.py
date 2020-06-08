@@ -150,6 +150,7 @@ urlpatterns = [
     url(r'kulup/basvuru/reddet/(?P<pk>\d+)$', PreRegistration.rejected_preRegistration, name='basvuru-reddet'),
     url(r'sporcu/basvuru-incele/(?P<pk>\d+)$', PreRegistration.update_preRegistration, name='update-basvuru'),
 
+
     url(r'kulup/kulup-ekle/$', ClubViews.return_add_club, name='kulup-ekle'),
     url(r'kulup/kulupler/$', ClubViews.return_clubs, name='kulupler'),
     url(r'kulup/kulup-uyesi-ekle/$', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
@@ -211,6 +212,9 @@ urlpatterns = [
         name='delete-coach'),
     url(r'antrenor/antrenorler/sil/basvuru/(?P<pk>\d+)$', CoachViews.referencedeleteCoach,
         name='delete-coach-basvuru'),
+    url(r'antrenor/basvuru/onayla/(?P<pk>\d+)$', CoachViews.referenceCoachStatus, name='basvuru-onayla-coach'),
+
+
     url(r'antrenor/antrenorDuzenle/(?P<pk>\d+)$', CoachViews.coachUpdate,
         name='update-coach'),
     url(r'antrenor/antrenorDuzenle-Kayıt/(?P<pk>\d+)$', CoachViews.coachreferenceUpdate,
@@ -272,6 +276,7 @@ urlpatterns = [
     url(r'hakem/visa-Seminar/hakem-sil/(?P<pk>\d+)/(?P<competition>\d+)$', RefereeViews.visaSeminar_Delete_Referee,
         name='visaSeminar-hakem-sil'),
     url(r'hakem/visa-Seminar-Onayla/(?P<pk>\d+)$', RefereeViews.visaSeminar_onayla, name='hakem-seminar-onayla'),
+    url(r'hakem/basvuru/onayla/(?P<pk>\d+)$', RefereeViews.referenceStatus, name='reference-refere-status'),
 
     url(r'hakem/Kademe-listesi/', RefereeViews.kademe_list, name='hakem-kademe-listesi'),
     url(r'hakem/kademe-Liste-Onayla/(?P<referee_pk>\d+)$', RefereeViews.kademe_onayla,
