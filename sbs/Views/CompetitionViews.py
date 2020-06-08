@@ -510,12 +510,6 @@ def result_list(request, pk):
 
     compAthlete = CompAthlete.objects.filter(competition=pk).order_by('degree')
     compCategory = CompCategory.objects.filter(competition=pk).order_by('-name')
-    print(compAthlete)
-    print(compCategory)
-    for item in compAthlete:
-        print(item.pk)
-        print(item.compcategory)
-        print(item.athlete.user.get_full_name())
 
     return render(request, 'musabaka/musabaka-sonuclar.html',
                   {'compCategory': compCategory, 'compAthlete': compAthlete})

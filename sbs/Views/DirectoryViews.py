@@ -98,7 +98,7 @@ def return_directory_members(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    members = DirectoryMember.objects.all()
+    members = DirectoryMember.objects.none()
     user_form = UserSearchForm()
     if request.method == 'POST':
         user_form = UserSearchForm(request.POST)
@@ -107,7 +107,7 @@ def return_directory_members(request):
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
             if not (firstName or lastName or email):
-                messages.warning(request, 'Lütfen Arama Kriteri Giriniz.')
+                members = DirectoryMember.objects.all()
             else:
                 query = Q()
                 if lastName:
