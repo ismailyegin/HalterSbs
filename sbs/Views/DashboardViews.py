@@ -167,7 +167,7 @@ def return_admin_dashboard(request):
 
                    })
 
-@login_required
+
 def City_athlete_cout(request):
 
     if request.method == 'POST' and request.is_ajax():
