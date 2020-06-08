@@ -318,7 +318,7 @@ def return_athletes(request):
     if request.method == 'POST':
 
         user_form = UserSearchForm(request.POST)
-        brans=request.POST.get('branch')
+
         sportsclup=request.POST.get('sportsClub')
         coach = request.POST.get('coach')
 
@@ -326,7 +326,7 @@ def return_athletes(request):
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
-            if not (firstName or lastName or email or brans or sportsclup or coach):
+            if not (firstName or lastName or email or sportsclup or coach):
 
                 if user.groups.filter(name='KulupUye'):
                     sc_user = SportClubUser.objects.get(user=user)
@@ -337,7 +337,7 @@ def return_athletes(request):
                     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                     athletes = Athlete.objects.all()
-            elif firstName or lastName or email or sportsclup or brans or coach:
+            elif firstName or lastName or email or sportsclup or coach:
                 query = Q()
                 clubsPk = []
                 clubs = SportsClub.objects.filter(name=request.POST.get('sportsClub'))
@@ -352,8 +352,7 @@ def return_athletes(request):
                     query &= Q(user__email__icontains=email)
                 if sportsclup:
                     query &=Q(licenses__sportsClub__in=clubsPk)
-                if brans:
-                    query &= Q(licenses__branch=brans, licenses__status='Onaylandı')
+
                 if user.groups.filter(name__in=['Yonetim', 'Admin']):
                     if coach:
                         query &= Q(licenses__coach_id__in=coach)
