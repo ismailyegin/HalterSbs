@@ -151,7 +151,7 @@ def update_directory_member(request, pk):
     person = Person.objects.get(pk=member.person.pk)
     communication = Communication.objects.get(pk=member.communication.pk)
     user_form = UserForm(request.POST or None, instance=user)
-    person_form = PersonForm(request.POST or None, instance=person)
+    person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     member_form = DirectoryForm(request.POST or None, instance=member)
     if request.method == 'POST':
