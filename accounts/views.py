@@ -77,12 +77,13 @@ def login(request):
 
         else:
             # eski kullanici olma ihtimaline göre sisteme girme yöntemi
+
             try:
                 user = SportsClub.objects.get(username=request.POST.get('username'),
                                               password=request.POST.get('password'))
-                if user is not None and user.isRegister == False:
-
-                    return redirect('accounts:newlogin', user.pk)
+                if user is not None:
+                    if user.isRegister == False or user.isRegister is None:
+                        return redirect('accounts:newlogin', user.pk)
 
             except:
                 print()
