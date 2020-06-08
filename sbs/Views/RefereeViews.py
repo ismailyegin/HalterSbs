@@ -753,6 +753,63 @@ def visaSeminar_Delete_Referee(request, pk, competition):
 
 
 @login_required
+def referenceStatus(request, pk):
+    try:
+        reference = ReferenceReferee.objects.get(pk=pk)
+        if reference.status == ReferenceReferee.WAITED:
+            user = User()
+            user.username = reference.email
+            user.first_name = reference.first_name.upper()
+            user.last_name = reference.last_name.upper()
+            user.email = reference.email
+            group = Group.objects.get(name='Hakem')
+            user.is_active = True
+            user.save()
+            user.groups.add(group)
+            user.save()
+
+            person = Person()
+            person.tc = reference.tc
+            person.motherName = reference.motherName
+            person.fatherName = reference.fatherName
+            person.profileImage = reference.profileImage
+            person.birthDate = reference.birthDate
+            person.bloodType = reference.bloodType
+            if reference == 'Erkek':
+                person.gender = Person.MALE
+            else:
+                person.gender = Person.FEMALE
+            person.save()
+            communication = Communication()
+            communication.postalCode = reference.postalCode
+            communication.phoneNumber = reference.phoneNumber
+            communication.phoneNumber2 = reference.phoneNumber2
+            communication.address = reference.address
+            communication.city = reference.city
+            communication.country = reference.country
+            communication.save()
+
+            judge = Judge(user=user, person=person, communication=communication)
+
+            judge.save()
+            reference.status = ReferenceReferee.APPROVED
+            reference.save()
+            messages.success(request, 'Hakem Başarıyla Eklenmiştir')
+
+        else:
+            messages.success(request, 'Antrenör daha önce onylanmıştır.')
+
+    except:
+        messages.warning(request, 'Tekrar deneyiniz.')
+
+    return redirect('sbs:basvuru-referee')
+
+
+
+
+
+
+@login_required
 def visaSeminar_onayla(request, pk):
     print('bana geldi ')
     seminar = VisaSeminar.objects.get(pk=pk)

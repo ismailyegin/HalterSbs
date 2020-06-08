@@ -1,5 +1,7 @@
 import datetime
+import email
 from _socket import gaierror
+from typing import re
 
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -380,6 +382,64 @@ def deleteCoach(request, pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def referenceCoachStatus(request, pk):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        referenceCoach = ReferenceCoach.objects.get(pk=pk)
+
+        if referenceCoach.status != ReferenceCoach.APPROVED:
+            user = User()
+            user.username = referenceCoach.email
+            user.first_name = referenceCoach.first_name.upper()
+            user.last_name = referenceCoach.last_name.upper()
+            user.email = referenceCoach.email
+            group = Group.objects.get(name='Antrenor')
+            user.is_active = True
+            user.save()
+            user.groups.add(group)
+            user.save()
+
+            person = Person()
+            person.tc = referenceCoach.tc
+            person.motherName = referenceCoach.motherName
+            person.fatherName = referenceCoach.fatherName
+            person.profileImage = referenceCoach.profileImage
+            person.birthDate = referenceCoach.birthDate
+            person.bloodType = referenceCoach.bloodType
+            if referenceCoach == 'Erkek':
+                person.gender = Person.MALE
+            else:
+                person.gender = Person.FEMALE
+            person.save()
+            communication = Communication()
+            communication.postalCode = referenceCoach.postalCode
+            communication.phoneNumber = referenceCoach.phoneNumber
+            communication.phoneNumber2 = referenceCoach.phoneNumber2
+            communication.address = referenceCoach.address
+            communication.city = referenceCoach.city
+            communication.country = referenceCoach.country
+            communication.save()
+
+            coach = Coach(user=user, person=person, communication=communication)
+
+            coach.save()
+            messages.success(request, 'Antrenör Başarıyla Eklenmiştir')
+            referenceCoach.status = ReferenceCoach.APPROVED
+            referenceCoach.save()
+        else:
+            messages.success(request, 'Antrenör daha önce onylanmıştır.')
+
+    except:
+        messages.warning(request, 'Tekrar deneyiniz.')
+    return redirect('sbs:basvuru-coach')
+
+
 
 
 @login_required

@@ -48,7 +48,10 @@ class Person(models.Model):
         db_table = 'person'
 
     def save(self, force_insert=False, force_update=False):
-        self.birthplace = self.birthplace.upper()
-        self.motherName = self.motherName.upper()
-        self.fatherName = self.fatherName.upper()
+        if self.birthplace:
+            self.birthplace = self.birthplace.upper()
+        if self.motherName:
+            self.motherName = self.motherName.upper()
+        if self.fatherName:
+            self.fatherName = self.fatherName.upper()
         super(Person, self).save(force_insert, force_update)

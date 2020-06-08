@@ -160,6 +160,7 @@
                                     <th>#</th>
                                     <th> Ad Soyad</th>
                                     <th>E-Mail</th>
+                                    <th>Onay Durumu</th>
 
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>İncele/Sil</th>
@@ -175,6 +176,8 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ referee.first_name }} {{ referee.last_name }} </td>
                                             <td>{{ referee.email }} </td>
+                                            <td>{{ referee.status }} </td>
+
 
                                             {#                                            <td>#}
                                             {##}
@@ -190,11 +193,15 @@
                                             {##}
                                             {#                                            </td>#}
                                             <td>
+
+
                                                 <div class="btn-group">
-                                                    <a href="#"
+                                                    {% if referee.ststus == "Beklemede" %}
+                                                        <a href="{% url "sbs:basvuru-onayla-coach" referee.pk %}"
                                                        type="button" class="btn btn-success"><i
                                                             class="fa fa-edit"></i> Onayla
                                                     </a>
+                                                    {% endif %}
                                                     <a href="{% url "sbs:update-coach-reference" referee.pk %}"
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i> İncele

@@ -160,6 +160,7 @@
                                     <th>#</th>
                                     <th> Ad Soyad</th>
                                     <th>E-Mail</th>
+                                    <th>Onayla</th>
 
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>İncele/Sil</th>
@@ -175,6 +176,7 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ referee.first_name }} {{ referee.last_name }} </td>
                                             <td>{{ referee.email }} </td>
+                                            <td>{{ referee.status }}</td>
 
                                             {#                                            <td>#}
                                             {##}
@@ -191,10 +193,17 @@
                                             {#                                            </td>#}
                                             <td>
                                                 <div class="btn-group">
-                                                    <a href="#"
-                                                       type="button" class="btn btn-success"><i
-                                                            class="fa fa-edit"></i> Onayla
-                                                    </a>
+
+
+                                                    {% if referee.status == "Beklemede" %}
+
+
+                                                        <a href="{% url "sbs:reference-refere-status" referee.pk %}"
+                                                           type="button" class="btn btn-success"><i
+                                                                class="fa fa-edit"></i> Onayla
+                                                        </a>
+
+                                                    {% endif %}
                                                     <a href="{% url "sbs:hakem-duzenle-basvuru" referee.pk %}"
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i> İncele
