@@ -1,4 +1,5 @@
 from itertools import combinations, product
+from statistics import mode
 
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -289,6 +290,13 @@ def return_sporcu(request):
         length = 10
 
     if length == -1:
+
+        athletes = []
+        for comp in compAthlete:
+            if comp.athlete:
+                athletes.append(comp.athlete.pk)
+
+
         if user.groups.filter(name='KulupUye'):
             sc_user = SportClubUser.objects.get(user=user)
             clubsPk = []
@@ -296,20 +304,56 @@ def return_sporcu(request):
             for club in clubs:
                 clubsPk.append(club.pk)
 
-            modeldata = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
+
+            modeldata = Athlete.objects.exclude(pk__in=athletes).filter(licenses__sportsClub__in=clubsPk).distinct()
             total = modeldata.count()
 
         elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-            modeldata = Athlete.objects.all()
-            total = Athlete.objects.all().count()
+            modeldata = Athlete.objects.exclude(pk__in=athletes)
+            total = Athlete.objects.exclude(pk__in=athletes).count()
+
+        elif user.groups.filter(name='Antrenor'):
+            modeldata = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()[
+                        start:start + length]
+
+            total = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct().count()
+
+
 
 
     else:
         if search:
+            modeldate=Athlete.objects.none()
+
+            compAthlete = CompAthlete.objects.filter(competition=competition)
+            athletes = []
             modeldata =Athlete.objects.filter(
                 Q(user__last_name__icontains=search) | Q(user__first_name__icontains=search) | Q(
                     user__email__icontains=search))
-            total = modeldata.count();
+
+
+            for comp in compAthlete:
+                if comp.athlete:
+                    athletes.append(comp.athlete.pk)
+            if user.groups.filter(name='KulupUye'):
+                sc_user = SportClubUser.objects.get(user=user)
+                clubsPk = []
+                clubs = SportsClub.objects.filter(clubUser=sc_user)
+                for club in clubs:
+                    clubsPk.append(club.pk)
+                modeldata = modeldata.exclude(pk__in=athletes).filter(
+                    licenses__sportsClub__in=clubsPk).distinct()
+                total = modeldata.exclude(pk__in=athletes).filter(
+                    licenses__sportsClub__in=clubsPk).distinct().count()
+            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                modeldata = modeldata.exclude(pk__in=athletes)
+
+
+            elif user.groups.filter(name='Antrenor'):
+                modeldata = modeldata.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()
+
+            total=modeldata.count()
+
 
         else:
             compAthlete=CompAthlete.objects.filter(competition=competition)
@@ -317,6 +361,7 @@ def return_sporcu(request):
             for comp in compAthlete:
                 if comp.athlete:
                         athletes.append(comp.athlete.pk)
+                        print(comp.athlete)
             if user.groups.filter(name='KulupUye'):
                 sc_user = SportClubUser.objects.get(user=user)
                 clubsPk = []
@@ -329,6 +374,8 @@ def return_sporcu(request):
             elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                 modeldata = Athlete.objects.exclude(pk__in=athletes)[start:start + length]
                 total = Athlete.objects.exclude(pk__in=athletes).distinct().count()
+
+
             elif user.groups.filter(name='Antrenor'):
                 modeldata = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()[
                             start:start + length]
