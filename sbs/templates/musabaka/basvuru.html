@@ -220,6 +220,27 @@
         <!-- /.modal-dialog -->
     </div>
 
+    <!-- Modal -->
+<div class="modal fade modal-dialog" tabindex="-1" role="dialog"  id="kural20" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="Kural20title">Kural İhlali </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <p>Verilen degerler 20 kg kuralına uymadıgı için güncellenemedi. </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 
  <div class="modal modal-dialog fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
          aria-hidden="true" style="display: none;">
@@ -602,7 +623,17 @@
 
 
                     console.log('buradan girdi', competitionId)
-                    $.ajax({
+
+
+
+                     var kop=parseInt($('#kop').val());
+                     var silk=parseInt($('#silk').val());
+                     var toplam=kop+silk;
+                     if ((total-20)> toplam)
+                     {
+
+
+                         $.ajax({
                         url: "{% url "sbs:catagori-sporcu-guncelle-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
                         type: "POST",
                         data: {
@@ -633,6 +664,20 @@
                             }).modal('show');
                         }
                     });
+
+
+
+                     }
+
+                     else
+                     {
+
+
+                         $('#kural20').modal('show');
+
+                     }
+
+
                 });
 
 
