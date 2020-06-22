@@ -50,7 +50,7 @@
         <!-- /.modal-dialog -->
     </div>
 
-    <div class="modal modal-warning fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
+    <div class="modal modal-dialog fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -67,6 +67,19 @@
                             <option value="{{ weight.pk }}">{{ weight.weight }}</option>
                         {% endfor %}
                     </select>
+
+
+                                    <label for="silk">Silkme </label>
+                    <input type="text" name="silk" id="silk" class="form-control" required>
+
+
+                                    <label for="kop">Koparma</label>
+                    <input type="text" name="kop" id="kop" class="form-control" required>
+
+
+
+
+
                     <label for="total">Toplam Kaldırış</label>
                     <input type="text" name="total" id="total" class="form-control" required>
 
@@ -74,10 +87,10 @@
 
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-gonder"
+                    <button type="button" class="btn  btn-default pull-left btn-ok" id="btn-gonder"
                             data-dismiss="modal">Kaydet
                     </button>
-                    <button type="button" class="btn btn-outline" id="btn-closereddet">Geri Dön</button>
+                    <button type="button" class="btn  btn-default" id="btn-closereddet">Geri Dön</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -405,6 +418,8 @@
             $("#reddetwhy").on("shown.bs.modal", function (e) {
 
                  $('#total').val('');
+                 $('#silk').val('');
+                 $('#kop').val('');
                 $("#btn-gonder").click(function () {
 
                     console.log('buradan girdi', competitionId)
@@ -418,6 +433,8 @@
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
                                 total: $('#total').val(),
                                 weight: $('#weight').val(),
+                                silk:$('#silk').val(),
+                                kop:$('#kop').val(),
                                 isActive: 'False'
 
                             },

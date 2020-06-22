@@ -113,8 +113,8 @@ class PreRegistration(models.Model):
         self.motherName = self.motherName.upper()
         self.fatherName = self.fatherName.upper()
 
-        self.first_name = self.first_name.upper()
-        self.last_name = self.last_name.upper()
+        # self.first_name = self.first_name.upper()
+        # self.last_name = self.last_name.upper()
         self.name = self.name.upper()
 
         self.shortName = self.shortName.upper()

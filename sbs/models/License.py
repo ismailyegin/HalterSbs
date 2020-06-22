@@ -34,7 +34,7 @@ class License(models.Model):
     lisansPhoto = models.FileField(upload_to='lisans/', null=False, blank=False, verbose_name='Lisans')
     reddetwhy=models.CharField(blank=True, null=True, max_length=255)
     isFerdi = models.BooleanField(default=False)
-    coach = models.ForeignKey(Coach, on_delete=models.CASCADE, blank=True, null=True)
+    coach = models.ForeignKey(Coach, on_delete=models.SET_NULL, blank=True, null=True)
 
 
     def __str__(self):

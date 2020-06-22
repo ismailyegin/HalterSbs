@@ -221,7 +221,7 @@
     </div>
 
 
-    <div class="modal modal-warning fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
+ <div class="modal modal-dialog fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -232,12 +232,25 @@
                 </div>
                 <div class="modal-body">
                     <label for="inputState">Siklet</label>
-                    <select id="weight" class="form-control" required="required">
+                    <select id="weight" class="form-control">
                         <option selected>Seçiniz...</option>
                         {% for weight in weights %}
                             <option value="{{ weight.pk }}">{{ weight.weight }}</option>
                         {% endfor %}
                     </select>
+
+
+                                    <label for="silk">Silkme </label>
+                    <input type="text" name="silk" id="silk" class="form-control" required>
+
+
+                                    <label for="kop">Koparma</label>
+                    <input type="text" name="kop" id="kop" class="form-control" required>
+
+
+
+
+
                     <label for="total">Toplam Kaldırış</label>
                     <input type="text" name="total" id="total" class="form-control" required>
 
@@ -245,10 +258,10 @@
 
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-gonder"
+                    <button type="button" class="btn  btn-default pull-left btn-ok" id="btn-gonder"
                             data-dismiss="modal">Kaydet
                     </button>
-                    <button type="button" class="btn btn-outline" id="btn-closereddet">Geri Dön</button>
+                    <button type="button" class="btn  btn-default" id="btn-closereddet">Geri Dön</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -350,6 +363,9 @@
                                 <th>Kulüp</th>
                             {% endif %}
                             <th>Siklet</th>
+                            <th>Silkme</th>
+                            <th>Koparma</th>
+
                             <th>Giriş Toplamı</th>
                             <th>İşlemler</th>
 
@@ -367,6 +383,8 @@
                                         <td>{{ compathlete.athlete.licenses.last.sportsClub }}</td>
                                     {% endif %}
                                     <td>{{ compathlete.sıklet.weight }}</td>
+                                 <td>{{ compathlete.silk1 }}</td>
+                                 <td>{{ compathlete.kop1 }}</td>
                                     <td>{{ compathlete.total }}</td>
                                     <td>
                                         <div class="btn-group">
@@ -380,7 +398,7 @@
 
                                                     {% endif %}
 
-                                                    ,{{ compathlete.total }})"
+                                                    ,{{ compathlete.total }},{{compathlete.silk1  }},{{ compathlete.kop1 }})"
                                                type="button" class="btn btn-primary"><i
                                                     class="fa fa-edit"></i>Güncelle
                                             </a>
@@ -517,7 +535,7 @@
                         {#footer: true,#}
                         exportOptions: {
                             {#     yer degisimi de yapilabilir.#}
-                            columns: [0, 2, 1, 3, 4, 5]
+                            columns: [0,1 , 2, 3, 4, 5]
 
                         },
                         titleAttr: 'Excel Kaydet'
@@ -547,7 +565,7 @@
 
         });
 
-        function addPlayer(id, competitionId, siklet, total) {
+        function addPlayer(id, competitionId, siklet, total,silk,kop) {
 
             $('#weight option:selected').text();
             $('#total').val();
@@ -563,6 +581,18 @@
                 $('#total').val(total);
 
             }
+                        if (kop != null) {
+
+                $('#kop').val(kop);
+
+            }
+                        if (silk != null) {
+
+                $('#silk').val(silk);
+
+            }
+
+
 
 
             $("#reddetwhy").on("shown.bs.modal", function (e) {
@@ -579,6 +609,8 @@
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
                             total: $('#total').val(),
                             weight: $('#weight').val(),
+                            silk:$('#silk').val(),
+                            kop:$('#kop').val(),
                             isActive: 'False'
 
                         },

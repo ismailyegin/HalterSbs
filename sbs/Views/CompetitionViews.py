@@ -444,10 +444,16 @@ def update_athlete(request, pk, competition):
             compAthlete = CompAthlete.objects.get(pk=competition)
             total = request.POST.get('total')
             siklet = request.POST.get('weight')
+            silk=request.POST.get('silk')
+            kop=request.POST.get('kop')
             if total is not None:
                 compAthlete.total = total
             if siklet is not None:
                 compAthlete.sıklet = Weight.objects.get(pk=siklet)
+            if silk is not None:
+                compAthlete.silk1 = silk
+            if kop is not None:
+                compAthlete.kop1 = kop
             compAthlete.save()
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -484,6 +490,9 @@ def choose_athlete(request, pk, competition):
             compAthlete.competition = competition
             compAthlete.total = request.POST.get('total')
             compAthlete.sıklet = Weight.objects.get(pk=request.POST.get('weight'))
+            compAthlete.silk1=request.POST.get('silk')
+            compAthlete.kop1=request.POST.get('kop')
+
             compAthlete.save()
 
 

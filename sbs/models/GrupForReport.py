@@ -37,7 +37,7 @@ class GrupForReport(models.Model):
                                          null=True)  # Field name made lowercase.
     timekeeper = models.CharField(db_column='timeKeeper', max_length=255, blank=True,
                                   null=True)  # Field name made lowercase.
-    competition = models.ForeignKey(Competition, on_delete=models.CASCADE, db_column='competition', blank=True, null=True)
+    competition = models.ForeignKey(Competition, on_delete=models.DO_NOTHING, db_column='competition', blank=True, null=True)
 
     class Meta:
         db_table = 'grupforreport'
