@@ -629,10 +629,8 @@
                      var kop=parseInt($('#kop').val());
                      var silk=parseInt($('#silk').val());
                      var toplam=kop+silk;
-                     if ((total-20)> toplam)
+                     if ((total-20)<= toplam  && (total+20)>= toplam )
                      {
-
-
                          $.ajax({
                         url: "{% url "sbs:catagori-sporcu-guncelle-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
                         type: "POST",
