@@ -12,16 +12,18 @@ class CompetitionForm(ModelForm):
         model = Competition
 
         fields = (
-            'name', 'startDate', 'finishDate','compType','compGeneralType','eventPlace','eventDate','juryCount','registerStartDate','registerFinishDate')
+            'name', 'startDate', 'finishDate','compType','compGeneralType','eventPlace','eventDate','juryCount','registerStartDate','registerFinishDate','year')
 
         labels = {'name': 'İsim', 'startDate': 'Başlangıç Tarihi', 'finishDate': 'Bitiş Tarihi', 'compType': 'Türü', 'compGeneralType': 'Genel Türü',
                   'eventPlace':'Etkinlik Yeri','eventDate':'Etkinlik tarihi','juryCount':'Juri Sayisi','registerStartDate':'Ön Kayıt Başlangıç Tarihi',
-                  'registerFinishDate':'Ön Kayıt Bitiş Tarihi'}
+                  'registerFinishDate':'Ön Kayıt Bitiş Tarihi','year':'Müsabaka Yılı '}
 
         widgets = {
 
 
-
+            'year':forms.DateInput(
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker5', 'autocomplete': 'on',
+                       'onkeydown': 'return true'}),
             'juryCount': forms.NumberInput(attrs={'class': 'form-control'}),
 
             'registerStartDate': forms.DateInput(
