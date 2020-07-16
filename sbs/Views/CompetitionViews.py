@@ -1,3 +1,4 @@
+from builtins import print
 from itertools import combinations, product
 from statistics import mode
 
@@ -251,7 +252,7 @@ def musabaka_sporcu_sec(request, pk):
     #     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
     # elif user.groups.filter(name__in=['Yonetim', 'Admin']):
     #     athletes = Athlete.objects.all()
-
+    print(pk)
     return render(request, 'musabaka/musabaka-sporcu-sec.html',
                   {'pk': pk, 'weights': weights, 'application': competition})
                   # ,{'athletes': athletes, 'competition': competition, })

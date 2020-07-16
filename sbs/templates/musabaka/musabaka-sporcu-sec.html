@@ -440,13 +440,17 @@
                             },
                             success: function (result) {
 
+
                                 html = 'Sporcu Başarıyla Eklendi .';
+                                 window.location.replace("{% url "sbs:musabaka-sporcu-sec" pk %}");
                                 debugger;
                                 $(".successModal").html(html);
+
                                 $('#modal-success').on("shown.bs.modal", function (e) {
                                     $(".btn-ok").click(function () {
 
-                                        {#window.location.replace("{% url "sbs:musabaka-sporcu-sec"  competition.pk  %}");#}
+
+
 
                                         $('#modal-warning').modal('hide');
                                         $('.modal').modal('hide');

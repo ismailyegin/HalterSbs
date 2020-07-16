@@ -46,6 +46,55 @@
 
     {% endif %}
 
+
+        <div class="modal modal-dialog fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Ek Bilgileri Giriniz</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="inputState">Siklet</label>
+                    <select id="weight" class="form-control">
+                        <option selected>Seçiniz...</option>
+                        {% for weight in weights %}
+                            <option value="{{ weight.pk }}">{{ weight.weight }}</option>
+                        {% endfor %}
+                    </select>
+
+
+                                    <label for="silk">Silkme </label>
+                    <input type="number" name="silk" id="silk" class="form-control" required>
+
+
+                                    <label for="kop">Koparma</label>
+                    <input type="number" name="kop" id="kop" class="form-control" required>
+
+
+
+
+
+                    <label for="total">Toplam Kaldırış</label>
+                    <input type="number" name="total" id="total" class="form-control" required>
+
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-default pull-left btn-ok" id="btn-gonder"
+                            data-dismiss="modal">Kaydet
+                    </button>
+                    <button type="button" class="btn  btn-default" id="btn-closereddet">Geri Dön</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -238,7 +287,7 @@
                                             <td>{{ compathlete.total }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <a onclick="deleteAthlete({{ compathlete.id }})"
+                                                    <a onclick="addPlayer({{ compathlete.id}}, {{compathlete.id}},{{compathlete.id}}, {{compathlete.id}}, {{compathlete.id }})"
                                                        type="button" class="btn btn-primary"><i
                                                             class="fa fa-edit"></i>Güncelle
                                                     </a>
@@ -274,6 +323,70 @@
     </section>
 
     <script>
+
+            function addPlayer(id,weight,total, silk1, kop1) {
+                alert(id,weight,total, silk1, kop1);
+
+            $("#reddetwhy").on("shown.bs.modal", function (e) {
+
+                 $('#total').val('');
+                 $('#silk').val('');
+                 $('#kop').val('');
+                $("#btn-gonder").click(function () {
+
+                    console.log('buradan girdi', competitionId)
+                    if (e.handled !== true) {
+                        // This will prevent event triggering more then once
+                        e.handled = true;
+                        $.ajax({
+                            url: "{% url "sbs:catagori-sporcu-sec-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                total: $('#total').val(),
+                                weight: $('#weight').val(),
+                                silk:$('#silk').val(),
+                                kop:$('#kop').val(),
+                                isActive: 'False'
+
+                            },
+                            success: function (result) {
+
+                                html = 'Sporcu Başarıyla Eklendi .';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        {#window.location.replace("{% url "sbs:musabaka-sporcu-sec"  competition.pk  %}");#}
+
+                                        $('#modal-warning').modal('hide');
+                                        $('.modal').modal('hide');
+                                        Playerlist();
+
+                                    });
+
+                                }).modal('show');
+                            }
+                        });
+                    }
+                });
+
+
+            }).modal('show');
+            $('#btn-closereddet').click(function () {
+
+
+                $('#modal-warning').modal('hide');
+                $('.modal').modal('hide');
+
+            });
+
+        }
+
+
+
+
         function deleteAthlete(id) {
 
             console.log(id);
