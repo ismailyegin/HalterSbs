@@ -346,6 +346,11 @@ urlpatterns = [
     url(r'musabaka/musabaka-sporcu-sec/(?P<pk>\d+)$', CompetitionViews.musabaka_sporcu_sec,name='musabaka-sporcu-sec'),
     url(r'musabaka/sporcu-sec/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.choose_athlete,
         name='catagori-sporcu-sec-ajax'),
+
+    url(r'musabaka/sporcu-sec/update(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.choose_athlete_update,
+        name='catagori-sporcu-update-ajax'),
+
+
     url(r'musabaka/sporcu-guncelle/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.update_athlete,
         name='catagori-sporcu-guncelle-ajax'),
     url(r'musabaka/KategorilerinSporculari/$', CompetitionViews.return_sporcu, name='Kategorilerin-Sporculari'),

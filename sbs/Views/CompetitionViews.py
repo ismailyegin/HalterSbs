@@ -173,6 +173,9 @@ def musabaka_duzenle(request, pk):
 
     musabaka = Competition.objects.get(pk=pk)
     athletes = CompAthlete.objects.filter(competition=pk)
+
+
+    weights = Weight.objects.all()
     competition_form = CompetitionForm(request.POST or None, instance=musabaka)
     if request.method == 'POST':
         if competition_form.is_valid():
@@ -185,7 +188,7 @@ def musabaka_duzenle(request, pk):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'musabaka/musabaka-duzenle.html',
-                  {'competition_form': competition_form, 'competition': musabaka, 'athletes': athletes})
+                  {'competition_form': competition_form, 'competition': musabaka, 'athletes': athletes,'weights':weights})
 
 
 @login_required
@@ -469,6 +472,40 @@ def update_athlete(request, pk, competition):
 
 
 
+@login_required
+def choose_athlete_update(request, pk, competition):
+    perm = general_methods.control_access_klup(request)
+    login_user = request.user
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+
+        user = User.objects.get(pk=login_user.pk)
+        competition = Competition.objects.get(pk=competition)
+        compAthlete = CompAthlete.objects.get(pk=pk)
+        compAthlete.competition = competition
+        compAthlete.total = request.POST.get('total')
+        compAthlete.sıklet = Weight.objects.get(weight=request.POST.get('weight'))
+        compAthlete.silk1 = request.POST.get('silk')
+        compAthlete.kop1 = request.POST.get('kop')
+
+        compAthlete.save()
+
+
+
+        try:
+            print('')
+
+
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except SandaAthlete.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
 
