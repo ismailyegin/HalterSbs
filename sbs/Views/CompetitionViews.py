@@ -147,10 +147,13 @@ def musabaka_ekle(request):
     if request.method == 'POST':
         competition_form = CompetitionForm(request.POST)
         if competition_form.is_valid():
-            competition_form.save()
+            musabaka=competition_form.save(commit=False)
+            musabaka.save()
+            print(musabaka.pk)
+
             messages.success(request, 'Müsabaka Başarıyla Kaydedilmiştir.')
 
-            return redirect('sbs:musabakalar')
+            return redirect('sbs:musabaka-duzenle', pk=musabaka.pk)
         else:
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
