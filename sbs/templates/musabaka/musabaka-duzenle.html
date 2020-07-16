@@ -266,7 +266,9 @@
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>Kulüp</th>
                                     {% endif %}
-                                    <th>Siklet</th>
+                                    <th>Silklet</th>
+                                    <th>Koparma</th>
+                                    <th>Silkme</th>
                                     <th>Giriş Toplamı</th>
                                     <th>İşlemler</th>
 
@@ -283,7 +285,9 @@
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <td>{{ compathlete.athlete.licenses.last.sportsClub }}</td>
                                             {% endif %}
-                                            <td>{{ compathlete.sıklet.weight }}</td>
+                                           <td>{{ compathlete.sıklet.weight }}</td>
+                                           <td>{{ compathlete.kop1 }}</td>
+                                            <td>{{ compathlete.silk1 }}</td>
                                             <td>{{ compathlete.total }}</td>
                                             <td>
                                                 <div class="btn-group">
