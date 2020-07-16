@@ -279,7 +279,7 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ compathlete.athlete.user.first_name }} {{ compathlete.athlete.user.last_name }} </td>
-                                            <td>{{ compathlete.athlete.person.birthDate }} </td>
+                                            <td>{{ compathlete.athlete.person.birthDate | date }} </td>
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <td>{{ compathlete.athlete.licenses.last.sportsClub }}</td>
                                             {% endif %}
@@ -287,7 +287,7 @@
                                             <td>{{ compathlete.total }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <a onclick="addPlayer({{ compathlete.id}}, {{compathlete.id}},{{compathlete.id}}, {{compathlete.id}}, {{compathlete.id }})"
+                                                    <a onclick="addPlayer({{ compathlete.id}},{{ competition.pk }},{{compathlete.sıklet.weight }},{{compathlete.total}}, {{compathlete.silk1}}, {{compathlete.kop1 }})"
                                                        type="button" class="btn btn-primary"><i
                                                             class="fa fa-edit"></i>Güncelle
                                                     </a>
@@ -324,14 +324,18 @@
 
     <script>
 
-            function addPlayer(id,weight,total, silk1, kop1) {
-                alert(id,weight,total, silk1, kop1);
+            function addPlayer(id,competitionId,weight,total, silk1, kop1) {
+
 
             $("#reddetwhy").on("shown.bs.modal", function (e) {
 
-                 $('#total').val('');
-                 $('#silk').val('');
-                 $('#kop').val('');
+                 $('#total').val(total);
+                 $('#silk').val(silk1);
+                 $('#kop').val(kop1);
+                 $('#weight  option:selected').text(weight);
+
+
+
                 $("#btn-gonder").click(function () {
 
                     console.log('buradan girdi', competitionId)
@@ -339,7 +343,7 @@
                         // This will prevent event triggering more then once
                         e.handled = true;
                         $.ajax({
-                            url: "{% url "sbs:catagori-sporcu-sec-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
+                            url: "{% url "sbs:catagori-sporcu-update-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -352,13 +356,13 @@
                             },
                             success: function (result) {
 
-                                html = 'Sporcu Başarıyla Eklendi .';
+                                html = 'Başarıyla Güncellendi .';
                                 debugger;
                                 $(".successModal").html(html);
                                 $('#modal-success').on("shown.bs.modal", function (e) {
                                     $(".btn-ok").click(function () {
 
-                                        {#window.location.replace("{% url "sbs:musabaka-sporcu-sec"  competition.pk  %}");#}
+                                        window.location.replace("{% url "sbs:musabaka-duzenle"  competition.pk  %}");
 
                                         $('#modal-warning').modal('hide');
                                         $('.modal').modal('hide');
