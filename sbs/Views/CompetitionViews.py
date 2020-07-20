@@ -149,6 +149,7 @@ def musabaka_ekle(request):
         competition_form = CompetitionForm(request.POST)
         if competition_form.is_valid():
             musabaka=competition_form.save(commit=False)
+            musabaka.juryCount=0;
             musabaka.save()
             print(musabaka.pk)
 
