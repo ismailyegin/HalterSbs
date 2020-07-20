@@ -10,7 +10,7 @@ class CompCategory(models.Model):
     kobilid = models.IntegerField(db_column='kobilId')  # Field name made lowercase.
     operationdate = models.DateTimeField(db_column='operationDate', blank=True, null=True)  # Field name made lowercase.
     sex = models.IntegerField(blank=True, null=True)
-    competition = models.ForeignKey(Competition, models.DO_NOTHING, db_column='competition', blank=True, null=True)
+    competition = models.ForeignKey(Competition,models.SET_NULL,db_column='competition', blank=True, null=True)
     startdate = models.CharField(db_column='startDate', max_length=45, blank=True, null=True)  # Field name made lowercase.
     name = models.CharField(max_length=45, blank=True, null=True)
     starttime = models.CharField(db_column='startTime', max_length=45, blank=True, null=True)  # Field name made lowercase.
