@@ -530,10 +530,11 @@ def choose_athlete(request, pk, competition):
             compAthlete = CompAthlete()
             compAthlete.athlete = athlete
             compAthlete.competition = competition
-            compAthlete.total = request.POST.get('total')
+            # compAthlete.total = request.POST.get('total')
             compAthlete.sıklet = Weight.objects.get(pk=request.POST.get('weight'))
             compAthlete.silk1=request.POST.get('silk')
             compAthlete.kop1=request.POST.get('kop')
+            compAthlete.total= int(request.POST.get('silk'))+ int(request.POST.get('kop'))
 
             compAthlete.save()
 

@@ -67,21 +67,17 @@
                             <option value="{{ weight.pk }}">{{ weight.weight }}</option>
                         {% endfor %}
                     </select>
-
+                                    <label for="kop">Koparma</label>
+                    <input type="number" name="kop" id="kop" class="form-control" required>
 
                                     <label for="silk">Silkme </label>
                     <input type="number" name="silk" id="silk" class="form-control" required>
 
 
-                                    <label for="kop">Koparma</label>
-                    <input type="number" name="kop" id="kop" class="form-control" required>
 
 
-
-
-
-                    <label for="total">Toplam Kaldırış</label>
-                    <input type="number" name="total" id="total" class="form-control" required>
+{#                    <label for="total">Toplam Kaldırış</label>#}
+{#                    <input type="number" name="total" id="total" class="form-control" required>#}
 
                 </div>
 
@@ -417,7 +413,7 @@
 
             $("#reddetwhy").on("shown.bs.modal", function (e) {
 
-                 $('#total').val('');
+                 {#$('#total').val('');#}
                  $('#silk').val('');
                  $('#kop').val('');
                 $("#btn-gonder").click(function () {
@@ -431,7 +427,7 @@
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                                total: $('#total').val(),
+                                {#total: $('#total').val(),#}
                                 weight: $('#weight').val(),
                                 silk:$('#silk').val(),
                                 kop:$('#kop').val(),
