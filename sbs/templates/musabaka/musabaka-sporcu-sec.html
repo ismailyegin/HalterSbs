@@ -4,6 +4,50 @@
 
 
 
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-eksik"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Sporcu kaydedilmedi</p>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn  btn-outline btn-ok" id="btn-kural ">Kapat</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-kural"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Girilen veriler 20 kg kuralına uygun degildir.</p>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn  btn-outline btn-ok" id="btn-kural ">Kapat</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     <!-- success modal -->
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
@@ -67,17 +111,15 @@
                             <option value="{{ weight.pk }}">{{ weight.weight }}</option>
                         {% endfor %}
                     </select>
-                                    <label for="kop">Koparma</label>
+                    <label for="kop">Koparma</label>
                     <input type="number" name="kop" id="kop" class="form-control" required>
 
-                                    <label for="silk">Silkme </label>
+                    <label for="silk">Silkme </label>
                     <input type="number" name="silk" id="silk" class="form-control" required>
 
 
-
-
-{#                    <label for="total">Toplam Kaldırış</label>#}
-{#                    <input type="number" name="total" id="total" class="form-control" required>#}
+                    <label for="total">Total</label>
+                    <input type="number" name="total" id="total" class="form-control" required>
 
                 </div>
 
@@ -276,6 +318,8 @@
 
         {#    --------------------------------------------------------------------#}
         $(function () {
+
+
             Playerlist();
 
 
@@ -413,50 +457,73 @@
 
             $("#reddetwhy").on("shown.bs.modal", function (e) {
 
-                 {#$('#total').val('');#}
-                 $('#silk').val('');
-                 $('#kop').val('');
+                $('#total').val('');
+                $('#silk').val('');
+                $('#kop').val('');
                 $("#btn-gonder").click(function () {
 
                     console.log('buradan girdi', competitionId)
+
                     if (e.handled !== true) {
-                        // This will prevent event triggering more then once
                         e.handled = true;
-                        $.ajax({
-                            url: "{% url "sbs:catagori-sporcu-sec-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
-                            type: "POST",
-                            data: {
-                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                                {#total: $('#total').val(),#}
-                                weight: $('#weight').val(),
-                                silk:$('#silk').val(),
-                                kop:$('#kop').val(),
-                                isActive: 'False'
 
-                            },
-                            success: function (result) {
+                        if ($('#weight').val() && $('#total').val() && $('#silk').val() && $('#kop').val()) {
+                            // This will prevent event triggering more then once
 
+                            $.ajax({
+                                url: "{% url "sbs:catagori-sporcu-sec-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    total: $('#total').val(),
+                                    weight: $('#weight').val(),
+                                    silk: $('#silk').val(),
+                                    kop: $('#kop').val(),
+                                    isActive: 'False',
 
-                                html = 'Sporcu Başarıyla Eklendi .';
-                                 window.location.replace("{% url "sbs:musabaka-sporcu-sec" pk %}");
-                                debugger;
-                                $(".successModal").html(html);
+                                },
 
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                success: function (result) {
 
-
+                                    if (result.msg == "Kural20") {
+                                        $('#modal-kural').on("shown.bs.modal", function (e) {
+                                            $(".btn-ok").click(function () {
 
 
-                                        $('#modal-warning').modal('hide');
-                                        $('.modal').modal('hide');
-                                        Playerlist();
+                                                $('#modal-warning').modal('hide');
+                                                $('.modal').modal('hide');
+                                            });
 
-                                    });
+                                        }).modal('show');
+                                    } else if (result.msg == "Eksik") {
+                                        $('#modal-eksik').on("shown.bs.modal", function (e) {
+                                            $(".btn-ok").click(function () {
 
-                                }).modal('show');
-                            }
-                        });
+
+                                                $('#modal-warning').modal('hide');
+                                                $('.modal').modal('hide');
+                                            });
+
+                                        }).modal('show');
+
+
+                                    } else {
+                                        html = 'Sporcu Başarıyla Eklendi .';
+                                        window.location.replace("{% url "sbs:musabaka-sporcu-sec" pk %}");
+
+
+                                    }
+
+
+                                }
+                            });
+                        } else {
+                            {#    model gelecek #}
+
+                            alert("Lütfen eksik alanlari giriniz");
+
+                        }
+
                     }
                 });
 

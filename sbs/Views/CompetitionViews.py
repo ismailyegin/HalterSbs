@@ -522,24 +522,37 @@ def choose_athlete(request, pk, competition):
     if request.method == 'POST' and request.is_ajax():
 
 
-
         try:
-            user = User.objects.get(pk=login_user.pk)
-            competition = Competition.objects.get(pk=competition)
-            athlete = Athlete.objects.get(pk=pk)
-            compAthlete = CompAthlete()
-            compAthlete.athlete = athlete
-            compAthlete.competition = competition
-            # compAthlete.total = request.POST.get('total')
-            compAthlete.sıklet = Weight.objects.get(pk=request.POST.get('weight'))
-            compAthlete.silk1=request.POST.get('silk')
-            compAthlete.kop1=request.POST.get('kop')
-            compAthlete.total= int(request.POST.get('silk'))+ int(request.POST.get('kop'))
-
-            compAthlete.save()
 
 
-            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+            if (request.POST.get('total') and request.POST.get('silk') and request.POST.get('kop') and request.POST.get('weight')):
+
+                user = User.objects.get(pk=login_user.pk)
+                competition = Competition.objects.get(pk=competition)
+                athlete = Athlete.objects.get(pk=pk)
+                compAthlete = CompAthlete()
+                compAthlete.athlete = athlete
+                compAthlete.competition = competition
+                compAthlete.total = request.POST.get('total')
+                compAthlete.sıklet = Weight.objects.get(pk=request.POST.get('weight'))
+                compAthlete.silk1 = request.POST.get('silk')
+                compAthlete.kop1 = request.POST.get('kop')
+
+
+
+
+
+
+                if (int(request.POST.get('silk')) + int(request.POST.get('kop'))) - 20 <= int(
+                        request.POST.get('total')):
+                    compAthlete.save()
+                    return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+                else:
+                    return JsonResponse({'status': 'Fail', 'msg': 'Kural20'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Eksik'})
+
+
         except SandaAthlete.DoesNotExist:
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
