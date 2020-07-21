@@ -227,6 +227,17 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">Sporcu Seç</h3>
                         </div>
+
+
+                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                            <a href="{% url "sbs:musabaka-duzenle" pk=pk %}"
+                               type="button" class="btn btn-success"><i
+                                    class="fa fa-edit"></i>Müsabaka Düzenle
+                            </a>
+                        {% endif %}
+
+
+
                         {% if application.all %}
                             {% for competition in application %}
                                 <div class="box-header with-border">
@@ -240,7 +251,12 @@
                             {% endfor %}
 
 
+
+
                         {% endif %}
+
+
+
                         <div class="box-body berktug">
                             <form method="post" enctype="multipart/form-data" role="form">
                                 {% csrf_token %}
@@ -257,6 +273,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+
                                     {% if athletes.all %}
                                         {% for athlete in athletes %}
                                             <tr>
@@ -486,6 +503,7 @@
                                 success: function (result) {
 
                                     if (result.msg == "Kural20") {
+
                                         $('#modal-kural').on("shown.bs.modal", function (e) {
                                             $(".btn-ok").click(function () {
 
@@ -509,6 +527,8 @@
 
                                     } else {
                                         html = 'Sporcu Başarıyla Eklendi .';
+                                        debugger;
+                                        $(".successModal").html(html);
                                         window.location.replace("{% url "sbs:musabaka-sporcu-sec" pk %}");
 
 

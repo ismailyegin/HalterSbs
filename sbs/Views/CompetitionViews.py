@@ -475,6 +475,7 @@ def update_athlete(request, pk, competition):
 
 @login_required
 def choose_athlete_update(request, pk, competition):
+
     perm = general_methods.control_access_klup(request)
     login_user = request.user
 
@@ -482,19 +483,24 @@ def choose_athlete_update(request, pk, competition):
         logout(request)
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
-
-        user = User.objects.get(pk=login_user.pk)
-        competition = Competition.objects.get(pk=competition)
-        compAthlete = CompAthlete.objects.get(pk=pk)
-        compAthlete.competition = competition
-        compAthlete.total = request.POST.get('total')
-        compAthlete.sıklet = Weight.objects.get(weight=request.POST.get('weight'))
-        compAthlete.silk1 = request.POST.get('silk')
-        compAthlete.kop1 = request.POST.get('kop')
-
-        compAthlete.save()
-
-
+        if (request.POST.get('kop') and request.POST.get('silk') and request.POST.get('weight') and request.POST.get(
+                'total')):
+            user = User.objects.get(pk=login_user.pk)
+            competition = Competition.objects.get(pk=competition)
+            compAthlete = CompAthlete.objects.get(pk=pk)
+            compAthlete.competition = competition
+            compAthlete.total = request.POST.get('total')
+            compAthlete.sıklet = Weight.objects.get(weight=request.POST.get('weight'))
+            compAthlete.silk1 = request.POST.get('silk')
+            compAthlete.kop1 = request.POST.get('kop')
+            if (int(request.POST.get('silk')) + int(request.POST.get('kop'))) - 20 <= int(
+                    request.POST.get('total')):
+                compAthlete.save()
+                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Kural20'})
+        else:
+            return JsonResponse({'status': 'Fail', 'msg': 'Eksik'})
 
         try:
             print('')

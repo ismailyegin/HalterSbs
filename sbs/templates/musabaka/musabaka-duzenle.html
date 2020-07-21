@@ -47,6 +47,52 @@
     {% endif %}
 
 
+
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-eksik"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Sporcu kaydedilmedi</p>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn  btn-outline btn-ok" id="btn-kural ">Kapat</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-kural"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Girilen veriler 20 kg kuralına uygun degildir.</p>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn  btn-outline btn-ok" id="btn-kural ">Kapat</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     <div class="modal modal-dialog fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -66,18 +112,12 @@
                     </select>
 
 
-
-
-
                     <label for="kop">Koparma</label>
                     <input type="number" name="kop" id="kop" class="form-control" required>
 
 
                     <label for="silk">Silkme </label>
                     <input type="number" name="silk" id="silk" class="form-control" required>
-
-
-
 
 
                     <label for="total">Toplam Kaldırış</label>
@@ -425,6 +465,7 @@
                 'ordering': true,
                 'info': true,
                 'autoWidth': true,
+                'responsive': true,
 
 
             });
@@ -450,37 +491,68 @@
                     if (e.handled !== true) {
                         // This will prevent event triggering more then once
                         e.handled = true;
-                        $.ajax({
-                            url: "{% url "sbs:catagori-sporcu-update-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
-                            type: "POST",
-                            data: {
-                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                                total: $('#total').val(),
-                                weight: $('#weight').val(),
-                                silk: $('#silk').val(),
-                                kop: $('#kop').val(),
-                                isActive: 'False'
+                        if ($('#weight').val() && $('#total').val() && $('#silk').val() && $('#kop').val()) {
 
-                            },
-                            success: function (result) {
+                            $.ajax({
+                                url: "{% url "sbs:catagori-sporcu-update-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    total: $('#total').val(),
+                                    weight: $('#weight').val(),
+                                    silk: $('#silk').val(),
+                                    kop: $('#kop').val(),
+                                    isActive: 'False'
 
-                                html = 'Başarıyla Güncellendi .';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                },
+                                success: function (result) {
 
-                                        window.location.replace("{% url "sbs:musabaka-duzenle"  competition.pk  %}");
 
-                                        $('#modal-warning').modal('hide');
-                                        $('.modal').modal('hide');
-                                        Playerlist();
+                                    if (result.msg == "Kural20") {
+                                        $('#modal-kural').on("shown.bs.modal", function (e) {
+                                            $(".btn-ok").click(function () {
 
-                                    });
 
-                                }).modal('show');
-                            }
-                        });
+                                                $('#modal-warning').modal('hide');
+                                                $('.modal').modal('hide');
+                                            });
+
+                                        }).modal('show');
+                                    } else if (result.msg == "Eksik") {
+                                        $('#modal-eksik').on("shown.bs.modal", function (e) {
+                                            $(".btn-ok").click(function () {
+
+
+                                                $('#modal-warning').modal('hide');
+                                                $('.modal').modal('hide');
+                                            });
+
+                                        }).modal('show');
+
+
+                                    } else {
+
+                                        html = 'Sporcu Başarıyla Güncellendi .';
+                                        debugger;
+                                        $(".successModal").html(html);
+                                        window.location.replace("{% url "sbs:musabaka-duzenle" competition.pk %}");
+
+
+                                    }
+
+
+                                }
+                            });
+
+
+                        } else {
+                            {#    model gelecek #}
+
+                            alert("Lütfen eksik alanlari giriniz");
+
+                        }
+
+
                     }
                 });
 
