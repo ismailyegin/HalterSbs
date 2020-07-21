@@ -23,7 +23,7 @@ class CompetitionForm(ModelForm):
 
             'year':forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker5', 'autocomplete': 'on',
-                       'onkeydown': 'return true'}),
+                       'onkeydown': 'return true','required': 'required'}),
             'juryCount': forms.NumberInput(attrs={'class': 'form-control'}),
 
             'registerStartDate': forms.DateInput(
@@ -39,11 +39,11 @@ class CompetitionForm(ModelForm):
 
             'startDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker2', 'autocomplete': 'on',
-                       'onkeydown': 'return true'}),
+                       'onkeydown': 'return true','required': 'required'}),
 
             'finishDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'on',
-                       'onkeydown': 'return true'}),
+                       'onkeydown': 'return true','required': 'required'}),
 
             'name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
 
