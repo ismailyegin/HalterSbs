@@ -130,9 +130,9 @@ def return_competitions(request):
                 query &= Q(compType__in=compType)
             if compGeneralType:
                 query &= Q(compGeneralType__in=compGeneralType)
-            competitions=Competition.objects.filter(query).order_by('-year').distinct()
+            competitions=Competition.objects.filter(query).order_by('-startDate').distinct()
         else:
-            competitions = Competition.objects.all().order_by('-year')
+            competitions = Competition.objects.all().order_by('-startDate')
     return render(request, 'musabaka/musabakalar.html',
                   {'competitions': competitions, 'query': comquery, 'application': competition})
 
