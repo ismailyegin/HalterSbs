@@ -800,6 +800,7 @@ def referenceStatus(request, pk):
             person.profileImage = reference.profileImage
             person.birthDate = reference.birthDate
             person.bloodType = reference.bloodType
+            person.birthplace=reference.birthplace
             if reference == 'Erkek':
                 person.gender = Person.MALE
             else:

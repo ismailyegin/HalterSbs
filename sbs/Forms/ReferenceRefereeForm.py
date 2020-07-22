@@ -3,20 +3,33 @@ from sbs.models.ReferenceReferee import ReferenceReferee
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.db import models
+from sbs.models.CategoryItem import CategoryItem
+
 
 
 class RefereeForm(ModelForm):
+    k_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'),
+                                               to_field_name='name',
+                                               empty_label="Seçiniz",
+                                               label="Kademe",
+                                               widget=forms.Select(
+                                                   attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                          'style': 'width: 100%; '}))
     class Meta:
+
         model = ReferenceReferee
         fields = (
-        'first_name', 'last_name', 'email', 'is_active', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
-        'country', 'iban',
-        'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
-        'fatherName')
+            'first_name', 'last_name', 'email', 'is_active', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2',
+            'city',
+            'country', 'iban', 'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
+            'fatherName')
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
-                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet'}
+                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet',
+                  }
         widgets = {
+
+
 
             'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
@@ -32,8 +45,7 @@ class RefereeForm(ModelForm):
 
             'fatherName': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
-            'iban': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
+
 
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
@@ -56,6 +68,8 @@ class RefereeForm(ModelForm):
                 attrs={'class': 'form-control ', 'rows': '2'}),
 
             'phoneNumber': forms.TextInput(attrs={'class': 'form-control '}),
+
+            'iban': forms.TextInput(attrs={'class': 'form-control '}),
 
             'phoneNumber2': forms.TextInput(attrs={'class': 'form-control '}),
 
