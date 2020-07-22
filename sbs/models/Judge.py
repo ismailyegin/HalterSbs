@@ -15,6 +15,7 @@ class Judge(models.Model):
     modificationDate = models.DateTimeField(auto_now=True)
     grades = models.ManyToManyField(Level, related_name='Judgegrades')
     visa = models.ManyToManyField(Level, related_name='Judgevisa')
+    iban = models.CharField(max_length=120, null=True, blank=True, verbose_name='İban Adresi')
 
     def __str__(self):
         return '%s %s' % (self.user.first_name, self.user.last_name)

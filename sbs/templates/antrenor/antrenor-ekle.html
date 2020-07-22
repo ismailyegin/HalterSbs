@@ -68,8 +68,8 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">Genel Bilgiler</h3>
                         </div>
-                       <div class="box-body">
-                           <div class="row">
+                        <div class="box-body">
+                            <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label> {{ person_form.profileImage.label }}</label>
@@ -83,9 +83,9 @@
                                     </div>
 
 
-                                    <div class="form-group">
-                                        <label> {{ person_form.motherName.label }}</label>
-                                        {{ person_form.motherName }}
+                                                                        <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
                                     </div>
 
 
@@ -110,10 +110,9 @@
 
 
                                     <div class="form-group">
-                                        <label> {{ user_form.last_name.label }}</label>
-                                        {{ user_form.last_name }}
+                                        <label> {{ person_form.motherName.label }}</label>
+                                        {{ person_form.motherName }}
                                     </div>
-
 
                                     <div class="form-group">
                                         <label> {{ person_form.fatherName.label }}</label>
@@ -130,6 +129,15 @@
                                     <div class="form-group">
                                         <label> {{ person_form.gender.label }}</label>
                                         {{ person_form.gender }}
+                                    </div>
+
+
+                                </div>
+                                <div class="col-lg-12">
+
+                                    <div class="form-group">
+                                        <label> {{ iban_form.iban.label }}</label>
+                                        {{ iban_form.iban }}
                                     </div>
 
 

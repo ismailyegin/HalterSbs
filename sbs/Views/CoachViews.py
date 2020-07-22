@@ -25,6 +25,7 @@ from sbs.Forms.VisaForm import VisaForm
 from sbs.Forms.PersonForm import PersonForm
 from sbs.Forms.CoachSearchForm import CoachSearchForm
 from sbs.Forms.SearchClupForm import SearchClupForm
+from sbs.Forms.IbanCoachForm import IbanCoachForm
 
 from sbs.Forms.ReferenceCoachForm import RefereeCoachForm
 
@@ -140,14 +141,16 @@ def return_add_coach(request):
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
+    iban_form=IbanCoachForm()
 
     if request.method == 'POST':
 
         user_form = UserForm(request.POST)
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST)
+        iban_form=IbanCoachForm(request.POST)
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name'].upper()
@@ -168,7 +171,7 @@ def return_add_coach(request):
             communication.save()
 
             coach = Coach(user=user, person=person, communication=communication)
-
+            coach.iban=iban_form.cleaned_data['iban']
             coach.save()
             # antroner kaydından sonra mail gönderilmeyecek
 
@@ -181,6 +184,19 @@ def return_add_coach(request):
             # msg.attach_alternative(html_content, "text/html")
             # msg.send()
 
+            fdk = Forgot(user=user, status=False)
+            fdk.save()
+
+            html_content = ''
+            subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
+                fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
             messages.success(request, 'Antrenör Başarıyla Kayıt Edilmiştir.')
 
             return redirect('sbs:antrenorler')
@@ -191,7 +207,8 @@ def return_add_coach(request):
                 messages.warning(request, user_form.errors[x][0])
 
     return render(request, 'antrenor/antrenor-ekle.html',
-                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form})
+                  {'user_form': user_form, 'person_form': person_form,
+                   'communication_form': communication_form,'iban_form':iban_form})
 
 
 @login_required
@@ -430,7 +447,7 @@ def referenceCoachStatus(request, pk):
             communication.save()
 
             coach = Coach(user=user, person=person, communication=communication)
-
+            coach.iban=referenceCoach.iban
             coach.save()
             messages.success(request, 'Antrenör Başarıyla Eklenmiştir')
             referenceCoach.status = ReferenceCoach.APPROVED
@@ -518,12 +535,14 @@ def coachUpdate(request, pk):
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
+    iban_form=IbanCoachForm(request.POST or None, instance=coach)
     if request.method == 'POST':
         user = User.objects.get(pk=coach.user.pk)
         user_form = UserForm(request.POST or None, instance=user)
         person_form = PersonForm(request.POST, request.FILES, instance=person)
         communication_form = CommunicationForm(request.POST or None, instance=communication)
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+        iban_form = IbanCoachForm(request.POST or None, instance=coach)
+        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name'].upper()
@@ -533,6 +552,7 @@ def coachUpdate(request, pk):
             user = user_form.save(commit=False)
             user.username = user_form.cleaned_data['email']
             user.save()
+            iban_form.save()
             person_form.save()
             communication_form.save()
 
@@ -543,7 +563,8 @@ def coachUpdate(request, pk):
 
     return render(request, 'antrenor/antrenorDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,'personCoach':person,'visa_form':visa_form})
+                   'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
+                   'personCoach':person,'visa_form':visa_form,'iban_form':iban_form})
 
 
 @login_required

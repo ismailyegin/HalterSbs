@@ -20,6 +20,7 @@ from sbs.Forms.UserSearchForm import UserSearchForm
 from sbs.Forms.GradeFormReferee import GradeFormReferee
 from sbs.Forms.RefereeSearchForm import RefereeSearchForm
 from sbs.Forms.SearchClupForm import SearchClupForm
+from sbs.Forms.IbanFormJudge import IbanFormJudge
 
 from sbs.Forms.VisaForm import VisaForm
 from sbs.Forms.VisaSeminarForm import VisaSeminarForm
@@ -44,14 +45,16 @@ def return_add_referee(request):
     user_form = UserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
+    iban_form=IbanFormJudge()
 
     if request.method == 'POST':
 
         user_form = UserForm(request.POST)
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST)
+        iban_form = IbanFormJudge(request.POST)
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name'].upper()
@@ -65,23 +68,37 @@ def return_add_referee(request):
             user.groups.add(group)
             user.save()
 
+
             person = person_form.save(commit=False)
             communication = communication_form.save(commit=False)
             person.save()
             communication.save()
 
             judge = Judge(user=user, person=person, communication=communication)
-
+            judge.iban=iban_form.cleaned_data['iban']
             judge.save()
 
             # subject, from_email, to = 'Halter - Hakem Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr:81', user.email
             # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
-            # html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr:81/"></a>sbs.twf.gov.tr<</p>'
+            # html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.halter.gov.tr:81/"></a>sbs.halter.gov.tr<</p>'
             # html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
             # html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
             # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             # msg.attach_alternative(html_content, "text/html")
             # msg.send()
+
+            fdk = Forgot(user=user, status=False)
+            fdk.save()
+
+            html_content = ''
+            subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
+                fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
             messages.success(request, 'Hakem Başarıyla Kayıt Edilmiştir.')
 
@@ -93,7 +110,8 @@ def return_add_referee(request):
                 messages.warning(request, user_form.errors[x][0])
 
     return render(request, 'hakem/hakem-ekle.html',
-                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form})
+                  {'user_form': user_form, 'person_form': person_form,
+                   'communication_form': communication_form,'iban_form':iban_form})
 
 
 @login_required
@@ -291,18 +309,23 @@ def updateReferee(request, pk):
     user_form = UserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
     communication_form = CommunicationForm(request.POST or None, instance=communication)
+    iban_form=IbanFormJudge(request.POST or None, instance=judge)
+
     grade_form = judge.grades.all()
     visa_form = judge.visa.all()
     if request.method == 'POST':
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name'].upper()
             user.last_name = user_form.cleaned_data['last_name'].upper()
             user.email = user_form.cleaned_data['email']
             user.save()
+            iban_form.save()
+
             person_form.save()
             communication_form.save()
+
 
             messages.success(request, 'Hakem Başarıyla Güncellendi')
             # return redirect('sbs:hakemler')
@@ -311,7 +334,8 @@ def updateReferee(request, pk):
 
     return render(request, 'hakem/hakemDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'judge': judge, 'grade_form': grade_form, 'visa_form': visa_form})
+                   'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
+                   'visa_form': visa_form,'iban_form':iban_form,})
 
 
 @login_required

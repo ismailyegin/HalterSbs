@@ -78,11 +78,22 @@
                                 </div>
                                 <div class="box-body">
                                     <div class="row">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-12 text-center ">
                                             <div class="form-group">
                                                 <label> {{ preRegistrationform.profileImage.label }}</label>
+
+                                                <center>
+                                                    <img
+                                                            src="/media/{{ preRegistrationform.instance.profileImage }}"
+                                                            class="img-responsive img-bordered " alt="Resim Yok"
+                                                    ><br>
+                                                </center>
+
                                                 {{ preRegistrationform.profileImage }}
                                             </div>
+
+                                        </div>
+                                        <div class="col-lg-6">
 
 
                                             <div class="form-group">

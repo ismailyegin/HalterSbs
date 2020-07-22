@@ -41,7 +41,7 @@ class Person(models.Model):
                                      verbose_name='Profil Resmi')
     birthDate = models.DateField(null=True, blank=True, verbose_name='Doğum Tarihi')
     bloodType = models.CharField(max_length=128, verbose_name='Kan Grubu', choices=BLOODTYPE, default=AB1)
-    gender = models.IntegerField(blank=True, null=True, choices=GENDER_CHOICES)
+    gender = models.IntegerField( choices=GENDER_CHOICES)
 
     class Meta:
         default_permissions = ()
