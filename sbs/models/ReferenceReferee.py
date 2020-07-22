@@ -50,10 +50,6 @@ class ReferenceReferee(models.Model):
         (WAITED, 'Beklemede'),
     )
 
-    k_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
-    k_startDate = models.DateField()
-    k_levelType = models.CharField(max_length=128, verbose_name='Leveller', choices=EnumFields.LEVELTYPE.value)
-    k_status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
 
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
     iban = models.CharField(max_length=120, null=True, blank=True, verbose_name='İban Adresi')
@@ -78,6 +74,18 @@ class ReferenceReferee(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl')
     country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke')
 
+
+
+    kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
+    kademe_startDate= models.DateField(verbose_name="Kademe başlangıç Tarihi")
+    kademe_levelType = models.CharField(max_length=128, verbose_name='Leveller', choices=EnumFields.LEVELTYPE.value)
+    # kademe_status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
+    # # kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
+    # kademe_branch = models.CharField(max_length=128, verbose_name='Branş', choices=EnumFields.BRANCH.value)
+
+
+
+
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
     email = models.EmailField(max_length=254, blank=True)
@@ -88,9 +96,10 @@ class ReferenceReferee(models.Model):
 
 
 
+
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
-
+    #
     class Meta:
         default_permissions = ()
-        managed = False
+        managed = True

@@ -194,7 +194,6 @@
                                             </div>
 
 
-
                                             <div class="form-group">
                                                 <label> {{ preRegistrationform.motherName.label }}</label>
                                                 {{ preRegistrationform.motherName }}
@@ -217,12 +216,9 @@
                                                 <label> {{ preRegistrationform.gender.label }}</label>
                                                 {{ preRegistrationform.gender }}
                                             </div>
-                                            <div class="form-group">
 
-                                                <label> {{ preRegistrationform.iban.label }}</label>
-                                                {{ preRegistrationform.iban }}
-                                            </div>
                                         </div>
+
 
                                     </div>
                                 </div>
@@ -275,9 +271,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="box-footer">
-                                    <button class="btn btn-primary btn-lg" type="submit">Onaya gönder</button>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+
+                                            <label> {{ preRegistrationform.iban.label }}</label>
+                                            {{ preRegistrationform.iban }}
+                                        </div>
+
+                                    </div>
+
                                 </div>
 
 
@@ -287,6 +289,43 @@
 
                     </div>
                     <div class="row">
+
+                        <div class="col-lg-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"> Kademe Bilgileri </h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.kademe_startDate.label }}</label>
+                                                {{ preRegistrationform.kademe_startDate }}
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-lg-6">
+
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.kademe_definition.label }}</label>
+                                                {{ preRegistrationform.kademe_definition }}
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="box-footer">
+                                    <button class="btn btn-primary btn-lg" type="submit">Onaya gönder</button>
+                                </div>
+
+
+                            </div>
+
+                        </div>
 
 
                     </div>

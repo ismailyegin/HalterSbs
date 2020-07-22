@@ -283,7 +283,7 @@ def referenceUpdateReferee(request, pk):
     # grade_form = judge.grades.all()
     # visa_form = judge.visa.all()
     refere = ReferenceReferee.objects.get(pk=pk)
-    refere_form = RefereeForm(request.POST or None, request.FILES or None, instance=refere)
+    refere_form = RefereeForm(request.POST or None, request.FILES or None, instance=refere,initial={'kademe_definition': refere.kademe_definition})
     if request.method == 'POST':
         if refere_form.is_valid():
             refere_form.save()

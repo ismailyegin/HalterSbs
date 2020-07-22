@@ -8,19 +8,19 @@ from sbs.models.CategoryItem import CategoryItem
 
 
 class RefereeForm(ModelForm):
-    k_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'),
+    kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'),
                                                to_field_name='name',
                                                empty_label="Seçiniz",
                                                label="Kademe",
+                                               required='required',
                                                widget=forms.Select(
                                                    attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                           'style': 'width: 100%; '}))
     class Meta:
-
         model = ReferenceReferee
         fields = (
             'first_name', 'last_name', 'email', 'is_active', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2',
-            'city',
+            'city','kademe_startDate',
             'country', 'iban', 'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
             'fatherName')
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
@@ -45,6 +45,12 @@ class RefereeForm(ModelForm):
 
             'fatherName': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
+
+
+
+            'kademe_startDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'off',
+                       'onkeydown': 'return false','required': 'required'}),
 
 
             'birthDate': forms.DateInput(

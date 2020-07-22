@@ -9,13 +9,14 @@ from django.shortcuts import render, redirect, render_to_response
 from accounts.forms import LoginForm, PermForm
 from accounts.models import Forgot
 
+
 from sbs.Forms.PreRegidtrationForm import PreRegistrationForm
 
 from django.contrib import auth, messages
 
 from sbs import urls
 from sbs.models import MenuAthlete, MenuCoach, MenuReferee, MenuDirectory, MenuAdmin, MenuClubUser, SportsClub, \
-    SportClubUser
+    SportClubUser,CategoryItem
 from sbs.models.PreRegistration import PreRegistration
 from sbs.services import general_methods
 from sbs.services.general_methods import show_urls
@@ -390,11 +391,19 @@ def referenceReferee(request):
         if User.objects.filter(email=request.POST.get('email')):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Referee.html', {'preRegistrationform': referee})
+
         if referee.is_valid():
-            referee.save()
-            messages.success(request,
-                             'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
-            return redirect("accounts:login")
+            if request.POST.get('kademe_definition'):
+                hakem=referee.save(commit=False)
+                hakem.kademe_definition= CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+                hakem.save()
+
+                messages.success(request,
+                                 'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
+                return redirect("accounts:login")
+            else:
+                messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
+
         else:
             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Referee.html',
@@ -403,14 +412,19 @@ def referenceReferee(request):
 
 def referenceCoach(request):
     logout(request)
-    antrenor = RefereeCoachForm()
+    coach_form = RefereeCoachForm()
     if request.method == 'POST':
-        antrenor = RefereeCoachForm(request.POST, request.FILES)
+        coach_form = RefereeCoachForm(request.POST, request.FILES)
         if User.objects.filter(email=request.POST.get('email')):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Coach.html', {'preRegistrationform': antrenor})
-        if antrenor.is_valid():
-            antrenor.save()
+        if coach_form.is_valid():
+            print(request.POST.get('kademe_startDate'))
+
+            veri=coach_form.save(commit=False)
+            veri.kademe_definition=CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+            veri.save()
+
             messages.success(request,
                              'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
             return redirect("accounts:login")
@@ -418,7 +432,7 @@ def referenceCoach(request):
         else:
             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Coach.html',
-                  {'preRegistrationform': antrenor})
+                  {'preRegistrationform': coach_form})
 
 
 def referenceAthlete(request):

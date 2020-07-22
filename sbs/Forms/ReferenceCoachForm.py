@@ -3,19 +3,32 @@ from sbs.models.ReferenceCoach import ReferenceCoach
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.db import models
+from sbs.models.CategoryItem import CategoryItem
 
 
 class RefereeCoachForm(ModelForm):
+    kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'),
+                                               to_field_name='name',
+                                               empty_label="Seçiniz",
+                                               label="Kademe",
+                                               required='required',
+                                               widget=forms.Select(
+                                                   attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                          'style': 'width: 100%; '}))
+
     class Meta:
         model = ReferenceCoach
         fields = (
         'first_name', 'last_name', 'email', 'is_active', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
-        'country', 'iban',
-        'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
-        'fatherName')
+        'country', 'iban','tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
+        'fatherName','kademe_belge','kademe_startDate')
+
+
+
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
-                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet'}
+                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Belge ',
+                  'kademe_startDate':'Kademe Başlangıç Zamanı ',}
         widgets = {
 
             'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
@@ -66,6 +79,9 @@ class RefereeCoachForm(ModelForm):
 
             'country': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                            'style': 'width: 100%;', 'required': 'required'}),
+            'kademe_startDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker2', 'autocomplete': 'off',
+                       'onkeydown': 'return false', 'required': 'required'}),
 
         }
 

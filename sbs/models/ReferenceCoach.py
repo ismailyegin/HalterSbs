@@ -81,11 +81,11 @@ class ReferenceCoach(models.Model):
                                     help_text=('Designates whether this user should be treated as active. '))
 
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
-    kademe_startDate = models.DateField()
-    kademe_branch = models.CharField(max_length=128, verbose_name='Branş', choices=EnumFields.BRANCH.value)
-    kademe_levelType = models.CharField(max_length=128, verbose_name='Leveller', choices=EnumFields.LEVELTYPE.value)
-    kademe_status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
+    kademe_startDate = models.DateField(null=True,blank=True,verbose_name='Başlangıç Tarihi ')
     kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
+
+
+
 
 
 
