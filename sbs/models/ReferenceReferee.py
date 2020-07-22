@@ -102,4 +102,4 @@ class ReferenceReferee(models.Model):
     #
     class Meta:
         default_permissions = ()
-        # managed = True
+        managed = False
