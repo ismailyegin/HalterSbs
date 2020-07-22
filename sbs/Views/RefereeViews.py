@@ -788,9 +788,11 @@ def referenceStatus(request, pk):
             user.last_name = reference.last_name.upper()
             user.email = reference.email
             group = Group.objects.get(name='Hakem')
-            user.is_active = True
+
+
             user.save()
             user.groups.add(group)
+            user.is_active = True
             user.save()
 
             person = Person()

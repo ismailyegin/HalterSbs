@@ -420,9 +420,10 @@ def referenceCoachStatus(request, pk):
             user.last_name = referenceCoach.last_name.upper()
             user.email = referenceCoach.email
             group = Group.objects.get(name='Antrenor')
-            user.is_active = True
+
             user.save()
             user.groups.add(group)
+            user.is_active = True
             user.save()
 
             person = Person()
@@ -502,7 +503,7 @@ def coachreferenceUpdate(request, pk):
         logout(request)
         return redirect('accounts:login')
     coach = ReferenceCoach.objects.get(pk=pk)
-    coach_form = RefereeCoachForm(request.POST or None, request.FILES or None, instance=coach)
+    coach_form = RefereeCoachForm(request.POST or None, request.FILES or None, instance=coach , initial={'kademe_definition': coach.kademe_definition})
     if request.method == 'POST':
 
         if coach_form.is_valid():

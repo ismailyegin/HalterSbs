@@ -419,10 +419,10 @@ def referenceCoach(request):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Coach.html', {'preRegistrationform': antrenor})
         if coach_form.is_valid():
-            print(request.POST.get('kademe_startDate'))
 
             veri=coach_form.save(commit=False)
             veri.kademe_definition=CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+
             veri.save()
 
             messages.success(request,
