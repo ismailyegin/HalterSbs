@@ -99,8 +99,8 @@ class PreRegistration(models.Model):
     is_active = models.BooleanField(default=False,help_text=('Designates whether this user should be treated as active. '))
 
     # gerekli evraklar
-    dekont = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Dekont ')
-    petition= models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Dilekçe ')
+    dekont = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Dekont ')
+    petition= models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Dilekçe ')
     # Sportclup user
     role = models.ForeignKey(ClubRole, on_delete=models.CASCADE, verbose_name='Üye Rolü')
 

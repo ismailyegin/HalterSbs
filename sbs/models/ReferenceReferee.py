@@ -78,7 +78,7 @@ class ReferenceReferee(models.Model):
 
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
     kademe_startDate= models.DateField(verbose_name="Kademe başlangıç Tarihi")
-    kademe_levelType = models.CharField(max_length=128, verbose_name='Leveller', choices=EnumFields.LEVELTYPE.value)
+    kademe_levelType = models.CharField(max_length=128, verbose_name='Leveller',blank=True, null=True, choices=EnumFields.LEVELTYPE.value)
     # kademe_status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
     # # kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
     # kademe_branch = models.CharField(max_length=128, verbose_name='Branş', choices=EnumFields.BRANCH.value)
@@ -102,4 +102,4 @@ class ReferenceReferee(models.Model):
     #
     class Meta:
         default_permissions = ()
-        managed = True
+        # managed = True

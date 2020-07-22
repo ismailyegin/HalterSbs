@@ -13,7 +13,7 @@ from django.urls import reverse
 from sbs.Forms.CompetitionForm import CompetitionForm
 from sbs.Forms.CompetitionSearchForm import CompetitionSearchForm
 from django.db.models import Q
-from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight
+from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight,PreRegistration
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
 from sbs.models.SimpleCategory import SimpleCategory
@@ -53,5 +53,5 @@ def sporcular(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    referee = ReferenceAthlete.objects.all()
+    referee=None
     return render(request, 'basvurular/sporcubasvuru.html', {'referees': referee})
