@@ -1,6 +1,8 @@
 from django.db import models
 from sbs.models.City import City
 from sbs.models.Country import Country
+from sbs.models.CategoryItem import CategoryItem
+from sbs.models.EnumFields import EnumFields
 
 
 class ReferenceReferee(models.Model):
@@ -47,6 +49,12 @@ class ReferenceReferee(models.Model):
         (DENIED, 'Reddedildi'),
         (WAITED, 'Beklemede'),
     )
+
+    k_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
+    k_startDate = models.DateField()
+    k_levelType = models.CharField(max_length=128, verbose_name='Leveller', choices=EnumFields.LEVELTYPE.value)
+    k_status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
+
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
     iban = models.CharField(max_length=120, null=True, blank=True, verbose_name='İban Adresi')
 
@@ -77,6 +85,8 @@ class ReferenceReferee(models.Model):
                                    help_text=('Designates whether the user can log into this admin site.'))
     is_active = models.BooleanField(default=False,
                                     help_text=('Designates whether this user should be treated as active. '))
+
+
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
