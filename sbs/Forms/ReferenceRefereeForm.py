@@ -74,8 +74,10 @@ class RefereeForm(ModelForm):
                 attrs={'class': 'form-control ', 'rows': '2'}),
 
             'phoneNumber': forms.TextInput(attrs={'class': 'form-control '}),
-
-            'iban': forms.TextInput(attrs={'class': 'form-control '}),
+            'iban': forms.TextInput(
+                attrs={'id': 'iban', 'class': 'form-control  iban',
+                       'onkeyup': 'if(this.value.length > 34){this.value=this.value.substr(0, 34);}', 'value': '',
+                       'required': 'required'}),
 
             'phoneNumber2': forms.TextInput(attrs={'class': 'form-control '}),
 

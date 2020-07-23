@@ -362,6 +362,23 @@
 
 {% endblock %}
 
+
+
+<script>
+
+
+
+
+    $(document).ready(function() {
+
+        document.getElementById('iban').addEventListener('input', function (e) {
+  e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+});
+
+
+});
+</script>
+
 <!-- Bootstrap 3.3.7 -->
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 

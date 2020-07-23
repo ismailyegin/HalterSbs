@@ -27,7 +27,7 @@ class RefereeCoachForm(ModelForm):
 
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
-                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Belge ',
+                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Antrenörlük Belgesi Yükleyiniz:',
                   'kademe_startDate':'Kademe Başlangıç Zamanı ',}
         widgets = {
 
@@ -46,7 +46,7 @@ class RefereeCoachForm(ModelForm):
             'fatherName': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
             'iban': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
+                attrs={'id':'iban','class': 'form-control  iban','onkeyup':'if(this.value.length > 34){this.value=this.value.substr(0, 34);}','value': '', 'required': 'required'}),
 
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
