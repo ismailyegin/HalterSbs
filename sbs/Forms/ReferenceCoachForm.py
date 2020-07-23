@@ -31,8 +31,12 @@ class RefereeCoachForm(ModelForm):
                   'kademe_startDate':'Kademe Başlangıç Zamanı ',}
         widgets = {
 
-            'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
-
+            'tc': forms.TextInput(attrs={'class': 'form-control ',
+                                            'onkeyup': 'if(this.value.length >11){this.value=this.value.substr(0, 11);}',
+                                            'id': 'tc',
+                                          'onkeypress':'return isNumberKey(event)',
+                                            'value': '',
+                                            'required': 'required'}),
             'height': forms.TextInput(attrs={'class': 'form-control'}),
 
             'weight': forms.TextInput(attrs={'class': 'form-control'}),
