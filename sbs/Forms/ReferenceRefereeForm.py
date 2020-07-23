@@ -6,7 +6,6 @@ from django.db import models
 from sbs.models.CategoryItem import CategoryItem
 
 
-
 class RefereeForm(ModelForm):
     kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'),
                                                to_field_name='name',
@@ -16,12 +15,14 @@ class RefereeForm(ModelForm):
                                                widget=forms.Select(
                                                    attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                           'style': 'width: 100%; '}))
+
     class Meta:
         model = ReferenceReferee
         fields = (
             'first_name', 'last_name', 'email', 'is_active', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2',
-            'city','kademe_startDate',
-            'country', 'iban', 'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
+            'city', 'kademe_startDate',
+            'country', 'iban', 'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender',
+            'birthplace', 'motherName',
             'fatherName')
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
@@ -29,9 +30,13 @@ class RefereeForm(ModelForm):
                   }
         widgets = {
 
+            'tc': forms.TextInput(attrs={'class': 'form-control ',
+                                            'onkeyup': 'if(this.value.length >11){this.value=this.value.substr(0, 11);}',
+                                            'id': 'tc',
+                                          'onkeypress':'return isNumberKey(event)',
 
-
-            'tc': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
+                                            'value': '',
+                                            'required': 'required'}),
 
             'height': forms.TextInput(attrs={'class': 'form-control'}),
 
@@ -46,12 +51,9 @@ class RefereeForm(ModelForm):
             'fatherName': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
 
-
-
             'kademe_startDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'off',
-                       'onkeydown': 'return false','required': 'required'}),
-
+                       'onkeydown': 'return false', 'required': 'required'}),
 
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
