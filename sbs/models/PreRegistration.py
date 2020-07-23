@@ -60,7 +60,7 @@ class PreRegistration(models.Model):
     birthplace = models.CharField(max_length=120, null=True, blank=True,verbose_name='Doğum Yeri')
     motherName = models.CharField(max_length=120, null=True, blank=True,verbose_name='Anne Adı')
     fatherName = models.CharField(max_length=120, null=True, blank=True,verbose_name='Baba Adı')
-    profileImage = models.ImageField(upload_to='profile/', null=True, blank=True, default='profile/user.png',verbose_name='Profil Resmi')
+    profileImage = models.ImageField(upload_to='profile/', null=False, blank=False,verbose_name='Profil Resmi')
     birthDate = models.DateField(null=True, blank=True, verbose_name='Doğum Tarihi')
     bloodType = models.CharField(max_length=128, verbose_name='Kan Grubu', choices=BLOODTYPE, default=AB1)
     gender = models.CharField(max_length=128, verbose_name='Cinsiyeti', choices=GENDER_CHOICES, default=MALE)
@@ -100,9 +100,9 @@ class PreRegistration(models.Model):
 
     # gerekli evraklar
     dekont = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Dekont ')
-    petition= models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Dilekçe ')
+    petition= models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Dilekçe ')
     # Sportclup user
-    role = models.ForeignKey(ClubRole, on_delete=models.CASCADE, verbose_name='Üye Rolü')
+    role = models.ForeignKey(ClubRole, on_delete=models.DO_NOTHING, verbose_name='Üye Rolü')
 
 
     class Meta:

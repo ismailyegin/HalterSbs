@@ -154,7 +154,7 @@
                         </div>
 
                         <div class="box-body">
-                            <table id="hakemler" class="table table-bordered table-hover">
+                            <table id="basvuru" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
@@ -237,14 +237,15 @@
 
     <script>
         $(function () {
-            $('#hakemler').DataTable({
-                'paging': true,
+            $('#basvuru').DataTable({
+                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
                 'ordering': true,
                 'info': true,
-                'autoWidth': true
-            })
+                'autoWidth': true,
+                'responsive':true,
+            });
 
         })
     </script>

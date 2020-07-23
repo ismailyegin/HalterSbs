@@ -139,7 +139,7 @@
 
                     <div class="box-body">
 
-                        <table id="belt" class="table table-bordered table-hover">
+                        <table id="basvuru" class="table table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -149,7 +149,7 @@
 
                                 <th> email</th>
                                 <th> Onay Durumu</th>
-                                <th> Dekont</th>
+
                                 <th> Form</th>
                                 <th> İşlemler</th>
 
@@ -175,9 +175,7 @@
                                         <td>{{ pre.status }}  </td>
 
 
-                                        <td><a target="_blank" href="{{ MEDIA_URL }}{{ pre.dekont }}"><img
-                                                src="/media/{{ pre.dekont }}" class="user-image" alt="None"
-                                                style=" width: 30px;height: 30px;"></a></td>
+
                                         <td><a target="_blank" href="{{ MEDIA_URL }}{{ pre.petition }}"><img
                                                 src="/media/{{ pre.petition }}" class="user-image" alt="None"
                                                 style=" width: 30px;height: 30px;"></a></td>
@@ -223,30 +221,35 @@
 
     </section>
 
+
+
     <script>
         $(function () {
-            $('#kusak-listesi').DataTable({
+            $('#basvuru').DataTable({
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
                 'ordering': true,
                 'info': true,
-                'autoWidth': true
-            })
+                'autoWidth': true,
+                "columnDefs": [
+                    {responsivePriority: 1, targets: 1},
+                    {responsivePriority: 2, targets: 7},
+                ],
+                'responsive': {
+                    'details': {
 
-        })
-    </script>
 
-    <script>
-        $(function () {
-            $('#belt').DataTable({
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'ordering': true,
-                'info': true,
-                'autoWidth': true
-            })
+                        'display': $.fn.dataTable.Responsive.display.modal({
+                            'header': function (row) {
+                                var data = row.data();
+                                return data[1];
+                            }
+                        }),
+                        'renderer': $.fn.dataTable.Responsive.renderer.tableAll(),
+                    }
+                },
+            });
 
         })
     </script>
