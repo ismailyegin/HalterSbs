@@ -61,8 +61,7 @@ class ReferenceReferee(models.Model):
     birthplace = models.CharField(max_length=120, null=True, blank=True, verbose_name='Doğum Yeri')
     motherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Anne Adı')
     fatherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Baba Adı')
-    profileImage = models.ImageField(upload_to='profile/', null=True, blank=True,
-                                     verbose_name='Profil Resmi')
+    profileImage = models.ImageField(upload_to='profile/', null=False, blank=False,verbose_name='Profil Resmi')
     birthDate = models.DateField(null=True, blank=True, verbose_name='Doğum Tarihi')
     bloodType = models.CharField(max_length=128, verbose_name='Kan Grubu', choices=BLOODTYPE, default=AB1)
     gender = models.CharField(max_length=128, verbose_name='Cinsiyeti', choices=GENDER_CHOICES, default=MALE)
@@ -78,10 +77,8 @@ class ReferenceReferee(models.Model):
 
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
     kademe_startDate= models.DateField(verbose_name="Kademe başlangıç Tarihi")
-    kademe_levelType = models.CharField(max_length=128, verbose_name='Leveller',blank=True, null=True, choices=EnumFields.LEVELTYPE.value)
-    # kademe_status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
-    # # kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
-    # kademe_branch = models.CharField(max_length=128, verbose_name='Branş', choices=EnumFields.BRANCH.value)
+    kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
+
 
 
 
