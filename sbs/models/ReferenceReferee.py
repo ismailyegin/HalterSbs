@@ -77,7 +77,7 @@ class ReferenceReferee(models.Model):
 
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
     kademe_startDate= models.DateField(verbose_name="Kademe başlangıç Tarihi")
-    kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
+
 
 
 
