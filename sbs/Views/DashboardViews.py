@@ -114,11 +114,13 @@ def return_club_user_dashboard(request):
                 for club in clubs:
                     if athletes:
                         club.dataAccessControl = False
+                        club.save()
 
                     else:
 
                         club.dataAccessControl = True
-                    club.save()
+                        club.save()
+
 
                 if athletes:
                     sc_user.dataAccessControl = False
