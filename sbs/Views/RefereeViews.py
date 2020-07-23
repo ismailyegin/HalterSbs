@@ -425,13 +425,17 @@ def hakem_kademe_ekle(request, pk):
                           branch=grade_form.cleaned_data['branch'])
             grade.levelType = EnumFields.LEVELTYPE.GRADE
             grade.status = Level.WAITED
+            grade.isActive = True
             grade.save()
-            referee.grades.add(grade)
-            referee.save()
             for item in referee.grades.all():
                 if item.branch == grade.branch:
                     item.isActive = False
                     item.save()
+
+            referee.grades.add(grade)
+            referee.save()
+
+
 
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
             return redirect('sbs:hakem-duzenle', pk=pk)
@@ -803,7 +807,7 @@ def referenceStatus(request, pk):
             person.birthDate = reference.birthDate
             person.bloodType = reference.bloodType
             person.birthplace=reference.birthplace
-            if reference == 'Erkek':
+            if reference.gender == 'Erkek':
                 person.gender = Person.MALE
             else:
                 person.gender = Person.FEMALE
@@ -818,10 +822,23 @@ def referenceStatus(request, pk):
             communication.save()
 
             judge = Judge(user=user, person=person, communication=communication)
-
+            judge.iban = reference.iban
             judge.save()
+
+            grade = Level(definition=reference.kademe_definition,
+                          startDate=reference.kademe_startDate,
+                          branch=EnumFields.HALTER.value)
+            grade.levelType = EnumFields.LEVELTYPE.GRADE
+            grade.status = Level.APPROVED
+            grade.isActive = True
+            grade.save()
+
+            judge.grades.add(grade)
+            judge.save()
+
             reference.status = ReferenceReferee.APPROVED
             reference.save()
+
             messages.success(request, 'Hakem Başarıyla Eklenmiştir')
 
             fdk = Forgot(user=user, status=False)

@@ -433,7 +433,7 @@ def referenceCoachStatus(request, pk):
             person.profileImage = referenceCoach.profileImage
             person.birthDate = referenceCoach.birthDate
             person.bloodType = referenceCoach.bloodType
-            if referenceCoach == 'Erkek':
+            if referenceCoach.gender == 'Erkek':
                 person.gender = Person.MALE
             else:
                 person.gender = Person.FEMALE
@@ -450,6 +450,25 @@ def referenceCoachStatus(request, pk):
             coach = Coach(user=user, person=person, communication=communication)
             coach.iban=referenceCoach.iban
             coach.save()
+
+            grade = Level(definition=referenceCoach.kademe_definition,
+                          startDate=referenceCoach.kademe_startDate,
+                          dekont=referenceCoach.kademe_belge,
+                          branch=EnumFields.HALTER.value)
+            grade.levelType = EnumFields.LEVELTYPE.GRADE
+            grade.status = Level.APPROVED
+            grade.isActive = True
+            grade.save()
+            coach.grades.add(grade)
+            coach.save()
+
+
+
+
+
+
+
+
             messages.success(request, 'Antrenör Başarıyla Eklenmiştir')
             referenceCoach.status = ReferenceCoach.APPROVED
             referenceCoach.save()
