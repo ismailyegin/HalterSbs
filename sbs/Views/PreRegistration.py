@@ -52,7 +52,7 @@ def update_preRegistration(request, pk):
                               {'preRegistrationform': form, })
             form.save()
             messages.success(request,'Basarili bir şekilde kaydedildi ')
-            return redirect('wushu:basvuru-listesi')
+            return redirect('sbs:basvuru-listesi')
         else:
             messages.warning(request,'Alanlari kontrol ediniz')
     return render(request, 'kulup/kulup-basvuru-duzenle.html',

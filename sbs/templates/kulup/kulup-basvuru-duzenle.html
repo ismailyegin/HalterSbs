@@ -156,8 +156,19 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="col-lg-6">
+
+
                                         <div class="form-group">
                                             <label> {{ preRegistrationform.profileImage.label }}</label>
+
+                                            <center>
+                                                <img
+                                                        src="/media/{{ preRegistrationform.instance.profileImage }}"
+                                                        class="img-responsive img-bordered " alt="Resim Yok"
+                                                        style=" max-width: 60%; height: auto;"
+                                                ><br>
+                                            </center>
+
                                             {{ preRegistrationform.profileImage }}
                                         </div>
 
