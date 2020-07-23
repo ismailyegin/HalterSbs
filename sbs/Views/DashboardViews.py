@@ -159,11 +159,14 @@ def return_admin_dashboard(request):
     total_athlate_last_month=Athlete.objects.exclude(user__date_joined__month=datetime.now().month).count()
     total_club_user = SportClubUser.objects.all().count()
     total_coachs = Coach.objects.all().count()
+    total_judge = Judge.objects.all().count()
+    total_user = User.objects.all().count()
 
     return render(request, 'anasayfa/admin.html',
                   {'total_club_user': total_club_user, 'total_club': total_club,
                    'total_athlete': total_athlete, 'total_coachs':total_coachs,'last_athletes':last_athlete,'total_athlete_gender_man':total_athlete_gender_man,
                    'total_athlete_gender_woman':total_athlete_gender_woman,'total_athlate_last_month':total_athlate_last_month,
+                   'total_judge': total_judge, 'total_user': total_user
 
                    })
 
