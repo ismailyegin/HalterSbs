@@ -50,7 +50,7 @@ class ReferenceCoach(models.Model):
         (WAITED, 'Beklemede'),
     )
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
-    iban = models.CharField(max_length=120, null=True, blank=True, verbose_name='İban Adresi')
+    iban = models.CharField(max_length=120, null=False, blank=False, verbose_name='İban Adresi')
 
     # person form
     tc = models.CharField(max_length=120, null=True, blank=True)
