@@ -25,7 +25,7 @@ def return_athlete_dashboard(request):
 
 @login_required
 def return_referee_dashboard(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_judge(request)
 
     if not perm:
         logout(request)

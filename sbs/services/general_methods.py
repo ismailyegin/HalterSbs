@@ -74,6 +74,24 @@ def show_urls_deneme(urllist, depth=0):
     return urls
 
 
+def control_access_judge(request):
+    group = request.user.groups.all()[0]
+
+    permissions = group.permissions.all()
+
+    is_exist = False
+
+    for perm in permissions:
+
+        if request.resolver_match.url_name == perm.name:
+            is_exist = True
+
+    if group.name == "Admin" or group.name == "Hakem":
+        is_exist = True
+
+    return is_exist
+
+
 def control_access(request):
     group = request.user.groups.all()[0]
 
