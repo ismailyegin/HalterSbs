@@ -368,7 +368,7 @@ def newlogin(request, pk):
             msg.send()
 
             clup.clubUser.add(club_person)
-            clup.dataAccessControl = True
+            clup.dataAccessControl = False
             clup.isRegister = True
 
             clup.save()
