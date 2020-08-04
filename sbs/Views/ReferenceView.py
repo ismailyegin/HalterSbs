@@ -31,7 +31,7 @@ def hakemler(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    referee = ReferenceReferee.objects.all()
+    referee = ReferenceReferee.objects.all().order_by('status')
     return render(request, 'basvurular/hakembasvuru.html', {'referees': referee})
 
 
@@ -42,7 +42,7 @@ def antroner(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    referee = ReferenceCoach.objects.all()
+    referee = ReferenceCoach.objects.all().order_by('status')
     return render(request, 'basvurular/antrenorbasvuru.html', {'referees': referee})
 
 

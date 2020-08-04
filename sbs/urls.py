@@ -117,6 +117,8 @@ urlpatterns = [
         name='referee-delete'),
     url(r'hakem/hakemler/sil/basvuru/(?P<pk>\d+)$', RefereeViews.refencedeleteReferee,
         name='referee-delete-basvuru'),
+    url(r'hakem/hakemler/onayla/basvuru/(?P<pk>\d+)$', RefereeViews.refenceapprovalReferee,
+        name='referee-onayla-basvuru'),
     url(r'hakem/hakemDuzenle/(?P<pk>\d+)$', RefereeViews.updateReferee,
         name='hakem-duzenle'),
     url(r'hakem/hakemDuzenle-basvuru/(?P<pk>\d+)$', RefereeViews.referenceUpdateReferee,
@@ -367,6 +369,6 @@ urlpatterns = [
     #     basvurular
     url(r'reference/referee$', ReferenceView.hakemler, name='basvuru-referee'),
     url(r'reference/coach$', ReferenceView.antroner, name='basvuru-coach'),
-    url(r'reference/athlete$', ReferenceView.sporcular, name='basvuru-athlete'),
+    url(r'reference/athlete/$', ReferenceView.sporcular, name='basvuru-athlete'),
 
 ]

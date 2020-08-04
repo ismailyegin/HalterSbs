@@ -30,7 +30,9 @@ def return_referee_dashboard(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    return render(request, 'anasayfa/hakem.html')
+    user = User.objects.get(pk=request.user.pk)
+    judge = Judge.objects.get(user=user)
+    return render(request, 'anasayfa/hakem.html', {'user': user, 'judge': judge})
 
 
 @login_required

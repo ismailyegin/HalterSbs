@@ -267,6 +267,100 @@ def refencedeleteReferee(request, pk):
 
 
 @login_required
+def refenceapprovalReferee(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    reference = ReferenceReferee.objects.get(pk=pk)
+    if request.method == 'POST' and request.is_ajax():
+        try:
+
+            if reference.status == ReferenceReferee.WAITED:
+                user = User()
+                user.username = reference.email
+                user.first_name = reference.first_name.upper()
+                user.last_name = reference.last_name.upper()
+                user.email = reference.email
+                group = Group.objects.get(name='Hakem')
+
+                user.save()
+                user.groups.add(group)
+                user.is_active = True
+                user.save()
+
+                person = Person()
+                person.tc = reference.tc
+                person.motherName = reference.motherName
+                person.fatherName = reference.fatherName
+                person.profileImage = reference.profileImage
+                person.birthDate = reference.birthDate
+                person.bloodType = reference.bloodType
+                person.birthplace = reference.birthplace
+                if reference.gender == 'Erkek':
+                    person.gender = Person.MALE
+                else:
+                    person.gender = Person.FEMALE
+                person.save()
+                communication = Communication()
+                communication.postalCode = reference.postalCode
+                communication.phoneNumber = reference.phoneNumber
+                communication.phoneNumber2 = reference.phoneNumber2
+                communication.address = reference.address
+                communication.city = reference.city
+                communication.country = reference.country
+                communication.save()
+
+                judge = Judge(user=user, person=person, communication=communication)
+                judge.iban = reference.iban
+                judge.save()
+
+                grade = Level(definition=reference.kademe_definition,
+                              startDate=reference.kademe_startDate,
+                              branch=EnumFields.HALTER.value)
+                grade.levelType = EnumFields.LEVELTYPE.GRADE
+                grade.status = Level.APPROVED
+                grade.isActive = True
+                grade.save()
+
+                judge.grades.add(grade)
+                judge.save()
+
+                reference.status = ReferenceReferee.APPROVED
+                reference.save()
+
+                messages.success(request, 'Hakem Başarıyla Eklenmiştir')
+
+                fdk = Forgot(user=user, status=False)
+                fdk.save()
+                print(fdk)
+
+                html_content = ''
+                subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+                html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
+                    fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
+            else:
+                messages.success(request, 'Hakem daha önce onaylanmıştır.')
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Judge.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+
+
+
+
+@login_required
 def referenceUpdateReferee(request, pk):
     perm = general_methods.control_access(request)
 
@@ -783,78 +877,79 @@ def visaSeminar_Delete_Referee(request, pk, competition):
 
 @login_required
 def referenceStatus(request, pk):
-    try:
-        reference = ReferenceReferee.objects.get(pk=pk)
-        if reference.status == ReferenceReferee.WAITED:
-            user = User()
-            user.username = reference.email
-            user.first_name = reference.first_name.upper()
-            user.last_name = reference.last_name.upper()
-            user.email = reference.email
-            group = Group.objects.get(name='Hakem')
+    reference = ReferenceReferee.objects.get(pk=pk)
+    if reference.status == ReferenceReferee.WAITED:
+        user = User()
+        user.username = reference.email
+        user.first_name = reference.first_name.upper()
+        user.last_name = reference.last_name.upper()
+        user.email = reference.email
+        group = Group.objects.get(name='Hakem')
 
+        user.save()
+        user.groups.add(group)
+        user.is_active = True
+        user.save()
 
-            user.save()
-            user.groups.add(group)
-            user.is_active = True
-            user.save()
-
-            person = Person()
-            person.tc = reference.tc
-            person.motherName = reference.motherName
-            person.fatherName = reference.fatherName
-            person.profileImage = reference.profileImage
-            person.birthDate = reference.birthDate
-            person.bloodType = reference.bloodType
-            person.birthplace=reference.birthplace
-            if reference.gender == 'Erkek':
-                person.gender = Person.MALE
-            else:
-                person.gender = Person.FEMALE
-            person.save()
-            communication = Communication()
-            communication.postalCode = reference.postalCode
-            communication.phoneNumber = reference.phoneNumber
-            communication.phoneNumber2 = reference.phoneNumber2
-            communication.address = reference.address
-            communication.city = reference.city
-            communication.country = reference.country
-            communication.save()
-
-            judge = Judge(user=user, person=person, communication=communication)
-            judge.iban = reference.iban
-            judge.save()
-
-            grade = Level(definition=reference.kademe_definition,
-                          startDate=reference.kademe_startDate,
-                          branch=EnumFields.HALTER.value)
-            grade.levelType = EnumFields.LEVELTYPE.GRADE
-            grade.status = Level.APPROVED
-            grade.isActive = True
-            grade.save()
-
-            judge.grades.add(grade)
-            judge.save()
-
-            reference.status = ReferenceReferee.APPROVED
-            reference.save()
-
-            messages.success(request, 'Hakem Başarıyla Eklenmiştir')
-
-            fdk = Forgot(user=user, status=False)
-            fdk.save()
-
-            html_content = ''
-            subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
-                fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
-            msg = EmailMultiAlternatives(subject, '', from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+        person = Person()
+        person.tc = reference.tc
+        person.motherName = reference.motherName
+        person.fatherName = reference.fatherName
+        person.profileImage = reference.profileImage
+        person.birthDate = reference.birthDate
+        person.bloodType = reference.bloodType
+        person.birthplace = reference.birthplace
+        if reference.gender == 'Erkek':
+            person.gender = Person.MALE
         else:
-            messages.success(request, 'Hakem daha önce onaylanmıştır.')
+            person.gender = Person.FEMALE
+        person.save()
+        communication = Communication()
+        communication.postalCode = reference.postalCode
+        communication.phoneNumber = reference.phoneNumber
+        communication.phoneNumber2 = reference.phoneNumber2
+        communication.address = reference.address
+        communication.city = reference.city
+        communication.country = reference.country
+        communication.save()
+
+        judge = Judge(user=user, person=person, communication=communication)
+        judge.iban = reference.iban
+        judge.save()
+
+        grade = Level(definition=reference.kademe_definition,
+                      startDate=reference.kademe_startDate,
+                      branch=EnumFields.HALTER.value)
+        grade.levelType = EnumFields.LEVELTYPE.GRADE
+        grade.status = Level.APPROVED
+        grade.isActive = True
+        grade.save()
+
+        judge.grades.add(grade)
+        judge.save()
+
+        reference.status = ReferenceReferee.APPROVED
+        reference.save()
+
+        messages.success(request, 'Hakem Başarıyla Eklenmiştir')
+
+        fdk = Forgot(user=user, status=False)
+        fdk.save()
+        print(fdk)
+
+        html_content = ''
+        subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+        html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+        html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+        html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
+            fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+        msg = EmailMultiAlternatives(subject, '', from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+    else:
+        messages.success(request, 'Hakem daha önce onaylanmıştır.')
+    try:
+        print()
     except:
         messages.warning(request, 'Tekrar deneyiniz.')
 
@@ -870,15 +965,15 @@ def visaSeminar_onayla(request, pk):
     seminar = VisaSeminar.objects.get(pk=pk)
 
     if seminar.status == VisaSeminar.WAITED:
-        visa = Level(dekont='Federasyon', branch=seminar.branch)
-        visa.startDate = date(timezone.now().year, 1, 1)
-        visa.definition = CategoryItem.objects.get(forWhichClazz='VISA')
-        visa.levelType = EnumFields.LEVELTYPE.VISA
-        visa.status = Level.APPROVED
-        visa.isActive = True
-        visa.save()
 
         for item in seminar.referee.all():
+            visa = Level(dekont='Federasyon', branch=seminar.branch)
+            visa.startDate = date(timezone.now().year, 1, 1)
+            visa.definition = CategoryItem.objects.get(forWhichClazz='VISA')
+            visa.levelType = EnumFields.LEVELTYPE.VISA
+            visa.status = Level.APPROVED
+            visa.isActive = True
+            visa.save()
             for referee in item.visa.all():
                 if referee.branch == visa.branch:
                     referee.isActive = False

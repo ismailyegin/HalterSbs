@@ -1045,21 +1045,22 @@ def visaSeminar_Delete_Coach(request, pk, competition):
 def visaSeminar_onayla(request, pk):
     seminar = VisaSeminar.objects.get(pk=pk)
     if seminar.status == VisaSeminar.WAITED:
-        visa = Level(dekont='Federasyon', branch=seminar.branch)
-        visa.startDate = date(timezone.now().year, 1, 1)
-        visa.definition = CategoryItem.objects.get(forWhichClazz='VISA')
-        visa.levelType = EnumFields.LEVELTYPE.VISA
-        visa.status = Level.APPROVED
-        visa.save()
 
         for item in seminar.coach.all():
+            print('ben geldim')
 
+            visa = Level(dekont='Federasyon', branch=seminar.branch)
+            visa.startDate = date(timezone.now().year, 1, 1)
+            visa.definition = CategoryItem.objects.get(forWhichClazz='VISA')
+            visa.levelType = EnumFields.LEVELTYPE.VISA
+            visa.status = Level.APPROVED
+            visa.isActive = True
+            visa.save()
             for coach in item.visa.all():
                 if coach.branch == visa.branch:
                     coach.isActive = False
                     coach.save()
             item.visa.add(visa)
-            item.isActive = True
             item.save()
         seminar.status = VisaSeminar.APPROVED
         seminar.save()

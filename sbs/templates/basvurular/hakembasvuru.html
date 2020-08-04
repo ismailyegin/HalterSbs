@@ -172,7 +172,7 @@
                                 <tbody>
                                 {% if referees.all %}
                                     {% for referee in referees %}
-                                        <tr>
+                                        <tr id="refere-{{ referee.pk }}">
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ referee.first_name }} {{ referee.last_name }} </td>
                                             <td>{{ referee.email }} </td>
@@ -198,10 +198,17 @@
                                                     {% if referee.status == "Beklemede" %}
 
 
-                                                        <a href="{% url "sbs:reference-refere-status" referee.pk %}"
+                                                        {#                                                        <a href="{% url "sbs:reference-refere-status" referee.pk %}"#}
+                                                        {#                                                           type="button" class="btn btn-success"><i#}
+                                                        {#                                                                class="fa fa-edit"></i> Onayla#}
+                                                        {#                                                        </a>#}
+
+                                                        <a onclick="approvalReferee({{ referee.pk }})" "
                                                            type="button" class="btn btn-success"><i
                                                                 class="fa fa-edit"></i> Onayla
                                                         </a>
+
+
 
                                                     {% endif %}
                                                     <a href="{% url "sbs:hakem-duzenle-basvuru" referee.pk %}"
@@ -291,6 +298,66 @@
             $('#btn-close').click(function () {
                 $('#modal-danger').modal('hide');
             });
+
+        }
+
+
+        function approvalReferee(id) {
+
+            console.log(id);
+            var html = ''
+
+            $.ajax({
+                url: "{% url "sbs:referee-onayla-basvuru" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    isActive: 'False'
+                },
+                success: function (result) {
+
+
+                    if (result.status == 'Success') {
+
+                        html = 'Hakem Başarıyla Onaylandı ';
+                        debugger;
+                        $(".successModal").html(html);
+                        $('#refere-' + id + ' td').eq(3).text('Onaylandı');
+                        $('#modal-success').on("shown.bs.modal", function (e) {
+                            $(".btn-ok").click(function () {
+
+
+                                $('#modal-success').modal('hide');
+
+
+                            });
+
+
+                        }).modal('show');
+
+                    } else {
+
+
+                        html = 'Hakem Eklenemedi ';
+                        $(".successModal").html(html);
+                        $('#modal-success').on("shown.bs.modal", function (e) {
+                            $(".btn-ok").click(function () {
+
+
+                                $('#modal-success').modal('hide');
+
+
+                            });
+
+
+                        }).modal('show');
+
+
+                    }
+
+                }
+            });
+
 
         }
     </script>
