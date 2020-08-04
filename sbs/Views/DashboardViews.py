@@ -108,7 +108,7 @@ def return_club_user_dashboard(request):
                 athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
                 athletes = athletes.filter(user__last_name='') | athletes.filter(user__first_name='') | athletes.filter(
                     user__email='') | athletes.filter(person__tc='') | athletes.filter(
-                    person__birthDate=None) | athletes.filter(person__bloodType='') | athletes.filter(
+                    person__birthDate=None) | athletes.filter(
                     person__gender=None) | athletes.filter(person__birthplace='') | athletes.filter(
                     person__motherName='') | athletes.filter(person__fatherName='') | athletes.filter(
                     communication__city__name='') | athletes.filter(communication__country__name='')
