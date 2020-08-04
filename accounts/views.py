@@ -36,6 +36,10 @@ from sbs.Forms.ReferenceCoachForm import RefereeCoachForm
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.ReferenceCoach import ReferenceCoach
+from sbs.models.PreRegistration import PreRegistration
+
 
 def index(request):
     return render(request, 'accounts/index.html')
@@ -388,7 +392,10 @@ def referenceReferee(request):
 
     if request.method == 'POST':
         referee = RefereeForm(request.POST, request.FILES)
-        if User.objects.filter(email=request.POST.get('email')):
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Referee.html', {'preRegistrationform': referee})
 
@@ -415,7 +422,9 @@ def referenceCoach(request):
     coach_form = RefereeCoachForm()
     if request.method == 'POST':
         coach_form = RefereeCoachForm(request.POST, request.FILES)
-        if User.objects.filter(email=request.POST.get('email')):
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Coach.html', {'preRegistrationform': antrenor})
         if coach_form.is_valid():
@@ -440,7 +449,9 @@ def referenceAthlete(request):
     athlete = RefereeAthleteForm()
     if request.method == 'POST':
         athlete = RefereeAthleteForm(request.POST, request.FILES)
-        if User.objects.filter(email=request.POST.get('email')):
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Athlete.html', {'preRegistrationform': athlete})
         if athlete.is_valid():
