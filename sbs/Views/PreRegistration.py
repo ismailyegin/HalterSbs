@@ -109,8 +109,6 @@ def approve_preRegistration(request,pk):
                 # person kaydet
                 person = Person()
                 person.tc = basvuru.tc
-                person.height = basvuru.height
-                person.weight = basvuru.weight
                 person.birthplace = basvuru.birthplace
                 person.motherName = basvuru.motherName
                 person.fatherName = basvuru.fatherName
