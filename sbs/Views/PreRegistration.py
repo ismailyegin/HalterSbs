@@ -101,8 +101,9 @@ def approve_preRegistration(request,pk):
                 user.save()
                 user.groups.add(group)
                 user.save()
+                messages.success(request, 'Kisi Kaydedildi.')
             except:
-                messages.warning(request, ' Kullanici eklenmedi ')
+                messages.warning(request, ' Kullanici eklenmedi.')
 
             try:
                 # person kaydet
@@ -118,9 +119,10 @@ def approve_preRegistration(request,pk):
                 person.bloodType = basvuru.bloodType
                 person.gender = basvuru.gender
                 person.save()
+                messages.success(request, 'Kisi bilgileri kaydedildi')
 
             except:
-                messages.warning(request, ' Kullanici eklenmedi ')
+                messages.warning(request, ' Kullanici eklenmedi.. ')
 
             try:
                 # Communication kaydet
@@ -164,8 +166,9 @@ def approve_preRegistration(request,pk):
 
                 basvuru.status = PreRegistration.APPROVED
                 basvuru.save()
+                messages.success(request, 'Klup Kaydedildi')
             except:
-                messages.success(request, 'Klüp ve iletisim kaydedilemedi')
+                messages.warning(request, 'Klüp ve iletisim kaydedilemedi')
 
             try:
                 fdk = Forgot(user=user, status=False)
@@ -180,6 +183,8 @@ def approve_preRegistration(request,pk):
                 msg = EmailMultiAlternatives(subject, '', from_email, [to])
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
+                messages.success(request, 'Mail Gönderildi')
+
             except:
                 messages.warning(request, 'mail gönderilemedi')
 
