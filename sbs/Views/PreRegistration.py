@@ -86,8 +86,9 @@ def approve_preRegistration(request,pk):
     basvuru=PreRegistration.objects.get(pk=pk)
     if basvuru.status!=PreRegistration.APPROVED:
         if not (User.objects.filter(email=basvuru.email).exists()):
-            # user kaydet
+
             try:
+                # user kaydet
                 user = User()
                 user.username = basvuru.email
                 user.first_name = basvuru.first_name
@@ -101,11 +102,7 @@ def approve_preRegistration(request,pk):
                 user.save()
                 user.groups.add(group)
                 user.save()
-                messages.success(request, 'Kisi Kaydedildi.')
-            except:
-                messages.warning(request, ' Kullanici eklenmedi.')
 
-            try:
                 # person kaydet
                 person = Person()
                 person.tc = basvuru.tc
@@ -115,14 +112,12 @@ def approve_preRegistration(request,pk):
                 person.profileImage = basvuru.profileImage
                 person.birthDate = basvuru.birthDate
                 person.bloodType = basvuru.bloodType
-                person.gender = basvuru.gender
+                if basvuru.gender == 'Erkek':
+                    person.gender = Person.MALE
+                else:
+                    person.gender = Person.FEMALE
                 person.save()
-                messages.success(request, 'Kisi bilgileri kaydedildi')
 
-            except:
-                messages.warning(request, ' Kullanici eklenmedi.. ')
-
-            try:
                 # Communication kaydet
                 com = Communication()
                 com.postalCode = basvuru.postalCode
@@ -164,11 +159,7 @@ def approve_preRegistration(request,pk):
 
                 basvuru.status = PreRegistration.APPROVED
                 basvuru.save()
-                messages.success(request, 'Klup Kaydedildi')
-            except:
-                messages.warning(request, 'Klüp ve iletisim kaydedilemedi')
 
-            try:
                 fdk = Forgot(user=user, status=False)
                 fdk.save()
 
@@ -181,10 +172,13 @@ def approve_preRegistration(request,pk):
                 msg = EmailMultiAlternatives(subject, '', from_email, [to])
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
-                messages.success(request, 'Mail Gönderildi')
+                messages.success(request, 'Başari ile kaydedildi')
+
 
             except:
-                messages.warning(request, 'mail gönderilemedi')
+                messages.warning(request, 'Lütfen sistem yöneticisi ile görüşünüz ')
+
+
 
 
         else:
