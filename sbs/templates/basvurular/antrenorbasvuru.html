@@ -172,7 +172,7 @@
                                 <tbody>
                                 {% if referees.all %}
                                     {% for referee in referees %}
-                                        <tr>
+                                        <tr id="coach-{{ referee.pk }}">
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ referee.first_name }} {{ referee.last_name }} </td>
                                             <td>{{ referee.email }} </td>
@@ -196,7 +196,13 @@
                                                 <div class="btn-group">
                                                     {% if referee.status == "Beklemede" %}
 
-                                                        <a href="{% url "sbs:basvuru-onayla-coach" referee.pk %}"
+                                                        {#                                                        <a href="{% url "sbs:basvuru-onayla-coach" referee.pk %}"#}
+                                                        {#                                                       type="button" class="btn btn-success"><i#}
+                                                        {#                                                            class="fa fa-edit"></i> Onayla#}
+                                                        {#                                                    </a>#}
+
+
+                                                        <a onclick="approvalCoach({{ referee.pk }})"
                                                        type="button" class="btn btn-success"><i
                                                             class="fa fa-edit"></i> Onayla
                                                     </a>
@@ -288,6 +294,66 @@
             $('#btn-close').click(function () {
                 $('#modal-danger').modal('hide');
             });
+
+        }
+
+
+        function approvalCoach(id) {
+
+            console.log(id);
+            var html = ''
+
+            $.ajax({
+                url: "{% url "sbs:onayla-coach-basvuru" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    isActive: 'False'
+                },
+                success: function (result) {
+
+
+                    if (result.status == 'Success') {
+
+                        html = 'Antrenör  Başarıyla Onaylandı ';
+                        debugger;
+                        $(".successModal").html(html);
+                        $('#coach-' + id + ' td').eq(3).text('Onaylandı');
+                        $('#modal-success').on("shown.bs.modal", function (e) {
+                            $(".btn-ok").click(function () {
+
+
+                                $('#modal-success').modal('hide');
+
+
+                            });
+
+
+                        }).modal('show');
+
+                    } else {
+
+
+                        html = 'Antrenör  Eklenemedi ';
+                        $(".successModal").html(html);
+                        $('#modal-success').on("shown.bs.modal", function (e) {
+                            $(".btn-ok").click(function () {
+
+
+                                $('#modal-success').modal('hide');
+
+
+                            });
+
+
+                        }).modal('show');
+
+
+                    }
+
+                }
+            });
+
 
         }
     </script>

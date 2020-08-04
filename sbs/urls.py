@@ -214,6 +214,8 @@ urlpatterns = [
         name='delete-coach'),
     url(r'antrenor/antrenorler/sil/basvuru/(?P<pk>\d+)$', CoachViews.referencedeleteCoach,
         name='delete-coach-basvuru'),
+    url(r'antrenor/antrenorler/onayla/basvuru/(?P<pk>\d+)$', CoachViews.referenappcoverCoach,
+        name='onayla-coach-basvuru'),
     url(r'antrenor/basvuru/onayla/(?P<pk>\d+)$', CoachViews.referenceCoachStatus, name='basvuru-onayla-coach'),
 
 
