@@ -321,7 +321,6 @@ def return_athletes(request):
 
         sportsclup=request.POST.get('sportsClub')
         coach = request.POST.get('coach')
-        print(coach)
 
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
