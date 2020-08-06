@@ -321,6 +321,7 @@ def return_athletes(request):
 
         sportsclup=request.POST.get('sportsClub')
         coach = request.POST.get('coach')
+        print(coach)
 
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
@@ -355,7 +356,7 @@ def return_athletes(request):
 
                 if user.groups.filter(name__in=['Yonetim', 'Admin']):
                     if coach:
-                        query &= Q(licenses__coach_id__in=coach)
+                        query &= Q(licenses__coach=coach)
 
                 if user.groups.filter(name='KulupUye'):
                     sc_user = SportClubUser.objects.get(user=user)
