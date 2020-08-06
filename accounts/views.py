@@ -406,6 +406,25 @@ def referenceReferee(request):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Referee.html', {'preRegistrationform': referee})
 
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            return render(request, 'registration/Referee.html',
+                          {'preRegistrationform': referee})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'registration/Referee.html',
+                          {'preRegistrationform': referee})
+
+
         if referee.is_valid():
             if request.POST.get('kademe_definition'):
                 hakem=referee.save(commit=False)
@@ -451,7 +470,6 @@ def referenceCoach(request):
         if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
             messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
             return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
-
 
 
         if coach_form.is_valid():
