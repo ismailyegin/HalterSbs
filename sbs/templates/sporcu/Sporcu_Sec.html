@@ -311,26 +311,7 @@
                                             </div>
                                             <div class="box-body">
                                                 <div class="box-header with-border">
-                                                    <div class="btn-group">
 
-                                                        {% if user.groups.all.0.name == 'Antrenor' %}
-
-
-                                                            <a href="{% url "sbs:sporcu-lisans-ekle-antrenor" athlete.pk %}"
-                                                               type="button" class="btn btn-success"><i
-                                                                    class="fa fa-edit"></i>Yeni Lisans Ekle
-                                                            </a>
-
-
-
-                                                        {% else %}
-
-                                                            <a href="{% url "sbs:sporcu-lisans-ekle"  athlete.pk %}"
-                                                               type="button" class="btn btn-success"><i
-                                                                    class="fa fa-edit"></i> Yeni Lisans Ekle
-                                                            </a>
-                                                        {% endif %}
-                                                    </div>
                                                 </div>
                                                 <table id="license" class="table table-bordered table-hover">
                                                     <thead>
@@ -462,26 +443,7 @@
                                             </div>
                                             <div class="box-body">
                                                 <div class="box-header with-border">
-                                                    <div class="btn-group">
 
-                                                        {% if user.groups.all.0.name == 'Antrenor' %}
-
-
-                                                            <a href="{% url "sbs:sporcu-lisans-ekle-antrenor" athlete.pk %}"
-                                                               type="button" class="btn btn-success"><i
-                                                                    class="fa fa-edit"></i>Yeni Lisans Ekle
-                                                            </a>
-
-
-
-                                                        {% else %}
-
-                                                            <a href="{% url "sbs:sporcu-lisans-ekle"  athlete.pk %}"
-                                                               type="button" class="btn btn-success"><i
-                                                                    class="fa fa-edit"></i> Yeni Lisans Ekle
-                                                            </a>
-                                                        {% endif %}
-                                                    </div>
                                                 </div>
                                                 <table id="license" class="table table-bordered table-hover">
                                                     <thead>
@@ -507,77 +469,6 @@
                                                                 <td>
                                                                     {{ musabaka.competition }}
                                                                 </td>
-                                                                {#                                            <td>{{ license.startDate | date }}  </td>#}
-                                                                {#                                            <td>{{ license.expireDate | date }}  </td>#}
-                                                                {#                                            <td>{{ license.branch }}  </td>#}
-                                                                {#                                            <td>{{ license.licenseNo }}  </td>#}
-                                                                {#                                            <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <img#}
-                                                                {#                                                    src="/media/{{ license.lisansPhoto }}" class="user-image" alt="None"#}
-                                                                {#                                                    style=" width: 30px;height: 30px;"></a></td>#}
-                                                                {#                                            <td>{{ license.status }}#}
-                                                                {#                                                {% if  license.status == 'Reddedildi' %}#}
-                                                                {#                                                    (  {{ license.reddetwhy }})#}
-                                                                {#                                                {% endif %}#}
-                                                                {##}
-                                                                {##}
-                                                                {#                                            </td>#}
-                                                                {##}
-                                                                {#                                            <td>#}
-                                                                {#                                                <div class="btn-group">#}
-                                                                {##}
-                                                                {##}
-                                                                {#                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
-                                                                {#                                                        <a href="{% url "sbs:sporcu-lisans-onayla" license_pk=license.pk athlete_pk=athlete.pk %}"#}
-                                                                {#                                                           type="button" class="btn btn-success"><i#}
-                                                                {#                                                                class="fa fa-edit"></i>Onayla#}
-                                                                {#                                                        </a>#}
-                                                                {##}
-                                                                {##}
-                                                                {##}
-                                                                {##}
-                                                                {#                                                        <button type="button" class="btn btn-danger"#}
-                                                                {#                                                                onclick="reddetwhy({{ license.pk }},{{ athlete.pk }})">#}
-                                                                {#                                                            <i#}
-                                                                {#                                                                    class="fa fa-trash"></i>Reddet#}
-                                                                {#                                                        </button>#}
-                                                                {##}
-                                                                {##}
-                                                                {##}
-                                                                {##}
-                                                                {#                                                        <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"#}
-                                                                {#                                                           type="button" class="btn btn-danger"><i#}
-                                                                {#                                                                class="fa fa-edit"></i>Sil#}
-                                                                {#                                                        </a>#}
-                                                                {##}
-                                                                {#                                                    {% endif %}#}
-                                                                {#                                                    {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}#}
-                                                                {##}
-                                                                {#                                                        {% if user.groups.all.0.name == 'Antrenor' %}#}
-                                                                {##}
-                                                                {##}
-                                                                {#                                                            <a href="{% url "sbs:sporcu-lisans-duzenle-antrenor" license_pk=license.pk athlete_pk=athlete.pk %}"#}
-                                                                {#                                                               type="button" class="btn btn-warning"><i#}
-                                                                {#                                                                    class="fa fa-edit"></i>Güncelle#}
-                                                                {#                                                            </a>#}
-                                                                {##}
-                                                                {##}
-                                                                {##}
-                                                                {#                                                        {% else %}#}
-                                                                {##}
-                                                                {##}
-                                                                {#                                                            <a href="{% url "sbs:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"#}
-                                                                {#                                                               type="button" class="btn btn-warning"><i#}
-                                                                {#                                                                    class="fa fa-edit"></i>Güncelle#}
-                                                                {#                                                            </a>#}
-                                                                {##}
-                                                                {##}
-                                                                {#                                                        {% endif %}#}
-                                                                {##}
-                                                                {#                                                    {% endif %}#}
-                                                                {##}
-                                                                {##}
-                                                                {#                                                </div>#}
-                                                                {#                                            </td>#}
 
 
                                                             </tr>
@@ -628,8 +519,8 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Ad Soyad</th>
-                                        <th>Kuşak</th>
-                                        <th>Lisans No</th>
+                                        <th>Email</th>
+                                        <th>Seç</th>
 
 
                                     </tr>
@@ -641,7 +532,7 @@
 
                                 <div class="box-header with-border">
                                     <div class="box-footer">
-                                        <button type="submit" class="btn btn-primary">Devam Et</button>
+                                        <button type="submit" class="btn btn-primary">Birleştir</button>
                                     </div>
                                 </div>
                             </form>
@@ -685,16 +576,14 @@
             Playerlist();
 
 
-            {# $('.berktug input[type="checkbox"]').iCheck({#}
-            {##}
-            {#    checkboxClass: 'icheckbox_flat-blue',#}
-            {##}
-            {#});
-        #}
+            $('.berktug input[type="checkbox"]').iCheck({
+
+                checkboxClass: 'icheckbox_flat-blue',
+
+            });
 
 
-        })
-        ;
+        });
 
         function Playerlist() {
             table = $('#sporcular').DataTable();
@@ -725,7 +614,8 @@
 
                     {'data': 'say'},
                     {'data': 'name'},
-                    {'data': 'birthDate'},
+                    {'data': 'mail'},
+
 
 
                     {
