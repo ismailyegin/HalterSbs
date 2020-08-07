@@ -143,19 +143,50 @@ def pre_registration(request):
     if request.method == 'POST':
         PreRegistrationform = PreRegistrationForm(request.POST or None, request.FILES or None)
 
-        if PreRegistrationform.is_valid():
-            if User.objects.filter(email=PreRegistrationform.cleaned_data['email']).exists():
-                messages.warning(request, 'Klup üyesi  mail adresi farklı bir kullanici tarafından kullanilmaktadır.')
-                messages.warning(request, 'Lütfen farklı bir mail adresi giriniz.')
-                return render(request, 'registration/cluppre-registration.html',
-                              {'preRegistrationform': PreRegistrationform})
-            else:
-                PreRegistrationform.save()
-                messages.success(request,
-                                 "Başarili bir şekilde kayıt başvurunuz alındı Sistem onayından sonra girdiginiz mail adresinize gelen mail ile sisteme giris yapabilirsiniz.")
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'registration/cluppre-registration.html',
+                          {'preRegistrationform': PreRegistrationform})
 
-            # bildirim ve geçis sayfasi yap
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
+                tc=tc) or ReferenceReferee.objects.filter(
+            tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            return render(request, 'registration/cluppre-registration.html',
+                          {'preRegistrationform': PreRegistrationform})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request,
+                             'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'registration/cluppre-registration.html',
+                          {'preRegistrationform': PreRegistrationform})
+
+        # -------------------------------------
+
+
+        if PreRegistrationform.is_valid():
+            PreRegistrationform.save()
+            messages.success(request,
+                             "Başarili bir şekilde kayıt başvurunuz alındı Sistem onayından sonra girdiginiz mail adresinize gelen mail ile sisteme giris yapabilirsiniz.")
             return redirect('accounts:login')
+
+
+
+
+
+
+
+
 
         else:
             messages.warning(request, "Alanlari kontrol ediniz")
