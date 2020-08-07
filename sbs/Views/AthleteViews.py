@@ -205,7 +205,7 @@ def sporcu_sec(request, pk):
     user = User.objects.get(pk=login_user.pk)
 
     athlete = Athlete.objects.get(pk=pk)
-    # athletes=Athlete.objects.none()
+    athletes = Athlete.objects.none()
     licenses_form = athlete.licenses.all()
     user = User.objects.get(pk=athlete.user.pk)
     person = Person.objects.get(pk=athlete.person.pk)
@@ -225,10 +225,6 @@ def sporcu_sec(request, pk):
     if request.method == 'POST':
 
         athletes1 = request.POST.getlist('selected_options')
-        if athletes1:
-            for x in athletes1:
-                athlete = Athlete.objects.get(pk=x)
-                print(athlete)
 
         # return redirect('wushu:musabaka-duzenle', pk=pk)
     return render(request, 'sporcu/Sporcu_Sec.html',
@@ -237,8 +233,16 @@ def sporcu_sec(request, pk):
                    'athlete': athlete, 'say': say, 'competitions': competitions})
 
 
+@login_required
+def comparison(request, athlete):
+    print('ben geldim')
 
+    if athlete:
+        for x in athlete:
+            athletes = Athlete.objects.get(pk=x)
+            print(athletes)
 
+    return render(request, 'sporcu/birlesmeDetay.html', )
 
 
 
