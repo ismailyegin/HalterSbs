@@ -1,0 +1,834 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+
+
+
+    <!-- success modal -->
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags == 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+    {% endif %}
+
+
+
+
+
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <section class="content">
+
+        <div class="row">
+
+            <section class="col-lg-12 ">
+
+
+                <div class="box-body">
+
+
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Birleşmeden Kalacak Sporcu</h3>
+                        </div>
+                        <div class="box-body">
+
+                            <form method="post" enctype="multipart/form-data" role="form">
+                                {% csrf_token %}
+                                <div class="row">
+
+                                    <div class="col-lg-6">
+                                        <div class="box box-primary">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Genel Bilgiler</h3>
+                                            </div>
+                                            <div class="box-body">
+                                                <div class="row">
+
+
+                                                    <div class="col-lg-12 text-center">
+                                                        <div class="form-group">
+
+                                                            <label> {{ person_form.profileImage.label }}</label>
+
+                                                            <center>
+                                                                <img
+                                                                        src="/media/{{ person_form.instance.athlete.person.profileImage }}"
+                                                                        class="img-responsive img-bordered"
+                                                                        alt="Resim Yok"
+                                                                        style=" width: 100px; height: 100px;"
+
+                                                                ><br>
+                                                            </center>
+                                                            {#                                        {{ person_form.profileImage }}#}
+
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+
+
+                                                        <div class="form-group">
+                                                            <label> {{ person_form.tc.label }}</label>
+                                                            {{ person_form.tc }}
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label> {{ user_form.first_name.label }}</label>
+                                                            {{ user_form.first_name }}
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label> {{ user_form.last_name.label }}</label>
+                                                            {{ user_form.last_name }}
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label> {{ person_form.bloodType.label }}</label>
+                                                            {{ person_form.bloodType }}
+                                                        </div>
+
+
+                                                    </div>
+                                                    <br>
+                                                    <div class="col-lg-6">
+
+
+                                                        <div class="form-group">
+                                                            <label> {{ person_form.motherName.label }}</label>
+                                                            {{ person_form.motherName }}
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label> {{ person_form.fatherName.label }}</label>
+                                                            {{ person_form.fatherName }}
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label> {{ person_form.birthplace.label }}</label>
+                                                            {{ person_form.birthplace }}
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label> {{ person_form.birthDate.label }}</label>
+                                                            {{ person_form.birthDate }}
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label> {{ person_form.gender.label }}</label>
+                                                            {{ person_form.gender }}
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="box-footer">
+                                                <button class="btn btn-primary" type="submit">Kaydet</button>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="box box-primary">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">İletişim Bilgileri</h3>
+                                            </div>
+                                            <div class="box-body">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label> {{ user_form.email.label }}</label>
+                                                            {{ user_form.email }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label> {{ communication_form.phoneNumber.label }}</label>
+                                                            {{ communication_form.phoneNumber }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label> {{ communication_form.phoneNumber2.label }}</label>
+                                                            {{ communication_form.phoneNumber2 }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label> {{ communication_form.country.label }}</label>
+                                                            {{ communication_form.country }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label> {{ communication_form.city.label }}</label>
+                                                            {{ communication_form.city }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label> {{ communication_form.postalCode.label }}</label>
+                                                            {{ communication_form.postalCode }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group">
+                                                            <label> {{ communication_form.address.label }}</label>
+                                                            {{ communication_form.address }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {#                        <div class="box-footer">#}
+                                            {#                            <button class="btn btn-primary" type="submit">Kaydet</button>#}
+                                            {#                        </div>#}
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="box box-primary">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Lisans Bilgileri</h3>
+                                            </div>
+                                            <div class="box-body">
+                                                <div class="box-header with-border">
+                                                    <div class="btn-group">
+
+                                                        {% if user.groups.all.0.name == 'Antrenor' %}
+
+
+                                                            <a href="{% url "sbs:sporcu-lisans-ekle-antrenor" athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-edit"></i>Yeni Lisans Ekle
+                                                            </a>
+
+
+
+                                                        {% else %}
+
+                                                            <a href="{% url "sbs:sporcu-lisans-ekle"  athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-edit"></i> Yeni Lisans Ekle
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <table id="license" class="table table-bordered table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Kulüp-Antrenör</th>
+                                                        <th> Başlama Tarihi</th>
+                                                        <th> Bitiş Tarihi</th>
+                                                        <th> Branş</th>
+                                                        <th> Lisans No</th>
+                                                        <th> Lisans Foto.</th>
+                                                        <th> Onay Durumu</th>
+                                                        <th> İşlemler</th>
+
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% if licenses_form.all %}
+                                                        {% for license in licenses_form %}
+                                                            <tr>
+                                                                <td>{{ forloop.counter }} </td>
+                                                                <td>
+                                                                    {% if license.sportsClub.name == 'FERDI' %}
+
+                                                                        {{ license.coach }}
+
+
+                                                                    {% else %}
+                                                                        {{ license.sportsClub }}
+
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>{{ license.startDate | date }}  </td>
+                                                                <td>{{ license.expireDate | date }}  </td>
+                                                                <td>{{ license.branch }}  </td>
+                                                                <td>{{ license.licenseNo }}  </td>
+                                                                <td><a href="/media/{{ license.lisansPhoto }}"
+                                                                       target="_blank"> <img
+                                                                        src="/media/{{ license.lisansPhoto }}"
+                                                                        class="user-image" alt="None"
+                                                                        style=" width: 30px;height: 30px;"></a></td>
+                                                                <td>{{ license.status }}
+                                                                    {% if  license.status == 'Reddedildi' %}
+                                                                        (  {{ license.reddetwhy }})
+                                                                    {% endif %}
+
+
+                                                                </td>
+
+                                                                <td>
+                                                                    <div class="btn-group">
+
+
+                                                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                                            <a href="{% url "sbs:sporcu-lisans-onayla" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                                               type="button" class="btn btn-success"><i
+                                                                                    class="fa fa-edit"></i>Onayla
+                                                                            </a>
+
+
+
+
+                                                                            <button type="button" class="btn btn-danger"
+                                                                                    onclick="reddetwhy({{ license.pk }},{{ athlete.pk }})">
+                                                                                <i
+                                                                                        class="fa fa-trash"></i>Reddet
+                                                                            </button>
+
+
+
+
+                                                                            <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"
+                                                                               type="button" class="btn btn-danger"><i
+                                                                                    class="fa fa-edit"></i>Sil
+                                                                            </a>
+
+                                                                        {% endif %}
+                                                                        {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}
+
+                                                                            {% if user.groups.all.0.name == 'Antrenor' %}
+
+
+                                                                                <a href="{% url "sbs:sporcu-lisans-duzenle-antrenor" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                                                   type="button"
+                                                                                   class="btn btn-warning"><i
+                                                                                        class="fa fa-edit"></i>Güncelle
+                                                                                </a>
+
+
+
+                                                                            {% else %}
+
+
+                                                                                <a href="{% url "sbs:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                                                   type="button"
+                                                                                   class="btn btn-warning"><i
+                                                                                        class="fa fa-edit"></i>Güncelle
+                                                                                </a>
+
+
+                                                                            {% endif %}
+
+                                                                        {% endif %}
+
+
+                                                                    </div>
+                                                                </td>
+
+
+                                                            </tr>
+
+                                                        {% endfor %}
+                                                    {% endif %}
+
+
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="box box-primary">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Müsabaka Bilgileri</h3>
+                                            </div>
+                                            <div class="box-body">
+                                                <div class="box-header with-border">
+                                                    <div class="btn-group">
+
+                                                        {% if user.groups.all.0.name == 'Antrenor' %}
+
+
+                                                            <a href="{% url "sbs:sporcu-lisans-ekle-antrenor" athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-edit"></i>Yeni Lisans Ekle
+                                                            </a>
+
+
+
+                                                        {% else %}
+
+                                                            <a href="{% url "sbs:sporcu-lisans-ekle"  athlete.pk %}"
+                                                               type="button" class="btn btn-success"><i
+                                                                    class="fa fa-edit"></i> Yeni Lisans Ekle
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <table id="license" class="table table-bordered table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Müsabaka</th>
+                                                        {#                                    <th> Başlama Tarihi</th>#}
+                                                        {#                                    <th> Bitiş Tarihi</th>#}
+                                                        {#                                    <th> Branş</th>#}
+                                                        {#                                    <th> Lisans No</th>#}
+                                                        {#                                    <th> Lisans Foto.</th>#}
+                                                        {#                                    <th> Onay Durumu</th>#}
+                                                        {#                                    <th> İşlemler</th>#}
+
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% if competitions.all %}
+                                                        {% for musabaka  in competitions %}
+                                                            <tr>
+                                                                <td>{{ forloop.counter }} </td>
+                                                                <td>
+                                                                    {{ musabaka.competition }}
+                                                                </td>
+                                                                {#                                            <td>{{ license.startDate | date }}  </td>#}
+                                                                {#                                            <td>{{ license.expireDate | date }}  </td>#}
+                                                                {#                                            <td>{{ license.branch }}  </td>#}
+                                                                {#                                            <td>{{ license.licenseNo }}  </td>#}
+                                                                {#                                            <td><a href="/media/{{ license.lisansPhoto }}" target="_blank"> <img#}
+                                                                {#                                                    src="/media/{{ license.lisansPhoto }}" class="user-image" alt="None"#}
+                                                                {#                                                    style=" width: 30px;height: 30px;"></a></td>#}
+                                                                {#                                            <td>{{ license.status }}#}
+                                                                {#                                                {% if  license.status == 'Reddedildi' %}#}
+                                                                {#                                                    (  {{ license.reddetwhy }})#}
+                                                                {#                                                {% endif %}#}
+                                                                {##}
+                                                                {##}
+                                                                {#                                            </td>#}
+                                                                {##}
+                                                                {#                                            <td>#}
+                                                                {#                                                <div class="btn-group">#}
+                                                                {##}
+                                                                {##}
+                                                                {#                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
+                                                                {#                                                        <a href="{% url "sbs:sporcu-lisans-onayla" license_pk=license.pk athlete_pk=athlete.pk %}"#}
+                                                                {#                                                           type="button" class="btn btn-success"><i#}
+                                                                {#                                                                class="fa fa-edit"></i>Onayla#}
+                                                                {#                                                        </a>#}
+                                                                {##}
+                                                                {##}
+                                                                {##}
+                                                                {##}
+                                                                {#                                                        <button type="button" class="btn btn-danger"#}
+                                                                {#                                                                onclick="reddetwhy({{ license.pk }},{{ athlete.pk }})">#}
+                                                                {#                                                            <i#}
+                                                                {#                                                                    class="fa fa-trash"></i>Reddet#}
+                                                                {#                                                        </button>#}
+                                                                {##}
+                                                                {##}
+                                                                {##}
+                                                                {##}
+                                                                {#                                                        <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"#}
+                                                                {#                                                           type="button" class="btn btn-danger"><i#}
+                                                                {#                                                                class="fa fa-edit"></i>Sil#}
+                                                                {#                                                        </a>#}
+                                                                {##}
+                                                                {#                                                    {% endif %}#}
+                                                                {#                                                    {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}#}
+                                                                {##}
+                                                                {#                                                        {% if user.groups.all.0.name == 'Antrenor' %}#}
+                                                                {##}
+                                                                {##}
+                                                                {#                                                            <a href="{% url "sbs:sporcu-lisans-duzenle-antrenor" license_pk=license.pk athlete_pk=athlete.pk %}"#}
+                                                                {#                                                               type="button" class="btn btn-warning"><i#}
+                                                                {#                                                                    class="fa fa-edit"></i>Güncelle#}
+                                                                {#                                                            </a>#}
+                                                                {##}
+                                                                {##}
+                                                                {##}
+                                                                {#                                                        {% else %}#}
+                                                                {##}
+                                                                {##}
+                                                                {#                                                            <a href="{% url "sbs:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"#}
+                                                                {#                                                               type="button" class="btn btn-warning"><i#}
+                                                                {#                                                                    class="fa fa-edit"></i>Güncelle#}
+                                                                {#                                                            </a>#}
+                                                                {##}
+                                                                {##}
+                                                                {#                                                        {% endif %}#}
+                                                                {##}
+                                                                {#                                                    {% endif %}#}
+                                                                {##}
+                                                                {##}
+                                                                {#                                                </div>#}
+                                                                {#                                            </td>#}
+
+
+                                                            </tr>
+
+                                                        {% endfor %}
+                                                    {% endif %}
+
+
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- /.box -->
+
+
+                </div>
+            </section>
+
+
+        </div>
+
+
+        <div class="row">
+
+            <section class="col-lg-12 ">
+
+
+                <div class="box-body">
+
+
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Birleştirilecek Kişileri Seç</h3>
+                        </div>
+                        <div class="box-body berktug">
+                            <form method="post" enctype="multipart/form-data" role="form">
+                                {% csrf_token %}
+                                <table id="sporcular" class="table table-bordered ">
+                                    <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Ad Soyad</th>
+                                        <th>Kuşak</th>
+                                        <th>Lisans No</th>
+
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+
+                                <div class="box-header with-border">
+                                    <div class="box-footer">
+                                        <button type="submit" class="btn btn-primary">Devam Et</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.box -->
+
+
+                </div>
+            </section>
+
+
+        </div>
+        <!-- /.row (main row) -->
+
+    </section>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+
+        $(function () {
+
+
+            Playerlist();
+
+
+            {# $('.berktug input[type="checkbox"]').iCheck({#}
+            {##}
+            {#    checkboxClass: 'icheckbox_flat-blue',#}
+            {##}
+            {#});
+        #}
+
+
+        })
+        ;
+
+        function Playerlist() {
+            table = $('#sporcular').DataTable();
+            table.destroy();
+
+            $('#sporcular').DataTable({
+
+                'paging': true,
+                'searching': true,
+                'ordering': true,
+                'responsive': true,
+                'autoWidth': true,
+                "serverSide": true,
+                "processing": true,
+                'ajax': {
+
+                    "url": '{% url "sbs:Sporcu-sec-ajax"%}',
+                    "methot": 'POST',
+
+                },
+
+
+                'columns': [
+                    {#{"targets": -1},#}
+
+
+
+
+                    {'data': 'say'},
+                    {'data': 'name'},
+                    {'data': 'birthDate'},
+
+
+                    {
+                        "data": null,
+                        "bSortable": false,
+                        "mRender": function (data) {
+
+
+                            return '<input type="checkbox" class="berktug" name="selected_options"\n' +
+                                '                                                           value="' + data.pk + '">';
+
+
+                        }
+                    },
+
+
+                    {#{'data': 'klup'},#}
+                    {#{'data': 'brans'},#}
+                    {#{'data': 'kusak'},#}
+
+
+                ],
+                {#dom: 'Bfrtip',#}
+                {#language: {#}
+                {#    buttons: {#}
+                {#        pageLength: {#}
+                {#            _: " %d  Tane Göster",#}
+                {#            '-1': "Hepsini Göster"#}
+                {#        }#}
+                {#    }#}
+                {# },#}
+                {#lengthMenu: [#}
+                {#    [10, 25, 50, 100, -1],#}
+                {#    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']#}
+                {#],#}
+                {#'buttons': [#}
+                {##}
+                {##}
+                {#    {#}
+                {#        extend: "pageLength",#}
+                {#    },#}
+                {##}
+                {##}
+                {#    {#}
+                {#        extend: 'colvis',#}
+                {#        text: '<i class=" fa  fa-th-list"></i>',#}
+                {#        titleAttr: 'Ekle Çıkar'#}
+                {##}
+                {##}
+                {#    },#}
+                {#    {#}
+                {#        extend: 'print',#}
+                {#        title: 'Sporcular',#}
+                {#        text: '<i class="fa  fa-print"></i>',#}
+                {#        exportOptions: {#}
+                {#            columns: [0, 1, 2, 3, 4, 5]#}
+                {#        },#}
+                {#        titleAttr: 'Yazdır'#}
+                {#    },#}
+                {#    {#}
+                {#        extend: 'pdfHtml5',#}
+                {#        download: 'open',#}
+                {#        text: '<i class="fa fa-file-pdf-o"></i>',#}
+                {#        exportOptions: {#}
+                {#            columns: [0, 1, 2, 3, 4, 5]#}
+                {#        },#}
+                {#        titleAttr: 'Pdf Kaydet'#}
+                {#    },#}
+                {##}
+                {#    {#}
+                {#        extend: 'excelHtml5',#}
+                {#        title: 'Sporcular',#}
+                {#        text: '<i class="fa fa-file-excel-o"></i>',#}
+                {#        messageTop: 'Sbs Bilgi Sistemi ',#}
+                {#        footer: true,#}
+                {#        exportOptions: {#}
+                {#yer degisimi de yapilabilir.#}
+                {#            columns: [0, 2, 1, 3, 4, 5]#}
+                {##}
+                {#        },#}
+                {#        titleAttr: 'Excel Kaydet'#}
+                {#    },#}
+                {#    {#}
+                {#        text: '<i class="fa fa-file-text-o"></i>',#}
+                {#        action: function (e, dt, button, config) {#}
+                {#            var data = dt.buttons.exportData();#}
+                {##}
+                {#            $.fn.dataTable.fileSave(#}
+                {#                new Blob([JSON.stringify(data)]),#}
+                {#                'Sporcular.json'#}
+                {#            );#}
+                {#        }#}
+                {#    }#}
+                {#],#}
+
+
+            });
+
+
+        }
+
+
+    </script>
+
+{% endblock %}
+

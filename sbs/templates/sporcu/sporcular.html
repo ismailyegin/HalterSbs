@@ -270,7 +270,6 @@
                                                 {% endfor %}
                                             </td>{% endcomment %}
 
-
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{% url "sbs:update-athletes" athlete.pk %}"
@@ -278,11 +277,18 @@
                                                             class="fa fa-edit"></i>İncele
                                                     </a>
 
+                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
 
-                                                    <a href="{% url "sbs:sporcu-lisans-ekle" athlete.pk %}"
-                                                       type="button" class="btn btn-secondary btn-success">Lisans
-                                                        Ekle
+                                                        <a href="{% url "sbs:sporcu-birlestir" athlete.pk %}"
+                                                           type="button" class="btn btn-success"><i
+                                                                class="fa fa-edit"></i>Birleştir
                                                     </a>
+
+                                                    {% endif %}
+                                                    {#                                                    <a href="{% url "sbs:sporcu-lisans-ekle" athlete.pk %}"#}
+                                                    {#                                                       type="button" class="btn btn-secondary btn-success">Lisans#}
+                                                    {#                                                        Ekle#}
+                                                    {#                                                    </a>#}
 
 
                                                 </div>

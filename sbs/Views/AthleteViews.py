@@ -28,7 +28,7 @@ from sbs.Forms.PersonForm import PersonForm
 from sbs.Forms.UserSearchForm import UserSearchForm
 from sbs.Forms.SearchClupForm import SearchClupForm
 from sbs.models import Athlete, CategoryItem, Person, Communication, License, SportClubUser, SportsClub, City, Country, \
-    Coach
+    Coach, CompAthlete, Competition
 from sbs.models.EnumFields import EnumFields
 from sbs.models.Level import Level
 from sbs.services import general_methods
@@ -192,6 +192,53 @@ def return_add_athlete_antrenor(request):
                    'communication_form': communication_form
 
                    })
+
+
+@login_required
+def sporcu_sec(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+
+    athlete = Athlete.objects.get(pk=pk)
+    # athletes=Athlete.objects.none()
+    licenses_form = athlete.licenses.all()
+    user = User.objects.get(pk=athlete.user.pk)
+    person = Person.objects.get(pk=athlete.person.pk)
+    communication = Communication.objects.get(pk=athlete.communication.pk)
+    user_form = DisabledUserForm(request.POST or None, instance=user)
+    person_form = DisabledPersonForm(request.POST or None, request.FILES or None, instance=person)
+    communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
+    say = 0
+    say = athlete.licenses.all().filter(status='Onaylandı').count()
+
+    competitions = CompAthlete.objects.filter(athlete=athlete)
+    # competition=Competition.objects.none()
+    # for item in musabaka:
+    #     print(item.competition.pk)
+    #     competitions= Competition.objects.get(pk=item.competition.pk)
+
+    if request.method == 'POST':
+
+        athletes1 = request.POST.getlist('selected_options')
+        if athletes1:
+            for x in athletes1:
+                athlete = Athlete.objects.get(pk=x)
+                print(athlete)
+
+        # return redirect('wushu:musabaka-duzenle', pk=pk)
+    return render(request, 'sporcu/Sporcu_Sec.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form, 'licenses_form': licenses_form,
+                   'athlete': athlete, 'say': say, 'competitions': competitions})
+
+
+
+
 
 
 
