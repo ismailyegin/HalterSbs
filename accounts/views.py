@@ -155,7 +155,7 @@ def pre_registration(request):
         if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
                 tc=tc) or ReferenceReferee.objects.filter(
             tc=tc) or PreRegistration.objects.filter(tc=tc):
-            messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
             return render(request, 'registration/cluppre-registration.html',
                           {'preRegistrationform': PreRegistrationform})
 
@@ -177,7 +177,7 @@ def pre_registration(request):
         if PreRegistrationform.is_valid():
             PreRegistrationform.save()
             messages.success(request,
-                             "Başarili bir şekilde kayıt başvurunuz alındı Sistem onayından sonra girdiginiz mail adresinize gelen mail ile sisteme giris yapabilirsiniz.")
+                             "Başarili bir şekilde kayıt başvurunuz alındı Yetkili onayından sonra girdiginiz mail adresinize gelen mail ile Spor Bilgi Sistemine  giris yapabilirsiniz.")
             return redirect('accounts:login')
 
 
@@ -415,7 +415,7 @@ def newlogin(request, pk):
 
             clup.save()
 
-            messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
+            messages.success(request, 'Mail adresinize gelen link ile sistemde giriş yapabilirsiniz.')
             return redirect("accounts:login")
 
     return render(request, 'registration/newlogin.html',
@@ -440,7 +440,7 @@ def referenceReferee(request):
         tc = request.POST.get('tc')
         if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
                 tc=tc) or PreRegistration.objects.filter(tc=tc):
-            messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
             return render(request, 'registration/Referee.html',
                           {'preRegistrationform': referee})
 
@@ -489,7 +489,7 @@ def referenceCoach(request):
         tc = request.POST.get('tc')
         if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
                 tc=tc) or PreRegistration.objects.filter(tc=tc):
-            messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
             return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
 
         name = request.POST.get('first_name')

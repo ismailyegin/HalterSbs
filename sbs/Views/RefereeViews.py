@@ -28,12 +28,20 @@ from sbs.Forms.VisaSeminarForm import VisaSeminarForm
 from sbs.Forms.ReferenceRefereeForm import RefereeForm
 from sbs.models.ReferenceReferee import ReferenceReferee
 
-from sbs.models import Judge, CategoryItem, Person, Communication, Level
+from sbs.models import Judge, CategoryItem, Communication, Level
 from sbs.models.VisaSeminar import VisaSeminar
 from sbs.models.EnumFields import EnumFields
 from sbs.services import general_methods
 from datetime import date, datetime
 from django.utils import timezone
+
+from zeep import Client
+from sbs.models.Person import Person
+from sbs.models.PreRegistration import PreRegistration
+# from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.ReferenceCoach import ReferenceCoach
+
+
 
 @login_required
 def return_add_referee(request):
@@ -379,6 +387,49 @@ def referenceUpdateReferee(request, pk):
     refere = ReferenceReferee.objects.get(pk=pk)
     refere_form = RefereeForm(request.POST or None, request.FILES or None, instance=refere,initial={'kademe_definition': refere.kademe_definition})
     if request.method == 'POST':
+
+        mail = request.POST.get('email')
+        if mail != refere.email:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'hakem/HakemBasvuruUpdate.html',
+                              {'preRegistrationform': refere_form})
+
+        tc = request.POST.get('tc')
+        if tc != refere.tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                return render(request, 'hakem/HakemBasvuruUpdate.html',
+                              {'preRegistrationform': refere_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'hakem/HakemBasvuruUpdate.html',
+                          {'preRegistrationform': refere_form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if refere_form.is_valid():
             refere_form.save()
             messages.success(request, 'Hakem Başvurusu Güncellendi')

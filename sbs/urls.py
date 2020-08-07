@@ -150,7 +150,7 @@ urlpatterns = [
     url(r'kulup/basvuru-listesi/$', PreRegistration.return_preRegistration, name='basvuru-listesi'),
     url(r'kulup/basvuru/onayla/(?P<pk>\d+)$', PreRegistration.approve_preRegistration, name='basvuru-onayla'),
     url(r'kulup/basvuru/reddet/(?P<pk>\d+)$', PreRegistration.rejected_preRegistration, name='basvuru-reddet'),
-    url(r'sporcu/basvuru-incele/(?P<pk>\d+)$', PreRegistration.update_preRegistration, name='update-basvuru'),
+    url(r'klup/basvuru-incele/(?P<pk>\d+)$', PreRegistration.update_preRegistration, name='update-basvuru'),
 
 
     url(r'kulup/kulup-ekle/$', ClubViews.return_add_club, name='kulup-ekle'),
