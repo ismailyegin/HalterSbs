@@ -303,26 +303,11 @@ def return_sporcu_ajax(request):
         for comp in compAthlete:
             if comp.athlete:
                 athletes.append(comp.athlete.pk)
+        modeldata = Athlete.objects.exclude(pk__in=athletes)
+        total = Athlete.objects.exclude(pk__in=athletes).count()
 
-        if user.groups.filter(name='KulupUye'):
-            sc_user = SportClubUser.objects.get(user=user)
-            clubsPk = []
-            clubs = SportsClub.objects.filter(clubUser=sc_user)
-            for club in clubs:
-                clubsPk.append(club.pk)
 
-            modeldata = Athlete.objects.exclude(pk__in=athletes).filter(licenses__sportsClub__in=clubsPk).distinct()
-            total = modeldata.count()
 
-        elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-            modeldata = Athlete.objects.exclude(pk__in=athletes)
-            total = Athlete.objects.exclude(pk__in=athletes).count()
-
-        elif user.groups.filter(name='Antrenor'):
-            modeldata = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()[
-                        start:start + length]
-
-            total = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct().count()
 
 
 
@@ -364,6 +349,11 @@ def return_sporcu_ajax(request):
         data = {
             'say': say,
             'pk': item.pk,
+            'tc': item.person.tc,
+            'mail': item.user.email,
+            'anne': item.person.motherName,
+            'baba': item.person.fatherName,
+
 
             'name': item.user.first_name + ' ' + item.user.last_name,
 
