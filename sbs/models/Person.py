@@ -47,11 +47,11 @@ class Person(models.Model):
         default_permissions = ()
         db_table = 'person'
 
-    def save(self, force_insert=False, force_update=False):
-        if self.birthplace:
-            self.birthplace = self.birthplace.upper()
-        if self.motherName:
-            self.motherName = self.motherName.upper()
-        if self.fatherName:
-            self.fatherName = self.fatherName.upper()
-        super(Person, self).save(force_insert, force_update)
+    # def save(self, force_insert=False, force_update=False):
+    #     if self.birthplace:
+    #         self.birthplace = self.birthplace.upper()
+    #     if self.motherName:
+    #         self.motherName = self.motherName.upper()
+    #     if self.fatherName:
+    #         self.fatherName = self.fatherName.upper()
+    #     super(Person, self).save(force_insert, force_update)
