@@ -508,12 +508,27 @@
 
 
                     <div class="box box-primary">
+
+                        <div id="events">
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="box-body">
+
+
+                    <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title">Birleştirilecek Kişileri Seç</h3>
                         </div>
                         <div class="box-body berktug">
                             <form method="post" enctype="multipart/form-data" role="form">
                                 {% csrf_token %}
+
+
                                 <table id="sporcular" class="table table-bordered ">
                                     <thead>
                                     <tr>
@@ -573,6 +588,9 @@
         $(function () {
 
 
+            var table = $('#sporcular').DataTable();
+
+
             Playerlist();
 
 
@@ -586,10 +604,13 @@
         });
 
         function Playerlist() {
+
             table = $('#sporcular').DataTable();
             table.destroy();
 
-            $('#sporcular').DataTable({
+            table = $('#sporcular').DataTable({
+
+
 
                 'paging': true,
                 'searching': true,
@@ -598,6 +619,10 @@
                 'autoWidth': true,
                 "serverSide": true,
                 "processing": true,
+                "select": {
+                    style: 'os',
+                    selector: 'td:last-child'
+                },
                 'ajax': {
 
                     "url": '{% url "sbs:Sporcu-sec-ajax"%}',
@@ -624,7 +649,7 @@
                         "mRender": function (data) {
 
 
-                            return '<input type="checkbox" class="berktug" name="selected_options"\n' +
+                            return '<input type="checkbox" id="' + data.pk + '" name="selected_options"\n' +
                                 '                                                           value="' + data.pk + '">';
 
 
@@ -712,6 +737,36 @@
                 {#],#}
 
 
+            });
+
+
+            table.on('select', function (e, dt, type, indexes) {
+                var rowData = table.rows(indexes).data().toArray();
+                {#events.prepend('<div><b>' + type + ' selection</b> - ' + JSON.stringify(rowData) + '</div>');#}
+                $('#events').append('<div> ' + rowData[0].name + '<br></div>');
+                console.log(indexes);
+                console.log('--------------');
+                console.log(e);
+                console.log('--------------');
+                console.log(dt);
+                console.log('--------------');
+                console.log(type);
+                console.log('--------------');
+                console.log(rowData[0].say)
+                $("#" + rowData[0].pk).prop("checked", true);
+
+                {#alert(JSON.stringify(rowData));#}
+
+            })
+                .on('deselect', function (e, dt, type, indexes) {
+                    var rowData = table.rows(indexes).data().toArray();
+                    {#$('#events').prepend('<br>');#}
+                    {#$( "#"+rowData[0].pk ).prop( "checked", false );#}
+
+
+                });
+            table.on('click', 'tr', function () {
+                $(this).toggleClass('selected');
             });
 
 
