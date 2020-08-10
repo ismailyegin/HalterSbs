@@ -223,30 +223,20 @@ def sporcu_sec(request, pk):
     #     competitions= Competition.objects.get(pk=item.competition.pk)
 
     if request.method == 'POST':
+        print('ben geldim')
 
         athletes1 = request.POST.getlist('selected_options')
+        print(athletes1)
+
+        for item in athletes1:
+            item = Athlete.objects.get(pk=item)
+            print(item)
 
         # return redirect('wushu:musabaka-duzenle', pk=pk)
     return render(request, 'sporcu/Sporcu_Sec.html',
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'licenses_form': licenses_form,
                    'athlete': athlete, 'say': say, 'competitions': competitions})
-
-
-@login_required
-def comparison(request, athlete):
-    print('ben geldim')
-
-    if athlete:
-        for x in athlete:
-            athletes = Athlete.objects.get(pk=x)
-            print(athletes)
-
-    return render(request, 'sporcu/birlesmeDetay.html', )
-
-
-
-
 
 
 @login_required

@@ -347,6 +347,7 @@ def return_sporcu_ajax(request):
         else:
             date = ''
         data = {
+            'id': 'row-' + str(item.pk),
             'say': say,
             'pk': item.pk,
             'tc': item.person.tc,
