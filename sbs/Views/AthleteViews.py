@@ -33,6 +33,8 @@ from sbs.models.EnumFields import EnumFields
 from sbs.models.Level import Level
 from sbs.services import general_methods
 
+from accounts.models import Forgot
+
 # page
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 # from sbs.models.simplecategory import simlecategory
@@ -42,6 +44,8 @@ from zeep import Client
 from sbs.models.PreRegistration import PreRegistration
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
+
+from sbs.models.Compathleteforsearch import Compathleteforsearch
 
 
 @login_required
@@ -220,6 +224,20 @@ def sporcu_birlestir(request):
             for belt in athleteDel.belts.all():
                 athleteDel.belts.remove(belt)
                 athleteDel.save()
+
+            for item in Compathleteforsearch.objects.filter(athlete=athleteDel):
+                item.athlete = athlete
+                item.save
+
+            user = User.objects.get(pk=athleteDel.user.pk)
+            for item in Forgot.objects.filter(user=user):
+                item.user = athlete.user
+                item.save()
+
+            athleteDel.delete()
+            user.delete()
+
+
 
 
 
