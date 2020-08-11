@@ -25,8 +25,8 @@ class Activity(models.Model):
     def __str__(self):
         return '%s ' % self.name
 
-    def save(self, force_insert=False, force_update=False):
-        if self.name:
-            self.name = self.name.upper()
-
-        super(Activity, self).save(force_insert, force_update)
+    # def save(self, force_insert=False, force_update=False):
+    #     if self.name:
+    #         self.name = self.name.upper()
+    #
+    #     super(Activity, self).save(force_insert, force_update)

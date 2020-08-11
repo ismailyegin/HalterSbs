@@ -1,39 +1,21 @@
-from itertools import product
-
-from django.contrib.auth import logout, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import SetPasswordForm
-from django.contrib.auth.models import User, Group
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group, User
 from django.core.mail import EmailMultiAlternatives
-from django.db.models import Q
-from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse
 
-from sbs.Forms.BeltExamForm import BeltExamForm
-from sbs.Forms.ClubForm import ClubForm
-from sbs.Forms.ClubRoleForm import ClubRoleForm
-from sbs.Forms.CommunicationForm import CommunicationForm
-from sbs.Forms.DisabledCommunicationForm import DisabledCommunicationForm
-from sbs.Forms.DisabledPersonForm import DisabledPersonForm
-from sbs.Forms.DisabledSportClubUserForm import DisabledSportClubUserForm
-from sbs.Forms.DisabledUserForm import DisabledUserForm
-from sbs.Forms.PersonForm import PersonForm
-from sbs.Forms.SportClubUserForm import SportClubUserForm
-from sbs.Forms.UserForm import UserForm
+from accounts.models import Forgot
 from sbs.Forms.PreRegidtrationForm import PreRegistrationForm
-from sbs.Forms.UserSearchForm import UserSearchForm
-from sbs.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level, CategoryItem
-from sbs.models.ClubRole import ClubRole
-from sbs.models.EnumFields import EnumFields
+from sbs.models import SportsClub, SportClubUser, Communication, Person
 from sbs.models.PreRegistration import PreRegistration
 from sbs.services import general_methods
-import datetime
-from accounts.models import Forgot
 
+from zeep import Client
 
-from django.contrib.auth.models import Group, Permission, User
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.ReferenceCoach import ReferenceCoach
+
 
 def update_preRegistration(request, pk):
     perm = general_methods.control_access(request)
@@ -42,14 +24,38 @@ def update_preRegistration(request, pk):
         logout(request)
         return redirect('accounts:login')
     veri=PreRegistration.objects.get(pk=pk)
-    form=PreRegistrationForm(request.POST or None, instance=veri)
+    form = PreRegistrationForm(request.POST or None, request.FILES or None, instance=veri)
     if request.method == 'POST':
-        if form.is_valid():
-            email=form.cleaned_data['email']
-            if User.objects.filter(email=email).exists() and veri.email!=email :
-                messages.warning(request, 'Bu mail adresi farklı bir kullanici tarafından kullanilmaktadır xxx')
+        mail = request.POST.get('email')
+        if mail != veri.email:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 return render(request, 'kulup/kulup-basvuru-duzenle.html',
                               {'preRegistrationform': form, })
+
+        tc = request.POST.get('tc')
+        if tc != veri.tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+                return render(request, 'kulup/kulup-basvuru-duzenle.html',
+                              {'preRegistrationform': form, })
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim,soyisim,dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'kulup/kulup-basvuru-duzenle.html',
+                          {'preRegistrationform': form, })
+
+        if form.is_valid():
             form.save()
             messages.success(request,'Basarili bir şekilde kaydedildi ')
             return redirect('sbs:basvuru-listesi')
@@ -57,7 +63,6 @@ def update_preRegistration(request, pk):
             messages.warning(request,'Alanlari kontrol ediniz')
     return render(request, 'kulup/kulup-basvuru-duzenle.html',
                   {'preRegistrationform': form,})
-
 
 
 @login_required

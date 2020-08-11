@@ -28,12 +28,19 @@ from sbs.Forms.VisaSeminarForm import VisaSeminarForm
 from sbs.Forms.ReferenceRefereeForm import RefereeForm
 from sbs.models.ReferenceReferee import ReferenceReferee
 
-from sbs.models import Judge, CategoryItem, Person, Communication, Level
+from sbs.models import Judge, CategoryItem, Communication, Level
 from sbs.models.VisaSeminar import VisaSeminar
 from sbs.models.EnumFields import EnumFields
 from sbs.services import general_methods
 from datetime import date, datetime
 from django.utils import timezone
+
+from zeep import Client
+from sbs.models.Person import Person
+from sbs.models.PreRegistration import PreRegistration
+# from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.ReferenceCoach import ReferenceCoach
+
 
 @login_required
 def return_add_referee(request):
@@ -54,11 +61,51 @@ def return_add_referee(request):
         communication_form = CommunicationForm(request.POST)
         iban_form = IbanFormJudge(request.POST)
 
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'hakem/hakem-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form,
+                           'communication_form': communication_form, 'iban_form': iban_form})
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            return render(request, 'hakem/hakem-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form,
+                           'communication_form': communication_form, 'iban_form': iban_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'hakem/hakem-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form,
+                           'communication_form': communication_form, 'iban_form': iban_form})
+
+
+
+
+
+
+
+
+
+
+
+
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             group = Group.objects.get(name='Hakem')
             password = User.objects.make_random_password()
@@ -77,6 +124,7 @@ def return_add_referee(request):
             judge = Judge(user=user, person=person, communication=communication)
             judge.iban=iban_form.cleaned_data['iban']
             judge.save()
+
 
             # subject, from_email, to = 'Halter - Hakem Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr:81', user.email
             # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
@@ -280,8 +328,8 @@ def refenceapprovalReferee(request, pk):
             if reference.status == ReferenceReferee.WAITED:
                 user = User()
                 user.username = reference.email
-                user.first_name = reference.first_name.upper()
-                user.last_name = reference.last_name.upper()
+                user.first_name = reference.first_name
+                user.last_name = reference.last_name
                 user.email = reference.email
                 group = Group.objects.get(name='Hakem')
 
@@ -379,6 +427,49 @@ def referenceUpdateReferee(request, pk):
     refere = ReferenceReferee.objects.get(pk=pk)
     refere_form = RefereeForm(request.POST or None, request.FILES or None, instance=refere,initial={'kademe_definition': refere.kademe_definition})
     if request.method == 'POST':
+
+        mail = request.POST.get('email')
+        if mail != refere.email:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'hakem/HakemBasvuruUpdate.html',
+                              {'preRegistrationform': refere_form})
+
+        tc = request.POST.get('tc')
+        if tc != refere.tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                return render(request, 'hakem/HakemBasvuruUpdate.html',
+                              {'preRegistrationform': refere_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'hakem/HakemBasvuruUpdate.html',
+                          {'preRegistrationform': refere_form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if refere_form.is_valid():
             refere_form.save()
             messages.success(request, 'Hakem Başvurusu Güncellendi')
@@ -408,11 +499,57 @@ def updateReferee(request, pk):
     grade_form = judge.grades.all()
     visa_form = judge.visa.all()
     if request.method == 'POST':
+
+        mail = request.POST.get('email')
+        if mail != judge.user.email:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'hakem/hakemDuzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
+                               'visa_form': visa_form, 'iban_form': iban_form, })
+
+        tc = request.POST.get('tc')
+        if tc != judge.person.tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                return render(request, 'hakem/hakemDuzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
+                               'visa_form': visa_form, 'iban_form': iban_form, })
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'hakem/hakemDuzenle.html',
+                          {'user_form': user_form, 'communication_form': communication_form,
+                           'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
+                           'visa_form': visa_form, 'iban_form': iban_form, })
+
+
+
+
+
+
+
+
+
+
+
+
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             user.save()
             iban_form.save()
@@ -881,8 +1018,8 @@ def referenceStatus(request, pk):
     if reference.status == ReferenceReferee.WAITED:
         user = User()
         user.username = reference.email
-        user.first_name = reference.first_name.upper()
-        user.last_name = reference.last_name.upper()
+        user.first_name = reference.first_name
+        user.last_name = reference.last_name
         user.email = reference.email
         group = Group.objects.get(name='Hakem')
 

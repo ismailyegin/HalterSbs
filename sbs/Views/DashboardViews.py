@@ -40,13 +40,9 @@ def return_coach_dashboard(request):
     perm = general_methods.control_access(request)
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+    athlete_count = 0
     athlete_count = Athlete.objects.filter(licenses__coach__user=user).distinct().count()
 
-    #
-    # if not perm:
-    #     logout(request)
-    #
-    #     return redirect('accounts:login')
     return render(request, 'anasayfa/antrenor.html', {'athlete_count': athlete_count})
 
 
@@ -151,9 +147,6 @@ def return_admin_dashboard(request):
         logout(request)
         return redirect('accounts:login')
 
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
     # son eklenen 8 sporcuyu ekledik
     last_athlete = Athlete.objects.order_by('-creationDate')[:8]
     total_club = SportsClub.objects.all().count()

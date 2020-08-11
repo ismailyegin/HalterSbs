@@ -261,6 +261,125 @@ def musabaka_sporcu_sec(request, pk):
                   {'pk': pk, 'weights': weights, 'application': competition})
                   # ,{'athletes': athletes, 'competition': competition, })
 
+
+@login_required
+def return_sporcu_ajax(request):
+    # print('ben geldim')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    # /datatablesten gelen veri kümesi datatables degiskenine alindi
+    if request.method == 'GET':
+        datatables = request.GET
+
+        # print('pk beklenen deger =',pk)
+        # kategori = CompetitionCategori.objects.get(pk=request.GET.get('cmd'))
+
+    elif request.method == 'POST':
+        datatables = request.POST
+        # print(datatables)
+        # print("post islemi gerceklesti")
+
+    # /Sayfanın baska bir yerden istenmesi durumunda degerlerin None dönmemesi icin degerler try boklari icerisine alindi
+    try:
+        draw = int(datatables.get('draw'))
+        # print("draw degeri =", draw)
+        # Ambil start
+        start = int(datatables.get('start'))
+        # print("start degeri =", start)
+        # Ambil length (limit)
+        length = int(datatables.get('length'))
+        # print("lenght  degeri =", length)
+        # Ambil data search
+        search = datatables.get('search[value]')
+        # print("search degeri =", search)
+    except:
+        draw = 1
+        start = 0
+        length = 10
+
+    if length == -1:
+
+        athletes = []
+        for comp in compAthlete:
+            if comp.athlete:
+                athletes.append(comp.athlete.pk)
+        modeldata = Athlete.objects.exclude(pk__in=athletes)
+        total = Athlete.objects.exclude(pk__in=athletes).count()
+
+
+
+
+
+
+
+    else:
+        if search:
+            modeldate = Athlete.objects.none()
+
+            athletes = []
+            modeldata = Athlete.objects.filter(
+                Q(user__last_name__icontains=search) | Q(user__first_name__icontains=search) | Q(
+                    user__email__icontains=search))
+
+            total = modeldata.count()
+
+
+        else:
+            modeldata = Athlete.objects.all()[start:start + length]
+            total = Athlete.objects.all().distinct().count()
+
+    say = start + 1
+    start = start + length
+    page = start / length
+
+    beka = []
+    for item in modeldata:
+        klup = ''
+        try:
+            if item.licenses:
+                for lisans in item.licenses.all():
+                    if lisans.sportsClub:
+                        klup = str(lisans.sportsClub) + "<br>" + klup
+        except:
+            klup = ''
+        if item.person.birthDate is not None:
+            date = item.person.birthDate.strftime('%d/%m/%Y')
+        else:
+            date = ''
+        data = {
+            'id': 'row-' + str(item.pk),
+            'say': say,
+            'pk': item.pk,
+            'tc': item.person.tc,
+            'mail': item.user.email,
+            'anne': item.person.motherName,
+            'baba': item.person.fatherName,
+
+
+            'name': item.user.first_name + ' ' + item.user.last_name,
+
+            'birthDate': date,
+
+            'klup': klup,
+
+        }
+        beka.append(data)
+        say += 1
+
+    response = {
+
+        'data': beka,
+        'draw': draw,
+        'recordsTotal': total,
+        'recordsFiltered': total,
+
+    }
+    return JsonResponse(response)
+
+
+
+
+
 @login_required
 def return_sporcu(request):
     # print('ben geldim')

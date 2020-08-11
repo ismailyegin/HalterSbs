@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, Permission, User
@@ -39,6 +41,11 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
 from sbs.models.PreRegistration import PreRegistration
+
+from sbs.models.Person import Person
+from zeep import Client
+import datetime
+
 
 
 def index(request):
@@ -136,19 +143,50 @@ def pre_registration(request):
     if request.method == 'POST':
         PreRegistrationform = PreRegistrationForm(request.POST or None, request.FILES or None)
 
-        if PreRegistrationform.is_valid():
-            if User.objects.filter(email=PreRegistrationform.cleaned_data['email']).exists():
-                messages.warning(request, 'Klup üyesi  mail adresi farklı bir kullanici tarafından kullanilmaktadır.')
-                messages.warning(request, 'Lütfen farklı bir mail adresi giriniz.')
-                return render(request, 'registration/cluppre-registration.html',
-                              {'preRegistrationform': PreRegistrationform})
-            else:
-                PreRegistrationform.save()
-                messages.success(request,
-                                 "Başarili bir şekilde kayıt başvurunuz alındı Sistem onayından sonra girdiginiz mail adresinize gelen mail ile sisteme giris yapabilirsiniz.")
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'registration/cluppre-registration.html',
+                          {'preRegistrationform': PreRegistrationform})
 
-            # bildirim ve geçis sayfasi yap
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
+                tc=tc) or ReferenceReferee.objects.filter(
+            tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
+            return render(request, 'registration/cluppre-registration.html',
+                          {'preRegistrationform': PreRegistrationform})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request,
+                             'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'registration/cluppre-registration.html',
+                          {'preRegistrationform': PreRegistrationform})
+
+        # -------------------------------------
+
+
+        if PreRegistrationform.is_valid():
+            PreRegistrationform.save()
+            messages.success(request,
+                             "Başarili bir şekilde kayıt başvurunuz alındı Yetkili onayından sonra girdiginiz mail adresinize gelen mail ile Spor Bilgi Sistemine  giris yapabilirsiniz.")
             return redirect('accounts:login')
+
+
+
+
+
+
+
+
 
         else:
             messages.warning(request, "Alanlari kontrol ediniz")
@@ -377,7 +415,7 @@ def newlogin(request, pk):
 
             clup.save()
 
-            messages.success(request, 'Mail adresinize gelen link ile sisteme giriş yapabilirsiniz.')
+            messages.success(request, 'Mail adresinize gelen link ile sistemde giriş yapabilirsiniz.')
             return redirect("accounts:login")
 
     return render(request, 'registration/newlogin.html',
@@ -398,6 +436,25 @@ def referenceReferee(request):
                 email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Referee.html', {'preRegistrationform': referee})
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+            return render(request, 'registration/Referee.html',
+                          {'preRegistrationform': referee})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'registration/Referee.html',
+                          {'preRegistrationform': referee})
+
 
         if referee.is_valid():
             if request.POST.get('kademe_definition'):
@@ -422,11 +479,30 @@ def referenceCoach(request):
     coach_form = RefereeCoachForm()
     if request.method == 'POST':
         coach_form = RefereeCoachForm(request.POST, request.FILES)
+        mail = request.POST.get('email')
         if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
                 email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
                 email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-            return render(request, 'registration/Coach.html', {'preRegistrationform': antrenor})
+            return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
+            return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
+
+
         if coach_form.is_valid():
 
             veri=coach_form.save(commit=False)

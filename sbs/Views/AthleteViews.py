@@ -28,7 +28,7 @@ from sbs.Forms.PersonForm import PersonForm
 from sbs.Forms.UserSearchForm import UserSearchForm
 from sbs.Forms.SearchClupForm import SearchClupForm
 from sbs.models import Athlete, CategoryItem, Person, Communication, License, SportClubUser, SportsClub, City, Country, \
-    Coach
+    Coach, CompAthlete, Competition
 from sbs.models.EnumFields import EnumFields
 from sbs.models.Level import Level
 from sbs.services import general_methods
@@ -36,6 +36,13 @@ from sbs.services import general_methods
 # page
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 # from sbs.models.simplecategory import simlecategory
+
+
+from zeep import Client
+from sbs.models.PreRegistration import PreRegistration
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.ReferenceCoach import ReferenceCoach
+
 
 
 @login_required
@@ -72,16 +79,57 @@ def return_add_athlete_antrenor(request):
     if request.method == 'POST':
 
         user_form = UserForm(request.POST)
-        person_form = PersonForm(request.POST, request.FILES)
+        person_form = PersonForm(request.POST or None, request.FILES or None)
         communication_form = CommunicationForm(request.POST)
         coach = Coach.objects.get(user=user)
         license_form = LicenseFormAntrenor(request.POST, request.FILES or None)
 
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'sporcu/sporcu-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
+                           'communication_form': communication_form
+
+                           })
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+            return render(request, 'sporcu/sporcu-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
+                           'communication_form': communication_form
+
+                           })
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'sporcu/sporcu-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
+                           'communication_form': communication_form
+
+                           })
+
+
+
+
+
+
+
         if user_form.is_valid() and person_form.is_valid() and license_form.is_valid() and communication_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             group = Group.objects.get(name='Sporcu')
             password = User.objects.make_random_password()
@@ -103,16 +151,16 @@ def return_add_athlete_antrenor(request):
 
             # lisans kaydedildi  kakydetmeden id degeri alamayacagi icin önce kaydedip sonra ekleme islemi yaptık
             license = license_form.save()
-            if SportsClub.objects.get(name='FERDi'):
-                ferdi = SportsClub.objects.get(name='FERDi')
+            if SportsClub.objects.get(name='FERDI'):
+                ferdi = SportsClub.objects.get(name='FERDI')
                 license.sportsClub = ferdi
                 license.coach = coach
                 license.isFerdi = True
                 license.save()
             else:
                 ferdi = SportsClub()
-                ferdi.name = 'Ferdi'
-                ferdi.shortName = 'ferdi'
+                ferdi.name = 'FERDI'
+                ferdi.shortName = 'FERDI'
                 ferdi.foundingDate = datetime.today()
                 ferdi.isFormal = True
                 ferdi.communication.city = City.objects.get(name='ANKARA')
@@ -146,8 +194,49 @@ def return_add_athlete_antrenor(request):
                    })
 
 
+@login_required
+def sporcu_sec(request, pk):
+    perm = general_methods.control_access(request)
 
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
 
+    athlete = Athlete.objects.get(pk=pk)
+    athletes = Athlete.objects.none()
+    licenses_form = athlete.licenses.all()
+    user = User.objects.get(pk=athlete.user.pk)
+    person = Person.objects.get(pk=athlete.person.pk)
+    communication = Communication.objects.get(pk=athlete.communication.pk)
+    user_form = DisabledUserForm(request.POST or None, instance=user)
+    person_form = DisabledPersonForm(request.POST or None, request.FILES or None, instance=person)
+    communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
+    say = 0
+    say = athlete.licenses.all().filter(status='Onaylandı').count()
+
+    competitions = CompAthlete.objects.filter(athlete=athlete)
+    # competition=Competition.objects.none()
+    # for item in musabaka:
+    #     print(item.competition.pk)
+    #     competitions= Competition.objects.get(pk=item.competition.pk)
+
+    if request.method == 'POST':
+        print('ben geldim')
+
+        athletes1 = request.POST.getlist('selected_options')
+        print(athletes1)
+
+        for item in athletes1:
+            item = Athlete.objects.get(pk=item)
+            print(item)
+
+        # return redirect('wushu:musabaka-duzenle', pk=pk)
+    return render(request, 'sporcu/Sporcu_Sec.html',
+                  {'user_form': user_form, 'communication_form': communication_form,
+                   'person_form': person_form, 'licenses_form': licenses_form,
+                   'athlete': athlete, 'say': say, 'competitions': competitions})
 
 
 @login_required
@@ -188,13 +277,49 @@ def return_add_athlete(request):
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST)
         license_form = LicenseForm(request.POST, request.FILES or None)
+        # controller tc email
+
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'sporcu/sporcu-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
+                           'communication_form': communication_form
+
+                           })
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+            return render(request, 'sporcu/sporcu-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
+                           'communication_form': communication_form
+
+                           })
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'sporcu/sporcu-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
+                           'communication_form': communication_form
+
+                           })
 
 
         if user_form.is_valid() and person_form.is_valid() and license_form.is_valid() and communication_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             group = Group.objects.get(name='Sporcu')
             password = User.objects.make_random_password()
@@ -355,7 +480,7 @@ def return_athletes(request):
 
                 if user.groups.filter(name__in=['Yonetim', 'Admin']):
                     if coach:
-                        query &= Q(licenses__coach_id__in=coach)
+                        query &= Q(licenses__coach=coach)
 
                 if user.groups.filter(name='KulupUye'):
                     sc_user = SportClubUser.objects.get(user=user)
@@ -403,13 +528,47 @@ def updateathletes(request, pk):
 
     if request.method == 'POST':
 
+        # controller tc email
+
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'sporcu/sporcuDuzenle.html',
+                          {'user_form': user_form, 'communication_form': communication_form,
+                           'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                           'athlete': athlete, 'say': say})
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+            return render(request, 'sporcu/sporcuDuzenle.html',
+                          {'user_form': user_form, 'communication_form': communication_form,
+                           'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                           'athlete': athlete, 'say': say})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'sporcu/sporcuDuzenle.html',
+                          {'user_form': user_form, 'communication_form': communication_form,
+                           'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                           'athlete': athlete, 'say': say})
+
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid():
             # user = user_form.save(commit=False)
             # print('user=', user.first_name)
             kisi = user_form.save(commit=False)
             kisi.username = user_form.cleaned_data['email']
-            kisi.first_name = user_form.cleaned_data['first_name'].upper()
-            kisi.last_name = user_form.cleaned_data['last_name'].upper()
+            kisi.first_name = user_form.cleaned_data['first_name']
+            kisi.last_name = user_form.cleaned_data['last_name']
             kisi.email = kisi.username
             kisi.save()
             person_form.save()
@@ -1269,8 +1428,8 @@ def updateAthleteProfile(request, pk):
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
             user.save()

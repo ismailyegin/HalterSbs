@@ -44,6 +44,11 @@ from django.utils import timezone
 
 from accounts.models import Forgot
 
+from zeep import Client
+from sbs.models.PreRegistration import PreRegistration
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.ReferenceCoach import ReferenceCoach
+
 # visaseminer ekle
 @login_required
 def visaSeminar_ekle(request):
@@ -150,11 +155,50 @@ def return_add_coach(request):
         communication_form = CommunicationForm(request.POST)
         iban_form=IbanCoachForm(request.POST)
 
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'antrenor/antrenor-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form,
+                           'communication_form': communication_form, 'iban_form': iban_form})
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            return render(request, 'antrenor/antrenor-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form,
+                           'communication_form': communication_form, 'iban_form': iban_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'antrenor/antrenor-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form,
+                           'communication_form': communication_form, 'iban_form': iban_form})
+
+
+
+
+
+
+
+
+
+
+
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             group = Group.objects.get(name='Antrenor')
             password = User.objects.make_random_password()
@@ -416,8 +460,8 @@ def referenceCoachStatus(request, pk):
         if referenceCoach.status != ReferenceCoach.APPROVED:
             user = User()
             user.username = referenceCoach.email
-            user.first_name = referenceCoach.first_name.upper()
-            user.last_name = referenceCoach.last_name.upper()
+            user.first_name = referenceCoach.first_name
+            user.last_name = referenceCoach.last_name
             user.email = referenceCoach.email
             group = Group.objects.get(name='Antrenor')
 
@@ -508,8 +552,8 @@ def referenappcoverCoach(request, pk):
             if referenceCoach.status != ReferenceCoach.APPROVED:
                 user = User()
                 user.username = referenceCoach.email
-                user.first_name = referenceCoach.first_name.upper()
-                user.last_name = referenceCoach.last_name.upper()
+                user.first_name = referenceCoach.first_name
+                user.last_name = referenceCoach.last_name
                 user.email = referenceCoach.email
                 group = Group.objects.get(name='Antrenor')
 
@@ -612,6 +656,36 @@ def coachreferenceUpdate(request, pk):
     coach_form = RefereeCoachForm(request.POST or None, request.FILES or None, instance=coach , initial={'kademe_definition': coach.kademe_definition})
     if request.method == 'POST':
 
+        mail = request.POST.get('email')
+        if mail != coach.email:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'antrenor/AntronerBasvuruUpdate.html',
+                              {'preRegistrationform': coach_form})
+
+        tc = request.POST.get('tc')
+        if tc != coach.tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                return render(request, 'antrenor/AntronerBasvuruUpdate.html',
+                              {'preRegistrationform': coach_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'antrenor/AntronerBasvuruUpdate.html',
+                          {'preRegistrationform': coach_form})
+
+
+
         if coach_form.is_valid():
             coach_form.save()
 
@@ -649,11 +723,60 @@ def coachUpdate(request, pk):
         person_form = PersonForm(request.POST, request.FILES, instance=person)
         communication_form = CommunicationForm(request.POST or None, instance=communication)
         iban_form = IbanCoachForm(request.POST or None, instance=coach)
+
+        mail = request.POST.get('email')
+        if mail != coach.user.email:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'antrenor/antrenorDuzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
+                               'personCoach': person, 'visa_form': visa_form, 'iban_form': iban_form})
+
+        tc = request.POST.get('tc')
+        if tc != coach.person.tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                return render(request, 'antrenor/antrenorDuzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
+                               'personCoach': person, 'visa_form': visa_form, 'iban_form': iban_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'antrenor/antrenorDuzenle.html',
+                          {'user_form': user_form, 'communication_form': communication_form,
+                           'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
+                           'personCoach': person, 'visa_form': visa_form, 'iban_form': iban_form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
 
             user = user_form.save(commit=False)
@@ -696,8 +819,8 @@ def updateCoachProfile(request):
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name'].upper()
-            user.last_name = user_form.cleaned_data['last_name'].upper()
+            user.first_name = user_form.cleaned_data['first_name']
+            user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
             user.save()
@@ -1134,7 +1257,6 @@ def visaSeminar_onayla(request, pk):
     if seminar.status == VisaSeminar.WAITED:
 
         for item in seminar.coach.all():
-            print('ben geldim')
 
             visa = Level(dekont='Federasyon', branch=seminar.branch)
             visa.startDate = date(timezone.now().year, 1, 1)

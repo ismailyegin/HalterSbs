@@ -18,6 +18,8 @@ urlpatterns = [
 
     # Sporcular
     url(r'sporcu/sporcu-ekle/$', AthleteViews.return_add_athlete, name='sporcu-ekle'),
+    url(r'sporcu/sporcu-birlestir/(?P<pk>\d+)$', AthleteViews.sporcu_sec, name='sporcu-birlestir'),
+
     url(r'sporcu/sporcu-ekle-antrenor/$', AthleteViews.return_add_athlete_antrenor, name='sporcu-ekle-antrenor'),
     url(r'sporcu/sporcular/$', AthleteViews.return_athletes, name='sporcular'),
     url(r'sporcu/sporcular/antrenor/$', AthleteViews.return_athletes_antrenor, name='sporcular-antrenor'),
@@ -150,7 +152,7 @@ urlpatterns = [
     url(r'kulup/basvuru-listesi/$', PreRegistration.return_preRegistration, name='basvuru-listesi'),
     url(r'kulup/basvuru/onayla/(?P<pk>\d+)$', PreRegistration.approve_preRegistration, name='basvuru-onayla'),
     url(r'kulup/basvuru/reddet/(?P<pk>\d+)$', PreRegistration.rejected_preRegistration, name='basvuru-reddet'),
-    url(r'sporcu/basvuru-incele/(?P<pk>\d+)$', PreRegistration.update_preRegistration, name='update-basvuru'),
+    url(r'klup/basvuru-incele/(?P<pk>\d+)$', PreRegistration.update_preRegistration, name='update-basvuru'),
 
 
     url(r'kulup/kulup-ekle/$', ClubViews.return_add_club, name='kulup-ekle'),
@@ -358,6 +360,8 @@ urlpatterns = [
     url(r'musabaka/sporcu-guncelle/(?P<pk>\d+)/(?P<competition>\d+)$', CompetitionViews.update_athlete,
         name='catagori-sporcu-guncelle-ajax'),
     url(r'musabaka/KategorilerinSporculari/$', CompetitionViews.return_sporcu, name='Kategorilerin-Sporculari'),
+
+    url(r'musabaka/Sporcu-sec/ajax/$', CompetitionViews.return_sporcu_ajax, name='Sporcu-sec-ajax'),
     url(r'musabaka/musabaka-duzenle/musabaka_sporcu_ekle/(?P<athlete_pk>\d+)/(?P<competition_pk>\d+)$',
         CompetitionViews.musabaka_sporcu_ekle,
         name='musabaka_sporcu_ekle'),

@@ -37,6 +37,11 @@ from datetime import date,datetime
 import datetime
 from django.utils import timezone
 
+from zeep import Client
+# from sbs.models.Person import Person
+# from sbs.models.PreRegistration import PreRegistration
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.ReferenceCoach import ReferenceCoach
 
 from django.contrib.auth.models import Group, Permission, User
 
@@ -146,13 +151,44 @@ def return_add_club_person(request):
     person_form = PersonForm()
     communication_form = CommunicationForm()
     sportClubUser_form = SportClubUserForm()
-
     if request.method == 'POST':
 
         user_form = UserForm(request.POST)
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST, request.FILES)
         sportClubUser_form = SportClubUserForm(request.POST)
+
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'kulup/kulup-uyesi-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                           'sportClubUser_form': sportClubUser_form,
+                           })
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                tc=tc) or PreRegistration.objects.filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            return render(request, 'kulup/kulup-uyesi-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                           'sportClubUser_form': sportClubUser_form,
+                           })
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'kulup/kulup-uyesi-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                           'sportClubUser_form': sportClubUser_form,
+                           })
 
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and sportClubUser_form.is_valid():
             user = User()
@@ -223,6 +259,36 @@ def updateClubPersons(request, pk):
     clubs = SportsClub.objects.filter(clubUser__user=user)
 
     if request.method == 'POST':
+        mail = request.POST.get('email')
+        if mail != athlete.user.email:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'kulup/kulup-uyesi-duzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'sportClubUser_form': sportClubUser_form, 'clubs': clubs})
+
+        tc = request.POST.get('tc')
+        if tc != athlete.person.tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                return render(request, 'kulup/kulup-uyesi-duzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'sportClubUser_form': sportClubUser_form, 'clubs': clubs})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'kulup/kulup-uyesi-duzenle.html',
+                          {'user_form': user_form, 'communication_form': communication_form,
+                           'person_form': person_form, 'sportClubUser_form': sportClubUser_form, 'clubs': clubs})
 
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and sportClubUser_form.is_valid():
 
