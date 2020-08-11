@@ -270,14 +270,21 @@ def return_sporcu_ajax(request):
     # /datatablesten gelen veri kümesi datatables degiskenine alindi
     if request.method == 'GET':
         datatables = request.GET
+        secilenler = request.GET.getlist('secilenler[]')
+
+        pk = request.GET.get('athlete')
+        athlete = Athlete.objects.get(pk=pk)
+
+
 
         # print('pk beklenen deger =',pk)
         # kategori = CompetitionCategori.objects.get(pk=request.GET.get('cmd'))
 
     elif request.method == 'POST':
         datatables = request.POST
+
         # print(datatables)
-        # print("post islemi gerceklesti")
+        print("post islemi gerceklesti")
 
     # /Sayfanın baska bir yerden istenmesi durumunda degerlerin None dönmemesi icin degerler try boklari icerisine alindi
     try:
@@ -296,15 +303,15 @@ def return_sporcu_ajax(request):
         draw = 1
         start = 0
         length = 10
-
+    modeldata = Athlete.objects.none()
     if length == -1:
 
-        athletes = []
-        for comp in compAthlete:
-            if comp.athlete:
-                athletes.append(comp.athlete.pk)
-        modeldata = Athlete.objects.exclude(pk__in=athletes)
-        total = Athlete.objects.exclude(pk__in=athletes).count()
+        # athletes = []
+        # for comp in compAthlete:
+        #     if comp.athlete:
+        #         athletes.append(comp.athlete.pk)
+        modeldata = Athlete.objects.exclude(pk=athlete.pk)
+        total = Athlete.objects.exclude(pk=athlete.pk).count()
 
 
 
@@ -314,25 +321,26 @@ def return_sporcu_ajax(request):
 
     else:
         if search:
-            modeldate = Athlete.objects.none()
+            modeldata = Athlete.objects.none()
 
             athletes = []
             modeldata = Athlete.objects.filter(
                 Q(user__last_name__icontains=search) | Q(user__first_name__icontains=search) | Q(
-                    user__email__icontains=search))
+                    user__email__icontains=search)).exclude(pk=athlete.pk)
 
             total = modeldata.count()
 
 
         else:
-            modeldata = Athlete.objects.all()[start:start + length]
-            total = Athlete.objects.all().distinct().count()
+            modeldata = Athlete.objects.exclude(pk=athlete.pk)[start:start + length]
+            total = Athlete.objects.exclude(pk=athlete.pk).distinct().count()
 
     say = start + 1
     start = start + length
     page = start / length
 
     beka = []
+
     for item in modeldata:
         klup = ''
         try:

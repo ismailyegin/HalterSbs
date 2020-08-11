@@ -273,7 +273,7 @@ def sporcu_sec(request, pk):
     communication_form = DisabledCommunicationForm(request.POST or None, instance=communication)
     say = 0
     say = athlete.licenses.all().filter(status='Onaylandı').count()
-
+    competitions = Competition.objects.none()
     competitions = CompAthlete.objects.filter(athlete=athlete)
     # competition=Competition.objects.none()
     # for item in musabaka:
