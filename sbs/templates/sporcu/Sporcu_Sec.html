@@ -37,7 +37,7 @@
                     <h4 class="modal-title">Uyarı</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Silmek istediğinizden emin misiniz?</p>
+                    <p>Birleştirme işlemini onaylıyor musunuz?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
@@ -59,7 +59,7 @@
 
             {% if message.tags == 'warning' %}
 
-                <div class="alert alert-danger alert-dismissible">
+                <div class=" alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                     <h4><i class="icon fa fa-ban"></i> Hata!</h4>
 
@@ -137,9 +137,10 @@
                 <div class="box box-info collapsed-box">
                         <div class="box-header with-border">
 
-                            <h3 class="box-title">Birleşmeden Kalacak Sporcu Bilgileri</h3>
+                            <h3 class="box-title">Birleşmeden Kalacak Sporcu Bilgileri </h3>
 
                             <div class="box-tools pull-right">
+                                ( {{ user_form.instance.first_name }} {{ user_form.instance.last_name }} )
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                         class="fa fa-plus"></i>
                                 </button>
@@ -327,6 +328,7 @@
                                                         <th> Lisans No</th>
                                                         <th> Lisans Foto.</th>
                                                         <th> Onay Durumu</th>
+                                                        <th>işlemler</th>
 
 
 
@@ -364,6 +366,64 @@
 
 
                                                                 </td>
+                                                                <td>
+                                                                    <div class="btn-group">
+
+
+                                                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                                            <a href="{% url "sbs:sporcu-lisans-onayla" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                                               type="button" class="btn btn-success"><i
+                                                                                    class="fa fa-edit"></i>Onayla
+                                                                            </a>
+
+
+
+
+                                                                            <button type="button" class="btn btn-danger"
+                                                                                    onclick="reddetwhy({{ license.pk }},{{ athlete.pk }})">
+                                                                                <i
+                                                                                        class="fa fa-trash"></i>Reddet
+                                                                            </button>
+
+
+
+
+                                                                            <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"
+                                                                               type="button" class="btn btn-danger"><i
+                                                                                    class="fa fa-edit"></i>Sil
+                                                                            </a>
+
+                                                                        {% endif %}
+                                                                        {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}
+
+                                                                            {% if user.groups.all.0.name == 'Antrenor' %}
+
+
+                                                                                <a href="{% url "sbs:sporcu-lisans-duzenle-antrenor" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                                                   type="button"
+                                                                                   class="btn btn-warning"><i
+                                                                                        class="fa fa-edit"></i>Güncelle
+                                                                                </a>
+
+
+
+                                                                            {% else %}
+
+
+                                                                                <a href="{% url "sbs:sporcu-lisans-duzenle" license_pk=license.pk athlete_pk=athlete.pk %}"
+                                                                                   type="button"
+                                                                                   class="btn btn-warning"><i
+                                                                                        class="fa fa-edit"></i>Güncelle
+                                                                                </a>
+
+
+                                                                            {% endif %}
+
+                                                                        {% endif %}
+
+
+                                                                    </div>
+                                                                </td>
 
 
 
@@ -391,7 +451,7 @@
                                                 <div class="box-header with-border">
 
                                                 </div>
-                                                <table id="license" class="table table-bordered table-hover">
+                                                <table id="competition" class="table table-bordered table-hover">
                                                     <thead>
                                                     <tr>
                                                         <th>#</th>
@@ -480,9 +540,7 @@
                                 </table>
 
                                 <div class="box-header with-border">
-                                    <div class="box-footer">
-                                        <button type="submit" class="btn btn-primary">Birleştir</button>
-                                    </div>
+
                                 </div>
                             </form>
                         </div>
@@ -524,6 +582,9 @@
                         </div>
 
                     </div>
+                    <div class="box-footer">
+                        <button onclick="Gonder()" class="btn btn-primary">Birleştir</button>
+                    </div>
                 </div>
             </section>
 
@@ -550,10 +611,8 @@
 
     <script type="text/javascript" language="JavaScript">
 
-
+        var secilenler = new Array();
         $(function () {
-
-
             Playerlist();
 
             var table = $('#sporcular').DataTable();
@@ -566,40 +625,6 @@
                 'responsive': true,
                 'autoWidth': true,
                 "select": true,
-            });
-
-            table.on('select', function (e, dt, type, indexes) {
-                var rowData = table.rows(indexes).data().toArray();
-                {#$(this).toggleClass('selected');#}
-
-
-                events.row.add([
-                    rowData[0].name,
-                    rowData[0].mail,
-
-                    {#pk=212121223232323232 athlete_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),#}
-                    {#rowData[0].name,#}
-                    "<div   class='btn-group'><a target='_blank' href='http://sbs.halter.gov.tr:81/sbs/sporcu/sporcuDuzenle/" + rowData[0].pk + "'type='button' class='btn btn-warning'><i class='fa fa-edit'></i>İncele</a>",
-
-
-                ]).draw();
-
-
-
-                {#$('#events').append('<div> ' + rowData[0].name + '<br></div>');#}
-                $("#row-" + rowData[0].pk).prop("checked", true);
-
-
-            });
-
-            $('.sec').change(function () {
-                alert();
-
-                if ($(this).is(':checked')) {
-                    console.log($(this).val() + ' is now checked');
-                } else {
-                    console.log($(this).val() + ' is now unchecked');
-                }
             });
 
 
@@ -631,19 +656,8 @@
                 },
                 'columns': [
                     {#{"targets": -1},#}
-                    {
-                        "data": null,
-                        "bSortable": false,
-                        "mRender": function (data) {
 
-
-                            return '<input type="checkbox" class="sec" id=check-' + data.pk + ' name="selected_options"\n' +
-                                '                                                           value="' + data.pk + '" disabled ><p>' + data.say + '</p>';
-
-
-                        }
-                    },
-
+                    {'data': 'say'},
                     {'data': 'name'},
                     {'data': 'klup'},
                     {
@@ -670,9 +684,16 @@
 
 
         function degersec(id) {
-            {#alert(id);#}
-            $("#check-" + id).prop("checked", true);
-            $("#check-" + id).prop("disabled", false);
+
+
+            var deger = -1;
+            deger = secilenler.indexOf(id);
+            console.log(deger);
+
+            if (deger == -1) {
+
+                secilenler[secilenler.length] = id;
+                console.log(secilenler);
             $("#btnsec-" + id).hide("slow");
 
 
@@ -691,15 +712,75 @@
             events.draw(true);
 
 
+            } else {
+
+                alert("Bu deger seçilmiştir.");
+                $("#btnsec-" + id).hide("slow");
+            }
+
+
+
+
+
         };
 
         function degercıkar(id) {
 
+
+            var index = secilenler.indexOf(id);
+            if (index !== -1) {
+
+                secilenler.splice(index, 1);
+            }
+            console.log(secilenler)
+
+
+
             var events = $('#events').DataTable();
             events.row("#event-" + id).remove().draw(false);
-            $("#check-" + id).prop("checked", false);
-            $("#check-" + id).prop("disabled", true);
+            {#$("#check-" + id).prop("checked", false);#}
+            {#$("#check-" + id).prop("disabled", true);#}
             $("#btnsec-" + id).show("slow");
+
+
+        }
+
+        function Gonder() {
+
+            {#alert('birlestir tıklandi'+secilenler);#}
+
+            {#console.log(id);#}
+            var html = '';
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function (e) {
+
+
+                    $.ajax({
+                        url: "{% url "sbs:sporcu-birlestir-onay" %}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False',
+                            secilenler: secilenler,
+                            athlete:{{ athlete.pk }},
+                        },
+                        success: function (result) {
+                            if (result.status == 'Success') {
+                                html = 'Aşama başarıyla kaldırıldı.';
+                                {#$('#offset-' + competitionId).hide();#}
+
+                                console.log(result.status);
+
+
+                            }
+                        }
+                    });
+
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
 
 
         }
