@@ -163,20 +163,20 @@ def return_admin_dashboard(request):
     total_judge = Judge.objects.all().count()
     total_user = User.objects.all().count()
 
-    total_notifications_refere = ReferenceReferee.objects.filter(status=ReferenceReferee.WAITED).count()
-    total_notifications_coach = ReferenceReferee.objects.filter(status=ReferenceCoach.WAITED).count()
-    total_notifications_clup = PreRegistration.objects.filter(status=PreRegistration.WAITED).count()
-    notifications_tatal = total_notifications_refere + total_notifications_coach + total_notifications_clup
+    # total_notifications_refere = ReferenceReferee.objects.filter(status=ReferenceReferee.WAITED).count()
+    # total_notifications_coach = ReferenceReferee.objects.filter(status=ReferenceCoach.WAITED).count()
+    # total_notifications_clup = PreRegistration.objects.filter(status=PreRegistration.WAITED).count()
+    # notifications_tatal = total_notifications_refere + total_notifications_coach + total_notifications_clup
 
     return render(request, 'anasayfa/admin.html',
                   {'total_club_user': total_club_user, 'total_club': total_club,
                    'total_athlete': total_athlete, 'total_coachs':total_coachs,'last_athletes':last_athlete,'total_athlete_gender_man':total_athlete_gender_man,
                    'total_athlete_gender_woman':total_athlete_gender_woman,'total_athlate_last_month':total_athlate_last_month,
                    'total_judge': total_judge, 'total_user': total_user,
-                   'total_notifications_refere': total_notifications_refere,
-                   'total_notifications_coach': total_notifications_coach,
-                   'total_notifications_clup': total_notifications_clup,
-                   'notifications_tatal': notifications_tatal
+                   # 'total_notifications_refere': total_notifications_refere,
+                   # 'total_notifications_coach': total_notifications_coach,
+                   # 'total_notifications_clup': total_notifications_clup,
+                   # 'notifications_tatal': notifications_tatal
 
                    })
 

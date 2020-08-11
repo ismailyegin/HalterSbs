@@ -8,6 +8,9 @@ from django.shortcuts import redirect
 from sbs.models import Menu, MenuAdmin, MenuAthlete, MenuReferee, MenuCoach, MenuDirectory, MenuClubUser, \
     SportClubUser, Person, Athlete, Coach, Judge, DirectoryMember, SportsClub, Communication, City, Country, ClubRole
 
+from sbs.models.ReferenceCoach import ReferenceCoach
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.PreRegistration import PreRegistration
 
 def getMenu(request):
     menus = Menu.objects.all()
@@ -162,6 +165,36 @@ def getProfileImage(request):
         return {'person': person}
 
     return {}
+
+
+def get_notification(request):
+    if (request.user.id):
+        current_user = request.user
+        if current_user.groups.filter(name='Admin').exists():
+            total_notifications_refere = ReferenceReferee.objects.filter(status=ReferenceReferee.WAITED).count()
+            total_notifications_coach = ReferenceReferee.objects.filter(status=ReferenceCoach.WAITED).count()
+            total_notifications_clup = PreRegistration.objects.filter(status=PreRegistration.WAITED).count()
+            notifications_tatal = total_notifications_refere + total_notifications_coach + total_notifications_clup
+
+            return {
+                'total_notifications_refere': total_notifications_refere,
+                'total_notifications_coach': total_notifications_coach,
+                'total_notifications_clup': total_notifications_clup,
+                'notifications_tatal': notifications_tatal}
+
+    return {}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def import_csv():
