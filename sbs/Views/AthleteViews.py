@@ -195,8 +195,34 @@ def sporcu_birlestir(request):
         logout(request)
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
+        athlete = request.POST.get('athlete')
+        athlete = Athlete.objects.get(pk=athlete)
+        secilenler = request.POST.getlist('secilenler[]')
 
-        print('ben geldim ')
+        for item in secilenler:
+            athleteDel = Athlete.objects.get(pk=item)
+            compAthlete = CompAthlete.objects.filter(athlete=athleteDel)
+            print('müsabakalari')
+            for comp in compAthlete:
+                print(comp.competition)
+                comp.athlete = athlete
+                comp.save()
+            print('lisanslari')
+            for lisans in athleteDel.licenses.all():
+                print(lisans.pk)
+
+                athleteDel.licenses.remove(lisans)
+                athleteDel.save()
+
+                athlete.licenses.add(lisans)
+                athlete.save()
+
+            for belt in athleteDel.belts.all():
+                athleteDel.belts.remove(belt)
+                athleteDel.save()
+
+
+
 
         try:
             print()
