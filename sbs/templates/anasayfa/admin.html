@@ -800,6 +800,8 @@
 
 
     <script>
+
+
         {#var myLineChart = new Chart(ctxL, {#}
         {#    type: 'line',#}
         {#    data: {#}
@@ -829,6 +831,40 @@
 
     <script>
         $(function () {
+
+
+            {% if notifications_tatal != 0 %}
+
+
+                $('.notifications-menu span').text("{{ notifications_tatal }}");
+                {#$('.notifications-menu ul').prepend("<li class='header'>Spor Bilgi Sistemi</li>");#}
+                {#$('.notifications-menu ul').prepend(" <li>\n" +#}
+                {#    "                                <!-- inner menu: contains the actual data -->\n" +#}
+                {#    "                                <ul class=\"menu\">\n" +#}
+                {#    "                                    <li>\n" +#}
+                {#    "                                        <a href=\"#\">\n" +#}
+                {#    "                                            <i class=\"fa fa-users text-aqua\"></i> 5 new members joined today\n" +#}
+                {#    "                                        </a>\n" +#}
+                {#    "                                    </li>\n" +#}
+                {#    "                                    <li>\n" +#}
+                {#    "                                        <a href=\"#\">\n" +#}
+                {#    "                                            <i class=\"fa fa-warning text-yellow\"></i> Very long description here that\n" +#}
+                {#    "                                            may not fit into the\n" +#}
+                {#    "                                            page and may cause design problems\n" +#}
+                {#    "                                        </a>\n" +#}
+                {#    "                                    </li>\n" +#}
+                {#    "                                    <li>\n" +#}
+                {#    "                                        <a href=\"#\">\n" +#}
+                {#    "                                            <i class=\"fa fa-users text-red\"></i> 5 new members joined\n" +#}
+                {#    "                                        </a>\n" +#}
+                {#    "                                    </li>" +#}
+                {#    "</li>");#}
+            {% endif %}
+
+
+
+
+
 
             var salesChartCanvas = $('#salesChart2').get(0).getContext('2d');
             // This will get the first returned node in the jQuery collection.
