@@ -652,6 +652,12 @@
 
                     "url": '{% url "sbs:Sporcu-sec-ajax"%}',
                     "methot": 'POST',
+                    'data': {
+                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                        isActive: 'False',
+                        {#secilenler: secilenler,#}
+                        athlete:{{ athlete.pk }},
+                    },
 
                 },
                 'columns': [
@@ -766,11 +772,12 @@
                         },
                         success: function (result) {
                             if (result.status == 'Success') {
-                                html = 'Aşama başarıyla kaldırıldı.';
-                                {#$('#offset-' + competitionId).hide();#}
+                                html = 'Başari ile birleştirildi.';
+                                window.location.replace("{% url "sbs:sporcular" %}");
 
-                                console.log(result.status);
+                            } else {
 
+                                alert('Birşeyler ters gitti.')
 
                             }
                         }
