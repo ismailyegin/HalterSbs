@@ -473,8 +473,6 @@ def return_athletes_antrenor(request):
                     query &= Q(user__last_name__icontains=lastName)
                 if email:
                     query &= Q(user__email__icontains=email)
-                if brans:
-                    query &= Q(licenses__branch=brans, licenses__status='Onaylandı')
 
                 if user.groups.filter(name='Antrenor'):
                     athletes = Athlete.objects.filter(licenses__coach__user=user or query).distinct()
