@@ -317,6 +317,81 @@ def updateClubPersons(request, pk):
 
 
 @login_required
+def return_club_coach(request):
+    perm = general_methods.control_access_klup(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    user_form = UserSearchForm()
+    user = request.user
+    club_user_array = SportClubUser.objects.none()
+    coachs = Coach.objects.none()
+    if request.method == 'POST':
+        user_form = UserSearchForm(request.POST)
+        sportsclup = request.POST.get('sportsClub')
+
+        if user_form.is_valid():
+            firstName = user_form.cleaned_data.get('first_name')
+            lastName = user_form.cleaned_data.get('last_name')
+            email = user_form.cleaned_data.get('email')
+            if not (firstName or lastName or email or sportsclup):
+                if user.groups.filter(name='KulupUye'):
+
+                    clubuser = SportClubUser.objects.get(user=user)
+                    clubs = SportsClub.objects.filter(clubUser=clubuser)
+                    clubsPk = []
+
+                    for club in clubs:
+                        coachs |= club.coachs.all().distinct()
+
+
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    club_user_array = Coach.objects.all()
+            else:
+                query = Q()
+                if lastName:
+                    query &= Q(user__last_name__icontains=lastName)
+                if firstName:
+                    query &= Q(user__first_name__icontains=firstName)
+                if email:
+                    query &= Q(user__email__icontains=email)
+                if sportsclup:
+                    query &= Q(sportsclub__name__icontains=sportsclup)
+
+                if user.groups.filter(name='KulupUye'):
+
+                    clubuser = SportClubUser.objects.get(user=user)
+                    clubs = SportsClub.objects.filter(clubUser=clubuser)
+                    for club in clubs:
+                        coachs |= club.coachs.all().distinct()
+
+                    coachs = coachs.filter(query).distinct()
+
+
+                elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+                    clubs = SportsClub.objects.all()
+                    for club in clubs:
+                        coachs |= club.coachs.all().distinct()
+
+                    coachs = coachs.filter(query).distinct()
+                    coachs = Coach.objects.filter(query).distinct()
+
+    sportclup = SearchClupForm(request.POST, request.FILES or None)
+    if user.groups.filter(name='KulupUye'):
+        sc_user = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=sc_user)
+        clubsPk = []
+        for club in clubs:
+            clubsPk.append(club.pk)
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
+        sportclup.fields['sportsClub'].queryset = SportsClub.objects.all()
+
+    return render(request, 'kulup/kulup-antrenorler.html',
+                  {'athletes': coachs, 'user_form': user_form, 'Sportclup': sportclup})
+@login_required
 def return_club_person(request):
     perm = general_methods.control_access(request)
 
@@ -788,6 +863,42 @@ def choose_athlete(request, pk):
                 sinav.athletes.add(x)
         return redirect('sbs:kusak-sinavi-incele', pk=pk)
     return render(request, 'kulup/kusak-sınavı-antroner-sec.html', {'athletes': athletes})
+
+
+@login_required
+def choose_coach_clup(request, pk):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    clup = SportsClub.objects.get(pk=pk)
+
+    coachsPk = []
+    for coach in clup.coachs.all():
+        coachsPk.append(coach.pk)
+    athletes = Coach.objects.exclude(id__in=coachsPk)
+
+    # license.athlete_set.first
+
+    if request.method == 'POST':
+        coach = request.POST.getlist('selected_options')
+        if coach:
+            for coa in coach:
+                clup.coachs.add(Coach.objects.get(pk=coa))
+                clup.save()
+
+        return redirect('sbs:update-club', pk=pk)
+    return render(request, 'antrenor/Antrenor-sec.html', {'athletes': athletes})
+
+
+
+
+
+
+
+
 
 
 @login_required

@@ -3,8 +3,6 @@
 {% block content %}
 
 
-
-
     <!-- success modal -->
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
@@ -124,9 +122,6 @@
     </div>
 
 
-
-
-
     <section class="content">
 
 
@@ -139,33 +134,31 @@
 
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Sporcu Filtrele</h3>
+                            <h3 class="box-title">Antrenör Filtrele</h3>
                         </div>
                         <form method="post" role="form">
-
                             <div class="box-body">
                                 {% csrf_token %}
 
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ user_form.first_name.label }}</label>
                                         {{ user_form.first_name }}
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ user_form.last_name.label }}</label>
                                         {{ user_form.last_name }}
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ user_form.email.label }}</label>
                                         {{ user_form.email }}
                                     </div>
                                 </div>
-
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ Sportclup.sportsClub.label }}</label>
                                         {{ Sportclup.sportsClub }}
@@ -173,19 +166,7 @@
                                 </div>
 
 
-                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label> {{ Sportclup.coach.label }}</label>
-                                            {{ Sportclup.coach }}
-                                        </div>
-                                    </div>
-                                {% endif %}
-
-
                             </div>
-
                             <!-- /.box-body -->
 
                             <div class="box-footer">
@@ -213,30 +194,30 @@
 
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Sporcular</h3>
+                            <h3 class="box-title">Antrenörler</h3>
                         </div>
-                        <div class="box-header with-border">
-                            <div class="btn-group">
-                                <a href="{% url "sbs:sporcu-ekle" %}"
-                                   type="button" class="btn btn-success"><i
-                                        class="fa fa-edit"></i> Yeni Sporcu Ekle
-                                </a>
-                            </div>
-                        </div>
+
                         <div class="box-body">
+                            {#                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
+                            {#                                <div class="box-header with-border">#}
+                            {#                                    <div class="btn-group">#}
+                            {#                                        <a href="{% url "sbs:kulup-uyesi-ekle" %}"#}
+                            {#                                           type="button" class="btn btn-success"><i#}
+                            {#                                                class="fa fa-edit"></i> Kulüp Üyesi Ekle#}
+                            {#                                        </a>#}
+                            {#                                    </div>#}
+                            {#                                </div>#}
+                            {#                            {% endif %}#}
                             <table id="sporcular" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th> Ad Soyad</th>
+                                    <th>Ad Soyad</th>
 
+                                    <th>E-Mail</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>Kulüp</th>
+                                        <th>İşlemler</th>
                                     {% endif %}
-                                    {#                                    <th>Branş</th>#}
-                                    <th>İşlemler</th>
-
-
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -247,53 +228,19 @@
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
 
 
+                                            <td>{{ athlete.user.email }} </td>
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-
                                                 <td>
-                                                    {% for license in athlete.licenses.all %}
-                                                        {% if  license.status == 'Onaylandı' %}
-                                                            <p>{{ license.sportsClub }}</p>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </td>
-
-                                            {% endif %}
-
-
-
-
-                                            {% comment %}<td>
-                                                {% for belts in athlete.belts.all %}
-                                                    {% if  belts.status == 'Onaylandı' %}
-                                                        <p>{{ belts.definition }}</p>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </td>{% endcomment %}
-
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="{% url "sbs:update-athletes" athlete.pk %}"
-                                                       type="button" class="btn btn-warning"><i
-                                                            class="fa fa-edit"></i>İncele
-                                                    </a>
-
-                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-
-                                                        <a href="{% url "sbs:sporcu-birlestir" athlete.pk %}"
-                                                           type="button" class="btn btn-success"><i
-                                                                class="fa fa-edit"></i>Birleştir
+                                                    <div class="btn-group">
+                                                        <a href="{% url "sbs:update-coach" athlete.pk %}"
+                                                           type="button" class="btn btn-warning"><i
+                                                                class="fa fa-edit"></i>İncele
                                                         </a>
 
-                                                    {% endif %}
-                                                    {#                                                    <a href="{% url "sbs:sporcu-lisans-ekle" athlete.pk %}"#}
-                                                    {#                                                       type="button" class="btn btn-secondary btn-success">Lisans#}
-                                                    {#                                                        Ekle#}
-                                                    {#                                                    </a>#}
 
-
-                                                </div>
-                                            </td>
-
+                                                    </div>
+                                                </td>
+                                            {% endif %}
                                         </tr>
 
                                     {% endfor %}
@@ -302,8 +249,8 @@
 
                                 </tbody>
                             </table>
-
                         </div>
+
                     </div>
                     <!-- /.box -->
 
@@ -320,8 +267,6 @@
     <script>
         $(function () {
             $('#sporcular').DataTable({
-
-
                 dom: 'Bfrtip',
 
                 language: {
@@ -338,7 +283,7 @@
                     ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
                 ],
 
-                'buttons': [
+                buttons: [
                     {##}
                     {##}
                     {#'copy',#}
@@ -358,7 +303,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'Sporcular',
+                        title: 'Sbs Bilgi Sistemi',
                         text: '<i class="fa  fa-print"></i>',
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5]
@@ -377,9 +322,9 @@
 
                     {
                         extend: 'excelHtml5',
-                        title: 'Sporcular',
+                        title: 'Sbs Bilgi Sistemi',
                         text: '<i class="fa fa-file-excel-o"></i>',
-                        messageTop: 'Halter Bilgi Sistemi ',
+                        messageTop: 'Sbs Bilgi Sistemi ',
                         {#footer: true,#}
                         exportOptions: {
                             {#     yer degisimi de yapilabilir.#}
@@ -402,7 +347,6 @@
 
 
                 ],
-                'bubble': true,
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
@@ -410,20 +354,12 @@
                 'info': true,
                 'autoWidth': true,
                 'responsive': true,
-                'select': true,
 
 
-            });
+            })
 
-        });
-
-
+        })
     </script>
-
-
-
-
-
 
 
 {% endblock %}

@@ -204,7 +204,7 @@
 
             </div>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-6">
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title">Kulüp Üyeleri</h3>
@@ -263,65 +263,65 @@
                         </div>
                     </div>
                 </div>
-                {#                <div class="col-lg-6">#}
-                {#                    <div class="box box-primary">#}
-                {#                        <div class="box-header with-border">#}
-                {#                            <h3 class="box-title">Kulüp Antrenörleri</h3>#}
-                {#                        </div>#}
-                {#                        <div class="box-body">#}
-                {#                            <div class="box-header with-border">#}
-                {#                                <div class="btn-group">#}
-                {#                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
-                {#                                    <a href="{% url "sbs:choose-coach"  club.pk %}"#}
-                {#                                       type="button" class="btn btn-success"><i#}
-                {#                                            class="fa fa-edit"></i> Antrenör Ekle#}
-                {#                                    </a>#}
-                {#                                    {% endif %}#}
-                {#                                </div>#}
-                {#                            </div>#}
-                {#                            <table id="antrenorler" class="table table-bordered table-hover">#}
-                {#                                <thead>#}
-                {#                                <tr>#}
-                {#                                    <th>#</th>#}
-                {#                                    <th>Ad Soyad</th>#}
-                {#                                    <th>Kademe</th>#}
-                {#                                    <th>İşlemler</th>#}
-                {##}
-                {##}
-                {#                                </tr>#}
-                {#                                </thead>#}
-                {#                                <tbody>#}
-                {#                                {% if clubCoachs.all %}#}
-                {#                                    {% for coach in clubCoachs %}#}
-                {#                                        <tr>#}
-                {#                                            <td>{{ forloop.counter }} </td>#}
-                {#                                            <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>#}
-                {#                                            <td>{{ coach.grades.last.definition.name }} </td>#}
-                {#                                            <td>#}
-                {#                                                <div class="btn-group">#}
-                {#                                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
-                {#                                                    <a onclick="deleteClubCoach({{ coach.id }}, {{ club.pk }})"#}
-                {#                                                       type="button" class="btn btn-danger"><i#}
-                {#                                                            class="fa fa-edit"></i>Çıkar#}
-                {#                                                    </a>#}
-                {#                                                    {% endif %}#}
-                {##}
-                {##}
-                {#                                                </div>#}
-                {#                                            </td>#}
-                {##}
-                {#                                        </tr>#}
-                {##}
-                {#                                    {% endfor %}#}
-                {#                                {% endif %}#}
-                {##}
-                {##}
-                {#                                </tbody>#}
-                {#                            </table>#}
-                {##}
-                {#                        </div>#}
-                {#                    </div>#}
-                {#                </div>#}
+                <div class="col-lg-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Kulüp Antrenörleri</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="box-header with-border">
+                                <div class="btn-group">
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <a href="{% url "sbs:choose-coach-clup"  club.pk %}"
+                                           type="button" class="btn btn-success"><i
+                                                class="fa fa-edit"></i> Antrenör Ekle
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <table id="antrenorler" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Kademe</th>
+                                    <th>İşlemler</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if clubCoachs.all %}
+                                    {% for coach in clubCoachs %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>
+                                            <td>{{ coach.grades.last.definition.name }} </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                        <a onclick="deleteClubCoach({{ coach.id }}, {{ club.pk }})"
+                                                           type="button" class="btn btn-danger"><i
+                                                                class="fa fa-edit"></i>Çıkar
+                                                        </a>
+                                                    {% endif %}
+
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
 

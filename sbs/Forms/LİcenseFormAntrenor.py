@@ -2,9 +2,23 @@ from django import forms
 from django.forms import ModelForm
 
 from sbs.models import License
+from sbs.models.SportsClub import SportsClub
 
 
 class LicenseFormAntrenor(ModelForm):
+    sportsClub = forms.ModelChoiceField(queryset=SportsClub.objects.all(),
+                                        to_field_name='name',
+                                        empty_label="Seçiniz",
+                                        label="Kulübü",
+                                        required=True,
+                                        widget=forms.Select(
+                                            attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                   'style': 'width: 100%; '}))
+
+
+
+
+
     class Meta:
         model = License
 

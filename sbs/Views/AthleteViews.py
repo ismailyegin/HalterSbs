@@ -65,7 +65,7 @@ def return_add_athlete_antrenor(request):
     user = request.user
     license_form = LicenseFormAntrenor(request.POST, request.FILES or None)
 
-    # if user.groups.filter(name='KulupUye'):
+    # if user.groups.filter(name='Antrenor'):
     #     sc_user = SportClubUser.objects.get(user=user)
     #     clubs = SportsClub.objects.filter(clubUser=sc_user)
     #
@@ -79,12 +79,42 @@ def return_add_athlete_antrenor(request):
 
     # lisan ekleme son alani bu alanlar sadece form bileselerinin sisteme gidebilmesi icin post ile gelen veride gene ayni şekilde  karşılama ve kaydetme islemi yapilacak
 
+    coach = Coach.objects.get(user=user)
+    clups = SportsClub.objects.filter(coachs=coach)
+    if clups:
+        clubsPk = []
+        for club in clups:
+            clubsPk.append(club.pk)
+        license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+
+        for item in clups:
+            print(item)
+    else:
+        if SportsClub.objects.get(name='FERDI'):
+            license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(name='FERDI')
+
+        else:
+            ferdi = SportsClub()
+            ferdi.name = 'FERDI'
+            ferdi.shortName = 'FERDI'
+            ferdi.foundingDate = datetime.today()
+            ferdi.isFormal = True
+            ferdi.communication.city = City.objects.get(name='ANKARA')
+            ferdi.communication.country = Country.objects.get(name='Türkiye')
+            ferdi.save()
+
+
+
+
+
+
+
     if request.method == 'POST':
 
         user_form = UserForm(request.POST)
         person_form = PersonForm(request.POST or None, request.FILES or None)
         communication_form = CommunicationForm(request.POST)
-        coach = Coach.objects.get(user=user)
+
         license_form = LicenseFormAntrenor(request.POST, request.FILES or None)
 
         mail = request.POST.get('email')
@@ -148,21 +178,6 @@ def return_add_athlete_antrenor(request):
 
             # lisans kaydedildi  kakydetmeden id degeri alamayacagi icin önce kaydedip sonra ekleme islemi yaptık
             license = license_form.save()
-            if SportsClub.objects.get(name='FERDI'):
-                ferdi = SportsClub.objects.get(name='FERDI')
-                license.sportsClub = ferdi
-                license.coach = coach
-                license.isFerdi = True
-                license.save()
-            else:
-                ferdi = SportsClub()
-                ferdi.name = 'FERDI'
-                ferdi.shortName = 'FERDI'
-                ferdi.foundingDate = datetime.today()
-                ferdi.isFormal = True
-                ferdi.communication.city = City.objects.get(name='ANKARA')
-                ferdi.communication.country = Country.objects.get(name='Türkiye')
-                ferdi.save()
 
             athlete.save()
             athlete.licenses.add(license)
@@ -199,51 +214,51 @@ def sporcu_birlestir(request):
         logout(request)
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
-        athlete = request.POST.get('athlete')
-        athlete = Athlete.objects.get(pk=athlete)
-        secilenler = request.POST.getlist('secilenler[]')
-
-        for item in secilenler:
-            athleteDel = Athlete.objects.get(pk=item)
-            compAthlete = CompAthlete.objects.filter(athlete=athleteDel)
-            print('müsabakalari')
-            for comp in compAthlete:
-                print(comp.competition)
-                comp.athlete = athlete
-                comp.save()
-            print('lisanslari')
-            for lisans in athleteDel.licenses.all():
-                print(lisans.pk)
-
-                athleteDel.licenses.remove(lisans)
-                athleteDel.save()
-
-                athlete.licenses.add(lisans)
-                athlete.save()
-
-            for belt in athleteDel.belts.all():
-                athleteDel.belts.remove(belt)
-                athleteDel.save()
-
-            for item in Compathleteforsearch.objects.filter(athlete=athleteDel):
-                item.athlete = athlete
-                item.save
-
-            user = User.objects.get(pk=athleteDel.user.pk)
-            for item in Forgot.objects.filter(user=user):
-                item.user = athlete.user
-                item.save()
-
-            athleteDel.delete()
-            user.delete()
-
-
-
-
-
 
         try:
-            print()
+
+            athlete = request.POST.get('athlete')
+            athlete = Athlete.objects.get(pk=athlete)
+            secilenler = request.POST.getlist('secilenler[]')
+
+            for item in secilenler:
+                athleteDel = Athlete.objects.get(pk=item)
+                compAthlete = CompAthlete.objects.filter(athlete=athleteDel)
+                print('müsabakalari')
+                for comp in compAthlete:
+                    print(comp.competition)
+                    comp.athlete = athlete
+                    comp.save()
+                print('lisanslari')
+                for lisans in athleteDel.licenses.all():
+                    print(lisans.pk)
+
+                    athleteDel.licenses.remove(lisans)
+                    athleteDel.save()
+
+                    # athlete.licenses.add(lisans)
+                    # athlete.save()
+
+                    lisans = License.objects.get(pk=lisans.pk)
+                    lisans.delete()
+                    #
+
+                for belt in athleteDel.belts.all():
+                    athleteDel.belts.remove(belt)
+                    athleteDel.save()
+
+                for item in Compathleteforsearch.objects.filter(athlete=athleteDel):
+                    item.athlete = athlete
+                    item.save
+
+                user = User.objects.get(pk=athleteDel.user.pk)
+                for item in Forgot.objects.filter(user=user):
+                    item.user = athlete.user
+                    item.save()
+
+                athleteDel.delete()
+                user.delete()
+
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except:
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})

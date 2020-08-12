@@ -162,6 +162,9 @@ urlpatterns = [
     url(r'kulup/kulup-uyesi-ekle/$', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
     url(r'kulup/kulup-uyesi-guncelle/(?P<pk>\d+)$', ClubViews.updateClubPersons, name='kulup-uyesi-guncelle'),
     url(r'kulup/kulup-uyeleri/$', ClubViews.return_club_person, name='kulup-uyeleri'),
+
+    url(r'kulup/kulup-antrenor/$', ClubViews.return_club_coach, name='kulup-antrenor'),
+
     url(r'kulup/kulup-uye-rolu/$', ClubViews.return_club_role, name='kulup-uye-rolu'),
     url(r'kulup/kulup-uye-rolu/sil/(?P<pk>\d+)$', ClubViews.deleteClubRole,
         name='ClubRole-delete'),
@@ -229,6 +232,9 @@ urlpatterns = [
         name='update-coach-reference'),
     url(r'antrenor/antrenorSec/(?P<pk>\d+)$', ClubViews.choose_coach,
         name='choose-coach'),
+    url(r'antrenor/antrenorSec/klup/(?P<pk>\d+)$', ClubViews.choose_coach_clup,
+        name='choose-coach-clup'),
+
     url(r'antrenor/antrenor-profil-guncelle/$', CoachViews.updateCoachProfile,
         name='antrenor-profil-guncelle'),
     url(r'antrenor/antrenor-kademe-ekle/(?P<pk>\d+)$', CoachViews.antrenor_kademe_ekle, name='antrenor-kademe-ekle'),
