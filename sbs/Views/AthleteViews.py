@@ -1181,15 +1181,20 @@ def sporcu_lisans_duzenle_antrenor(request, license_pk, athlete_pk):
         logout(request)
         return redirect('accounts:login')
     license = License.objects.get(pk=license_pk)
+    user = request.user
+    coach = Coach.objects.get(user=user)
+    license_form = LicenseFormAntrenor(request.POST or None, request.FILES or None, instance=license,
+                                       initial={'sportsClub': license.sportsClub})
 
-    license_form = LicenseFormAntrenor(request.POST or None, request.FILES or None, instance=license)
+    license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(coachs=coach)
     if request.method == 'POST':
         if license_form.is_valid():
-            license = license_form.save(commit=False)
-            if license.status != License.APPROVED:
-                license.status = License.WAITED
-            license.isActive = True
-            license.save()
+            lisans = license_form.save(commit=False)
+            if lisans.status != License.APPROVED:
+                lisans.status = License.WAITED
+
+            lisans.isActive = True
+            lisans.save()
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('sbs:update-athletes', pk=athlete_pk)
 
