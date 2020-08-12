@@ -600,23 +600,30 @@ def updateathletes(request, pk):
         # controller tc email
 
         mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
-            email=mail):
-            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-            return render(request, 'sporcu/sporcuDuzenle.html',
-                          {'user_form': user_form, 'communication_form': communication_form,
-                           'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
-                           'athlete': athlete, 'say': say})
+        if user.email != mail:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'sporcu/sporcuDuzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                               'athlete': athlete, 'say': say})
+
+
+
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                tc=tc) or PreRegistration.objects.filter(tc=tc):
-            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
-            return render(request, 'sporcu/sporcuDuzenle.html',
-                          {'user_form': user_form, 'communication_form': communication_form,
-                           'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
-                           'athlete': athlete, 'say': say})
+
+        if person.tc != tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+                return render(request, 'sporcu/sporcuDuzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                               'athlete': athlete, 'say': say})
+
 
         name = request.POST.get('first_name')
         surname = request.POST.get('last_name')
