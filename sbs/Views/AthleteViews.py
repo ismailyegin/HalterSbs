@@ -175,11 +175,15 @@ def return_add_athlete_antrenor(request):
             athlete = Athlete(
                 user=user, person=person, communication=communication,
             )
+            athlete.save()
 
             # lisans kaydedildi  kakydetmeden id degeri alamayacagi icin önce kaydedip sonra ekleme islemi yaptık
-            license = license_form.save()
+            license = license_form.save(commit=False)
+            license.coach = coach
+            license.sportsClub = SportsClub.objects.get(name=request.POST.get('sportsClub'))
+            license.save()
 
-            athlete.save()
+
             athlete.licenses.add(license)
 
             # subject, from_email, to = 'WUSHU - Sporcu Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'ik@oxityazilim.com', user.email
