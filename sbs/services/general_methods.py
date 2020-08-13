@@ -148,11 +148,14 @@ def getProfileImage(request):
         current_user = request.user
         clupcontrol = False
 
+        if current_user.groups.count() > 1:
+            print('True')
+
 
         if current_user.groups.filter(name='KulupUye').exists():
             athlete = SportClubUser.objects.get(user=current_user)
             person = Person.objects.get(id=athlete.person.id)
-            clupcontrol = True
+
 
         elif current_user.groups.filter(name='Sporcu').exists():
             athlete = Athlete.objects.get(user=current_user)
