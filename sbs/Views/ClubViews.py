@@ -57,7 +57,7 @@ def return_add_club(request):
 
     if request.method == 'POST':
 
-        club_form = ClubForm(request.POST, request.FILES)
+        club_form = ClubForm(request.POST, request.FILES or None)
         communication_form = CommunicationForm(request.POST, request.FILES)
 
         if club_form.is_valid():
@@ -67,6 +67,7 @@ def return_add_club(request):
                                   logo=club_form.cleaned_data['logo'],
                                   clubMail=club_form.cleaned_data['clubMail'],
                                   isFormal=club_form.cleaned_data['isFormal'],
+                                  petition=club_form.cleaned_data['petition'],
 
                                   )
 
@@ -635,7 +636,8 @@ def clubUpdate(request, pk):
         communication_form = CommunicationForm(request.POST or None, instance=communication)
     except:
         communication_form = CommunicationForm(request.POST or None)
-    club_form = ClubForm(request.POST or None, instance=club)
+
+    club_form = ClubForm(request.POST or None, request.FILES or None, instance=club)
     clubPersons = club.clubUser.all()
     clubCoachs = club.coachs.all()
     if request.method == 'POST':

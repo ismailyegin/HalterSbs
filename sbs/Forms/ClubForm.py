@@ -9,13 +9,14 @@ class ClubForm(ModelForm):
         model = SportsClub
 
         fields = (
-            'name', 'shortName', 'foundingDate', 'logo', 'clubMail', 'isFormal')
+            'name', 'shortName', 'foundingDate', 'logo', 'clubMail', 'isFormal', 'petition')
         labels = {
             'name': 'Adı',
             'shortName': 'Kısa Adı',
             'foundingDate': 'Kuruluş Tarihi',
             'clubMail': 'Email',
-            'isFormal' : 'Kulüp Türü'
+            'isFormal': 'Kulüp Türü',
+            'petition': 'Yetki Belgesi'
 
         }
         widgets = {

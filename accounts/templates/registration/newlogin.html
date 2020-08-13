@@ -310,11 +310,25 @@
                                     <label> {{ club_form.isFormal.label }}</label>
                                     {{ club_form.isFormal }}
                                 </div>
-                                <div class="form-group">
+
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
                                     <label>{{ club_form.logo.label }}</label>
                                     <img src="/media/{{ club_form.logo.value|default_if_none:"" }}" width="100"
                                          height="100">
                                     {{ club_form.logo }}
+                                    </div>
+
+
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>{{ club_form.petition.label }}</label>
+
+                                        {{ club_form.petition }}
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="box-footer">

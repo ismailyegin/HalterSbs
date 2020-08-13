@@ -157,6 +157,7 @@ def approve_preRegistration(request,pk):
                 clup.clubMail = basvuru.clubMail
                 clup.logo = basvuru.logo
                 clup.isFormal = basvuru.isFormal
+                clup.petition = basvuru.petition
                 clup.communication = comclup
                 clup.save()
                 clup.clubUser.add(Sportclup)

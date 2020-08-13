@@ -364,6 +364,7 @@ def newlogin(request, pk):
             clup.foundingDate = request.POST.get('foundingDate')
             clup.logo = request.POST.get('logo')
             clup.clubMail = request.POST.get('clubMail')
+            clup.petition = request.POST.get('petition')
             clup.isFormal = request.POST.get('isFormal')
 
             communication = communication_formclup.save(commit=False)
