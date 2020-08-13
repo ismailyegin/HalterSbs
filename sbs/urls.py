@@ -381,8 +381,8 @@ urlpatterns = [
     url(r'yardim$', HelpViews.help, name='help'),
 
     #     basvurular
-    url(r'reference/referee$', ReferenceView.hakemler, name='basvuru-referee'),
-    url(r'reference/coach$', ReferenceView.antroner, name='basvuru-coach'),
+    url(r'reference/referee/$', ReferenceView.hakemler, name='basvuru-referee'),
+    url(r'reference/coach/$', ReferenceView.antroner, name='basvuru-coach'),
     url(r'reference/athlete/$', ReferenceView.sporcular, name='basvuru-athlete'),
 
 ]

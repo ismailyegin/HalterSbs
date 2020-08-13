@@ -568,6 +568,7 @@ def referenappcoverCoach(request, pk):
                 person.fatherName = referenceCoach.fatherName
                 person.profileImage = referenceCoach.profileImage
                 person.birthDate = referenceCoach.birthDate
+                person.birthplace = referenceCoach.birthplace
                 person.bloodType = referenceCoach.bloodType
                 if referenceCoach.gender == 'Erkek':
                     person.gender = Person.MALE
