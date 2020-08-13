@@ -149,7 +149,8 @@ def getProfileImage(request):
         clupcontrol = False
 
         if current_user.groups.count() > 1:
-            print('True')
+            clupcontrol = True
+
 
 
         if current_user.groups.filter(name='KulupUye').exists():
