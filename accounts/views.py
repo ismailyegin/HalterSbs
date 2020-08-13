@@ -383,10 +383,57 @@ def newlogin(request, pk):
                 communication = communication_formclup.save(commit=False)
                 communication.save()
                 clup.communication = communication
+                clup.coachs.add(coach)
                 clup.save()
                 messages.success(request, 'Antrenör şifreniz ile sisteme giriş yapabilirsiniz')
 
             else:
+
+                mail = request.POST.get('email')
+                if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                        email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                    email=mail):
+                    messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                    return render(request, 'registration/newlogin.html',
+                                  {'user_form': user_form, 'person_form': person_form,
+                                   'communication_form': communication_form,
+                                   'sportClubUser_form': sportClubUser_form, 'club_form': club_form,
+                                   'communication_formclup': communication_formclup})
+
+                tc = request.POST.get('tc')
+                if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
+                        tc=tc) or ReferenceReferee.objects.filter(
+                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+                    messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+                    return render(request, 'registration/newlogin.html',
+                                  {'user_form': user_form, 'person_form': person_form,
+                                   'communication_form': communication_form,
+                                   'sportClubUser_form': sportClubUser_form, 'club_form': club_form,
+                                   'communication_formclup': communication_formclup})
+
+                name = request.POST.get('first_name')
+                surname = request.POST.get('last_name')
+                year = request.POST.get('birthDate')
+                year = year.split('/')
+
+                client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+                if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+                    messages.warning(request,
+                                     'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+                    return render(request, 'registration/newlogin.html',
+                                  {'user_form': user_form, 'person_form': person_form,
+                                   'communication_form': communication_form,
+                                   'sportClubUser_form': sportClubUser_form, 'club_form': club_form,
+                                   'communication_formclup': communication_formclup})
+
+
+
+
+
+
+
+
+
 
                 clup.name = request.POST.get('name')
                 clup.shortName = request.POST.get('shortName')
