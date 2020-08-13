@@ -100,7 +100,7 @@ class PreRegistration(models.Model):
 
     # gerekli evraklar
     dekont = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Dekont ')
-    petition= models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Dilekçe ')
+    petition = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Antrenör Yetki Belgesi  ')
     # Sportclup user
     role = models.ForeignKey(ClubRole, on_delete=models.DO_NOTHING, verbose_name='Üye Rolü')
 
