@@ -453,7 +453,9 @@ def return_athletes_antrenor(request):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+
     user_form = UserSearchForm()
+
 
     athletes = Athlete.objects.none()
     if request.method == 'POST':
@@ -465,7 +467,12 @@ def return_athletes_antrenor(request):
             if not (firstName or lastName or email):
 
                 if user.groups.filter(name='Antrenor'):
-                    athletes = Athlete.objects.filter(licenses__coach__user=user).distinct()
+                    coach = Coach.objects.get(user=user)
+                    clup = SportsClub.objects.filter(coachs=coach)
+                    clupsPk = []
+                    for item in clup:
+                        clupsPk.append(item.pk)
+                    athletes = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).distinct()
 
                 elif user.groups.filter(name='Admin'):
                     athletes = Athlete.objects.all()
@@ -479,7 +486,14 @@ def return_athletes_antrenor(request):
                     query &= Q(user__email__icontains=email)
 
                 if user.groups.filter(name='Antrenor'):
-                    athletes = Athlete.objects.filter(licenses__coach__user=user or query).distinct()
+                    coach = Coach.objects.get(user=user)
+                    clup = SportsClub.objects.filter(coachs=coach)
+                    clupsPk = []
+                    for item in clup:
+                        clupsPk.append(item.pk)
+                    athletes = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).filter(query).distinct()
+                elif user.groups.filter(name='Admin'):
+                    athletes = Athlete.objects.filter(query).distinct()
 
     return render(request, 'sporcu/sporcularAntrenor.html', {'athletes': athletes, 'user_form': user_form})
 
