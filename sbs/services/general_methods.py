@@ -114,19 +114,31 @@ def control_access(request):
 
 
 def control_access_klup(request):
-    group = request.user.groups.all()[0]
+    current_user = request.user
+    if current_user.groups.filter(name='KulupUye').exists():
 
-    permissions = group.permissions.all()
+        is_exist = True
 
-    is_exist = False
 
-    for perm in permissions:
+    else:
+        group = request.user.groups.all()[0]
 
-        if request.resolver_match.url_name == perm.name:
+        permissions = group.permissions.all()
+
+        is_exist = False
+
+        for perm in permissions:
+
+            if request.resolver_match.url_name == perm.name:
+                is_exist = True
+
+        if group.name == "Admin" or group.name == "KulupUye" or group.name == "Antrenor":
             is_exist = True
 
-    if group.name == "Admin" or group.name == "KulupUye" or group.name == "Antrenor":
-        is_exist = True
+
+
+
+
 
     return is_exist
 
@@ -134,10 +146,13 @@ def control_access_klup(request):
 def getProfileImage(request):
     if (request.user.id):
         current_user = request.user
+        clupcontrol = False
+
 
         if current_user.groups.filter(name='KulupUye').exists():
             athlete = SportClubUser.objects.get(user=current_user)
             person = Person.objects.get(id=athlete.person.id)
+            clupcontrol = True
 
         elif current_user.groups.filter(name='Sporcu').exists():
             athlete = Athlete.objects.get(user=current_user)
@@ -162,7 +177,7 @@ def getProfileImage(request):
         else:
             person = None
 
-        return {'person': person}
+        return {'person': person, 'clupcontrol': clupcontrol}
 
     return {}
 

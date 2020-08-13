@@ -91,7 +91,7 @@ def return_add_club(request):
 
 @login_required
 def return_clubs(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
 
 
     if not perm:
@@ -394,7 +394,7 @@ def return_club_coach(request):
                   {'athletes': coachs, 'user_form': user_form, 'Sportclup': sportclup})
 @login_required
 def return_club_person(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
 
     if not perm:
         logout(request)
@@ -1025,7 +1025,7 @@ def delete_belt_exam(request, pk):
 
 @login_required
 def updateClubPersonsProfile(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
 
     if not perm:
         logout(request)

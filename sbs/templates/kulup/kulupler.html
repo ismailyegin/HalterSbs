@@ -241,7 +241,10 @@
                                     <th> Kısa Adı</th>
                                     <th>İl</th>
                                     <th>Kuruluş Tarihi</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <th>İnceleme/Silme</th>
+                                    {% endif %}
+
 
 
                                 </tr>
@@ -255,19 +258,22 @@
                                             <td>{{ club.shortName }}</td>
                                             <td>{{ club.communication.city }}</td>
                                             <td>{{ club.foundingDate }}</td>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                             <td>
                                                 <div class="btn-group">
+
                                                     <a href="{% url "sbs:update-club" club.pk %}"
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i>İncele
                                                     </a>
-                                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                        <a class="btn btn-danger"
+
+                                                    <a class="btn btn-danger"
                                                            data-toggle="modal" onclick=deleteClub({{ club.pk }})><i
                                                                 class="fa fa-trash"></i>Sil</a>
-                                                    {% endif %}
+
                                                 </div>
                                             </td>
+                                            {% endif %}
 
 
                                         </tr>

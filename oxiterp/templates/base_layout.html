@@ -187,10 +187,11 @@
                                 <p>
                                     {{ user.first_name }} {{ user.last_name }}
 
+                                    {% if clupcontrol %}
+                                        <small> Kulüp Üyesi - Antrenör </small>
 
-
-                                    {% if user.groups.all.0.name == "Sporcu" %}
-                                        <small> Sporcu</small>
+                                    {% elif user.groups.all.0.name == "KulupUye" %}
+                                        <small> Kulüp Üyesi </small>
 
 
                                     {% elif user.groups.all.0.name == "Hakem" %}
@@ -206,8 +207,8 @@
                                         <small> Yönetim</small>
 
 
-                                    {% elif user.groups.all.0.name == "KulupUye" %}
-                                        <small> Kulüp Üyesi</small>
+                                    {% elif user.groups.all.0.name == "Sporcu" %}
+                                        <small> Sporcu </small>
 
 
 
@@ -245,8 +246,13 @@
                             <li class="user-footer">
                                 <div class="pull-left">
 
+                                    {% if clupcontrol %}
+                                        <a href="{% url "sbs:kulup-uyesi-profil-guncelle" %}"
+                                           class="btn btn-default btn-flat">Profil Bilgisi</a>
 
-                                    {% if user.groups.all.0.name == "Sporcu" %}
+
+
+                                    {% elif user.groups.all.0.name == "Sporcu" %}
                                         <a href="{% url "sbs:sporcu-profil-guncelle" %}"
                                            class="btn btn-default btn-flat">Profil Bilgisi</a>
 
@@ -308,7 +314,56 @@
             <ul class="sidebar-menu" data-widget="tree">
 
 
-                {% if  user.groups.all.0.name == 'Sporcu' %}
+                {% if clupcontrol %}
+
+
+                    {% for menu in clubusermenus %}
+
+
+                        {% if menu.is_parent %}
+
+                            <li class="treeview ">
+                            <a href="#">
+                                <i class=" {{ menu.fa_icon }}"></i>
+                                <span>{{ menu.name }}</span>
+                                <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                            </a>
+                        {% endif %}
+
+
+                    <ul class="treeview-menu">
+
+                        {% for menusub in clubusermenus %}
+
+
+
+                            {% if menusub.parent.id is menu.id %}
+
+                                <li>
+                                    <a href="{% url menusub.url %}"><i
+                                            class=" {{ menusub.fa_icon }}"></i> {{ menusub.name }}</a>
+                                </li>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </ul>
+                    </li>
+                    {% endfor %}
+
+
+
+
+
+
+
+
+
+
+                {% elif  user.groups.all.0.name == 'Sporcu' %}
 
                     {% for menu in athletemenus %}
 
