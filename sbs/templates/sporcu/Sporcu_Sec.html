@@ -456,6 +456,7 @@
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Müsabaka</th>
+                                                        <th>Müsabaka Türü</th>
                                                         {#                                    <th> Başlama Tarihi</th>#}
                                                         {#                                    <th> Bitiş Tarihi</th>#}
                                                         {#                                    <th> Branş</th>#}
@@ -473,7 +474,16 @@
                                                             <tr>
                                                                 <td>{{ forloop.counter }} </td>
                                                                 <td>
-                                                                    {{ musabaka.competition }}
+                                                                    {{ musabaka.name }}
+                                                                </td>
+                                                                <td>
+
+                                                                    {% if musabaka.compGeneralType == 0 %}
+                                                                        Yurt içi
+                                                                    {% else %}
+                                                                        Yurt Dışı
+                                                                    {% endif %}
+
                                                                 </td>
 
 
@@ -623,7 +633,27 @@
     <script type="text/javascript" language="JavaScript">
 
         var secilenler = new Array();
+
+
         $(function () {
+
+
+            var table = $('#competition').DataTable({
+                orderFixed: [[2, 'asc']],
+                rowGroup: {
+                    dataSrc: 2
+
+                },
+                'paging': true,
+                'searching': false,
+                'ordering': true,
+                'responsive': true,
+                'autoWidth': true,
+
+            });
+
+
+
             Playerlist();
 
             var table = $('#sporcular').DataTable();
@@ -640,64 +670,6 @@
 
 
         });
-
-        function Playerlist() {
-
-            table = $('#sporcular').DataTable();
-            table.destroy();
-
-            table = $('#sporcular').DataTable({
-
-
-
-                'paging': true,
-                'searching': true,
-                'ordering': true,
-                'responsive': true,
-                'autoWidth': true,
-                "serverSide": true,
-                "processing": true,
-                "rowId": "id",
-                {#"select": true,#}
-                'ajax': {
-
-                    "url": '{% url "sbs:Sporcu-sec-ajax"%}',
-                    "methot": 'POST',
-                    'data': {
-                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                        isActive: 'False',
-                        {#secilenler: secilenler,#}
-                        athlete:{{ athlete.pk }},
-                    },
-
-                },
-                'columns': [
-                    {#{"targets": -1},#}
-
-                    {'data': 'say'},
-                    {'data': 'name'},
-                    {'data': 'klup'},
-                    {
-                        "data": null,
-                        "bSortable": false,
-                        "mRender": function (data) {
-
-
-                            return '<div   class="btn-group"><a  id="btnsec-' + data.pk + '" onclick="degersec(' + data.pk + ')" type="button"class="btn btn-warning"><i class="fa fa-edit"></i>Seç</a> ';
-
-
-                        }
-                    },
-
-
-                ],
-
-
-            });
-
-
-
-        }
 
 
         function degersec(id) {
@@ -804,6 +776,63 @@
 
         }
 
+        function Playerlist() {
+
+            table = $('#sporcular').DataTable();
+            table.destroy();
+
+
+            console.log('secilenler=' + secilenler);
+
+            table = $('#sporcular').DataTable({
+
+
+                'paging': true,
+                'searching': true,
+                'ordering': true,
+                'responsive': true,
+                'autoWidth': true,
+                "serverSide": true,
+                "processing": true,
+                "rowId": "id",
+                {#"select": true,#}
+                'ajax': {
+
+                    "url": '{% url "sbs:Sporcu-sec-ajax"%}',
+                    "methot": 'POST',
+                    'data': {
+                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                        isActive: 'False',
+                        athlete:{{ athlete.pk }},
+                    },
+
+                },
+                'columns': [
+                    {#{"targets": -1},#}
+
+                    {'data': 'say'},
+                    {'data': 'name'},
+                    {'data': 'klup'},
+                    {
+                        "data": null,
+                        "bSortable": false,
+                        "mRender": function (data) {
+
+
+                            return '<div   class="btn-group"><a  id="btnsec-' + data.pk + '" onclick="degersec(' + data.pk + ')" type="button"class="btn btn-warning"><i class="fa fa-edit"></i>Seç</a> ';
+
+
+                        }
+                    },
+
+
+                ],
+
+
+            });
+
+
+        }
 
     </script>
 

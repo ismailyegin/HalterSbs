@@ -293,7 +293,7 @@ def sporcu_sec(request, pk):
     say = 0
     say = athlete.licenses.all().filter(status='Onaylandı').count()
     competitions = Competition.objects.none()
-    competitions = CompAthlete.objects.filter(athlete=athlete)
+    competitions = Competition.objects.filter(compathlete__athlete=athlete).distinct()
     # competition=Competition.objects.none()
     # for item in musabaka:
     #     print(item.competition.pk)
