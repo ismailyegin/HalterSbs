@@ -38,7 +38,6 @@ def soru_update(request, pk):
     form = QuestionsForm(request.POST or None, instance=questions)
 
     if request.method == 'POST':
-        form = QuestionsForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Soru-Cevap Başari ile Güncellenmiştir.')
