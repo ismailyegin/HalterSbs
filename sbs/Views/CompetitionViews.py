@@ -270,8 +270,8 @@ def return_sporcu_ajax(request):
     # /datatablesten gelen veri kümesi datatables degiskenine alindi
     if request.method == 'GET':
         datatables = request.GET
+        print(request.GET)
         secilenler = request.GET.getlist('secilenler[]')
-
         pk = request.GET.get('athlete')
         athlete = Athlete.objects.get(pk=pk)
 
@@ -283,10 +283,9 @@ def return_sporcu_ajax(request):
     elif request.method == 'POST':
         datatables = request.POST
 
-        # print(datatables)
-        print("post islemi gerceklesti")
 
     # /Sayfanın baska bir yerden istenmesi durumunda degerlerin None dönmemesi icin degerler try boklari icerisine alindi
+
     try:
         draw = int(datatables.get('draw'))
         # print("draw degeri =", draw)

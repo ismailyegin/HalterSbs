@@ -802,7 +802,7 @@
                     "methot": 'POST',
                     'data': {
                         'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                        isActive: 'False',
+                        isActive: 'True',
                         athlete:{{ athlete.pk }},
                     },
 
@@ -817,9 +817,17 @@
                         "data": null,
                         "bSortable": false,
                         "mRender": function (data) {
+                            deger = secilenler.indexOf(data.pk);
 
+                            if (deger == -1) {
 
-                            return '<div   class="btn-group"><a  id="btnsec-' + data.pk + '" onclick="degersec(' + data.pk + ')" type="button"class="btn btn-warning"><i class="fa fa-edit"></i>Seç</a> ';
+                                return '<div   class="btn-group"><a  id="btnsec-' + data.pk + '" onclick="degersec(' + data.pk + ')" type="button"class="btn btn-warning"><i class="fa fa-edit"></i>Seç</a> ';
+
+                            } else {
+
+                                return '<label>Deger seçildi</label>';
+                            }
+
 
 
                         }
