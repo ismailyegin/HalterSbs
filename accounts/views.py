@@ -186,13 +186,6 @@ def pre_registration(request):
             return redirect('accounts:login')
 
 
-
-
-
-
-
-
-
         else:
             messages.warning(request, "Alanlari kontrol ediniz")
 
@@ -317,6 +310,8 @@ def forgot(request):
         obj = User.objects.filter(username=mail)
         if obj.count() != 0:
             user = User.objects.get(username=mail)
+            user.is_active = True
+            user.save()
             print(user)
             fdk = Forgot(user=user, status=False)
             fdk.save()

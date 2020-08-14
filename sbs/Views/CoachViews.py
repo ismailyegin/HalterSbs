@@ -203,7 +203,7 @@ def return_add_coach(request):
             group = Group.objects.get(name='Antrenor')
             password = User.objects.make_random_password()
             user.set_password(password)
-            user.is_active = False
+            user.is_active = True
             user.save()
             user.groups.add(group)
 
@@ -824,6 +824,7 @@ def updateCoachProfile(request):
             user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             user.set_password(password_form.cleaned_data['new_password1'])
+            user.is_active = True
             user.save()
 
             person_form.save()
