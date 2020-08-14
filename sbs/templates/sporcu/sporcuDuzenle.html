@@ -438,6 +438,66 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Müsabaka Bilgileri</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="box-header with-border">
+
+                            </div>
+                            <table id="competition" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Müsabaka</th>
+                                    <th>Müsabaka Türü</th>
+                                    {#                                    <th> Başlama Tarihi</th>#}
+                                    {#                                    <th> Bitiş Tarihi</th>#}
+                                    {#                                    <th> Branş</th>#}
+                                    {#                                    <th> Lisans No</th>#}
+                                    {#                                    <th> Lisans Foto.</th>#}
+                                    {#                                    <th> Onay Durumu</th>#}
+                                    {#                                    <th> İşlemler</th>#}
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if competition.all %}
+                                    {% for musabaka  in competition %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>
+                                                {{ musabaka.name }}
+                                            </td>
+                                            <td>
+
+                                                {% if musabaka.compGeneralType == 0 %}
+                                                    Yurt içi
+                                                {% else %}
+                                                    Yurt Dışı
+                                                {% endif %}
+
+                                            </td>
+
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </form>
 
 

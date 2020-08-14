@@ -608,7 +608,7 @@ def updateathletes(request, pk):
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     say = 0
     say = athlete.licenses.all().filter(status='Onaylandı').count()
-
+    competition = Competition.objects.filter(compathlete__athlete=athlete).distinct()
     if request.method == 'POST':
 
         # controller tc email
@@ -622,7 +622,7 @@ def updateathletes(request, pk):
                 return render(request, 'sporcu/sporcuDuzenle.html',
                               {'user_form': user_form, 'communication_form': communication_form,
                                'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
-                               'athlete': athlete, 'say': say})
+                               'athlete': athlete, 'say': say, 'competition': competition})
 
 
 
@@ -636,7 +636,7 @@ def updateathletes(request, pk):
                 return render(request, 'sporcu/sporcuDuzenle.html',
                               {'user_form': user_form, 'communication_form': communication_form,
                                'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
-                               'athlete': athlete, 'say': say})
+                               'athlete': athlete, 'say': say, 'competition': competition})
 
 
         name = request.POST.get('first_name')
@@ -650,7 +650,7 @@ def updateathletes(request, pk):
             return render(request, 'sporcu/sporcuDuzenle.html',
                           {'user_form': user_form, 'communication_form': communication_form,
                            'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
-                           'athlete': athlete, 'say': say})
+                           'athlete': athlete, 'say': say, 'competition': competition})
 
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid():
             # user = user_form.save(commit=False)
@@ -674,7 +674,7 @@ def updateathletes(request, pk):
     return render(request, 'sporcu/sporcuDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
-                   'athlete': athlete, 'say': say})
+                   'athlete': athlete, 'say': say, 'competition': competition})
 
 
 @login_required
