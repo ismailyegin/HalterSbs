@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from sbs.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
-    CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration, ActivityView, ReferenceView
+    CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration, ActivityView, ReferenceView, QuestionViews
 
 app_name = 'sbs'
 
@@ -384,5 +384,20 @@ urlpatterns = [
     url(r'reference/referee/basvuru$', ReferenceView.hakemler, name='basvuru-referee'),
     url(r'reference/coach/basvuru$', ReferenceView.antroner, name='basvuru-coach'),
     url(r'reference/athlete/basvuru$', ReferenceView.sporcular, name='basvuru-athlete'),
+
+    #     sık sorulan sorular
+    url(r'sorular', QuestionViews.soru_goster, name='sorular'),
+
+    url(r'soru/ekle', QuestionViews.soru_ekle, name='soru-ekle'),
+    url(r'soru/sil/(?P<pk>\d+)$', QuestionViews.categoryItemDelete,
+        name='soru-delete'),
+    url(r'soru/güncelle/(?P<pk>\d+)$', QuestionViews.soru_update,
+        name='soru-guncelle'),
+
+
+
+
+
+
 
 ]
