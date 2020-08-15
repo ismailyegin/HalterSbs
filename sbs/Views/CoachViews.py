@@ -555,11 +555,13 @@ def referenappcoverCoach(request, pk):
                 user.first_name = referenceCoach.first_name
                 user.last_name = referenceCoach.last_name
                 user.email = referenceCoach.email
+                user.is_active = True
                 group = Group.objects.get(name='Antrenor')
 
                 user.save()
+
                 user.groups.add(group)
-                user.is_active = True
+
                 user.save()
 
                 person = Person()
@@ -615,6 +617,15 @@ def referenappcoverCoach(request, pk):
                 msg = EmailMultiAlternatives(subject, '', from_email, [to])
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
+
+                log = str(user.get_full_name()) + " Antrenor basvurusu onaylandi"
+                log = general_methods.logwrite(request.user, log)
+
+
+
+
+
+
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 
             else:
@@ -638,6 +649,9 @@ def referencedeleteCoach(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = ReferenceCoach.objects.get(pk=pk)
+
+            log = str(obj.first_name) + " " + str(obj.last_name) + " Antrenör basvurusu silindi"
+            log = general_methods.logwrite(request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Coach.DoesNotExist:
