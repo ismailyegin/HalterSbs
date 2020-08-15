@@ -68,8 +68,7 @@ def login(request):
             # correct username and password login the user
             auth.login(request, user)
 
-            log = general_methods.logwrite(request, "giris yapti")
-
+            log = general_methods.logwrite(username, "giris yapti")
 
             # eger user.groups birden fazla ise klup üyesine gönder yoksa devam et
 
@@ -104,6 +103,7 @@ def login(request):
             try:
                 user = SportsClub.objects.get(username=request.POST.get('username'),
                                               password=request.POST.get('password'))
+
                 if user is not None:
                     if user.isRegister == False or user.isRegister is None:
                         return redirect('accounts:newlogin', user.pk)
@@ -387,6 +387,7 @@ def newlogin(request, pk):
                 clup.coachs.add(coach)
                 clup.save()
                 messages.success(request, 'Antrenör şifreniz ile sisteme giriş yapabilirsiniz')
+                log = general_methods.logwrite(user, "Antrenör klup üyesi olarak giris yaptı new login ")
 
             else:
 
@@ -493,6 +494,7 @@ def newlogin(request, pk):
             clup.isRegister = True
 
             clup.save()
+            log = general_methods.logwrite(user, "Eski sifre ile giris yapildi")
 
             return redirect("accounts:login")
 
