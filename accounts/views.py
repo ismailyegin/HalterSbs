@@ -45,6 +45,9 @@ from sbs.models.PreRegistration import PreRegistration
 from sbs.models.Person import Person
 from zeep import Client
 import datetime
+import os
+
+
 
 
 
@@ -64,6 +67,9 @@ def login(request):
         if user is not None:
             # correct username and password login the user
             auth.login(request, user)
+
+            log = general_methods.logwrite(request, "giris yapti")
+
 
             # eger user.groups birden fazla ise klup üyesine gönder yoksa devam et
 

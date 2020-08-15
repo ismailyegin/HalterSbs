@@ -1,16 +1,27 @@
 import csv
 
 from django.conf import settings
-from django.contrib.auth import logout
 from django.contrib.auth.models import Permission, User, Group
-from django.shortcuts import redirect
 
 from sbs.models import Menu, MenuAdmin, MenuAthlete, MenuReferee, MenuCoach, MenuDirectory, MenuClubUser, \
     SportClubUser, Person, Athlete, Coach, Judge, DirectoryMember, SportsClub, Communication, City, Country, ClubRole
-
+from sbs.models.PreRegistration import PreRegistration
 from sbs.models.ReferenceCoach import ReferenceCoach
 from sbs.models.ReferenceReferee import ReferenceReferee
-from sbs.models.PreRegistration import PreRegistration
+from datetime import datetime
+
+
+def logwrite(request, log):
+    user = request.user
+    f = open("log.txt", "a")
+    print(datetime.today().strftime('%Y-%m-%d %H:%M'))
+    log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(user) + " " + log + " \n "
+    f.write(log)
+    f.close()
+    return log
+
+
+
 
 def getMenu(request):
     menus = Menu.objects.all()
