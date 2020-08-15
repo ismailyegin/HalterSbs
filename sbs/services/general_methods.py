@@ -14,7 +14,6 @@ from datetime import datetime
 def logwrite(request, log):
     user = request.user
     f = open("log.txt", "a")
-    print(datetime.today().strftime('%Y-%m-%d %H:%M'))
     log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(user) + " " + log + " \n "
     f.write(log)
     f.close()
