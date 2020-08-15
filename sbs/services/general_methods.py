@@ -11,8 +11,7 @@ from sbs.models.ReferenceReferee import ReferenceReferee
 from datetime import datetime
 
 
-def logwrite(request, log):
-    user = request.user
+def logwrite(user, log):
     f = open("log.txt", "a")
     log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(user) + " " + log + " \n "
     f.write(log)

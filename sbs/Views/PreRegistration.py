@@ -77,6 +77,8 @@ def rejected_preRegistration(request,pk):
     veri.status=PreRegistration.DENIED
     veri.save()
     prepegidtration=PreRegistration.objects.all()
+    log = str(veri.name) + " Klup basvurusu reddedildi"
+    log = general_methods.logwrite(request.user, log)
     return render(request, 'kulup/kulupBasvuru.html',
                   {'prepegidtration': prepegidtration })
 
@@ -180,6 +182,13 @@ def approve_preRegistration(request,pk):
                 msg.send()
                 messages.success(request, 'Başari ile kaydedildi')
 
+                log = str(clup) + " Klup basvurusu onaylandi"
+                log = general_methods.logwrite(request.user, log)
+
+
+
+
+
 
             except:
                 messages.warning(request, 'Lütfen sistem yöneticisi ile görüşünüz ')
@@ -208,7 +217,7 @@ def return_preRegistration(request):
         logout(request)
         return redirect('accounts:login')
 
-    prepegidtration=PreRegistration.objects.all()
+    prepegidtration = PreRegistration.objects.all().order_by('status')
     return render(request, 'kulup/kulupBasvuru.html',
                   {'prepegidtration': prepegidtration })
 

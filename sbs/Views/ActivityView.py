@@ -68,7 +68,11 @@ def faliyet_ekle(request):
         competition_form = ActivityForm(request.POST)
         if competition_form.is_valid():
             competition_form.save()
+            log = str(request.POST.get('name')) + " faliyeti sisteme ekledi"
+            log = general_methods.logwrite(request.user, log)
+
             messages.success(request, 'Faaliyet Başarıyla Kaydedilmiştir.')
+
 
             return redirect('sbs:faaliyet')
         else:
@@ -114,6 +118,11 @@ def faliyet_duzenle(request, pk):
 
         if competition_form.is_valid():
             competition_form.save()
+
+            log = str(request.POST.get('name')) + " faliyeti guncelledi"
+            log = general_methods.logwrite(request.user, log)
+
+
             messages.success(request, 'Faaliyet Başarıyla Güncellenmiştir.')
 
             return redirect('sbs:faaliyet')

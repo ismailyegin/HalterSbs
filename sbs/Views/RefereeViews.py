@@ -305,7 +305,13 @@ def refencedeleteReferee(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = ReferenceReferee.objects.get(pk=pk)
+
+            log = str(obj.first_name) + " " + str(obj.last_name) + " Hakem basvurusu silindi"
+            log = general_methods.logwrite(request.user, log)
+
+
             obj.delete()
+
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Judge.DoesNotExist:
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
@@ -331,11 +337,11 @@ def refenceapprovalReferee(request, pk):
                 user.first_name = reference.first_name
                 user.last_name = reference.last_name
                 user.email = reference.email
-                group = Group.objects.get(name='Hakem')
-
-                user.save()
-                user.groups.add(group)
                 user.is_active = True
+                user.save()
+                group = Group.objects.get(name='Hakem')
+                user.groups.add(group)
+
                 user.save()
 
                 person = Person()
@@ -393,6 +399,11 @@ def refenceapprovalReferee(request, pk):
                 msg = EmailMultiAlternatives(subject, '', from_email, [to])
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
+
+                log = str(user.get_full_name()) + " Hakem basvurusu onaylandi"
+                log = general_methods.logwrite(request.user, log)
+
+
             else:
                 messages.success(request, 'Hakem daha önce onaylanmıştır.')
 
