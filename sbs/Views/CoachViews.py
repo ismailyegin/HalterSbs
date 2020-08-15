@@ -650,7 +650,7 @@ def referencedeleteCoach(request, pk):
         try:
             obj = ReferenceCoach.objects.get(pk=pk)
 
-            log = str(obj.first_name) + " " + str(obj.last_name) + " Antrenör basvurusu silindi"
+            log = str(obj.first_name) + " " + str(obj.last_name) + " Hakem basvurusu silindi"
             log = general_methods.logwrite(request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
