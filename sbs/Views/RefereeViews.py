@@ -110,8 +110,13 @@ def return_add_referee(request):
             group = Group.objects.get(name='Hakem')
             password = User.objects.make_random_password()
             user.set_password(password)
-            user.is_active = False
+            user.is_active = True
             user.save()
+
+            log = str(user.get_full_name()) + " Hakemi  ekledi"
+            log = general_methods.logwrite(request.user, log)
+
+
             user.groups.add(group)
             user.save()
 
@@ -286,6 +291,8 @@ def deleteReferee(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = Judge.objects.get(pk=pk)
+            log = str(obj.user.get_full_name()) + " Hakemi sildi."
+            log = general_methods.logwrite(request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Judge.DoesNotExist:
@@ -563,6 +570,15 @@ def updateReferee(request, pk):
             user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
             user.save()
+
+            log = str(user.get_full_name()) + " Hakemi güncelledi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
+
+
+
             iban_form.save()
 
             person_form.save()

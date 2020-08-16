@@ -19,8 +19,8 @@ class RefereeCoachForm(ModelForm):
     class Meta:
         model = ReferenceCoach
         fields = (
-        'first_name', 'last_name', 'email', 'is_active', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
-        'country', 'iban','tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
+            'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
+            'country', 'iban', 'tc', 'profileImage', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
         'fatherName','kademe_belge','kademe_startDate')
 
 
@@ -37,9 +37,6 @@ class RefereeCoachForm(ModelForm):
                                           'onkeypress':'return isNumberKey(event)',
                                             'value': '',
                                             'required': 'required'}),
-            'height': forms.TextInput(attrs={'class': 'form-control'}),
-
-            'weight': forms.TextInput(attrs={'class': 'form-control'}),
 
             'birthplace': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
@@ -68,7 +65,6 @@ class RefereeCoachForm(ModelForm):
                 attrs={'class': 'form-control ', 'required': 'required'}),
             'email': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
-            'is_active': forms.CheckboxInput(attrs={'class': 'iCheck-helper'}),
             'address': forms.Textarea(
                 attrs={'class': 'form-control ', 'rows': '2'}),
 

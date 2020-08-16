@@ -77,7 +77,7 @@ class ReferenceCoach(models.Model):
     email = models.EmailField(max_length=254, blank=True)
     is_staff = models.BooleanField(default=False,
                                    help_text=('Designates whether the user can log into this admin site.'))
-    is_active = models.BooleanField(default=False,
+    is_active = models.BooleanField(default=True,
                                     help_text=('Designates whether this user should be treated as active. '))
 
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
