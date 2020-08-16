@@ -167,6 +167,9 @@ def return_add_athlete_antrenor(request):
             user.groups.add(group)
             user.save()
 
+            log = str(user.get_full_name()) + " sporcu kaydetti"
+            log = general_methods.logwrite(request.user, log)
+
             person = person_form.save(commit=False)
             communication = communication_form.save(commit=False)
             person.save()
@@ -402,6 +405,12 @@ def return_add_athlete(request):
             user.set_password(password)
             user.is_active = False
             user.save()
+
+            log = str(user.get_full_name()) + " sporcu kaydetti"
+            log = general_methods.logwrite(request.user, log)
+
+
+
 
             user.groups.add(group)
             user.save()
@@ -661,6 +670,12 @@ def updateathletes(request, pk):
             kisi.last_name = user_form.cleaned_data['last_name']
             kisi.email = kisi.username
             kisi.save()
+
+            log = str(user_form.cleaned_data['first_name']) + " " + str(
+                user_form.cleaned_data['last_name']) + " sporcu güncelledi"
+            log = general_methods.logwrite(request.user, log)
+
+
             person_form.save()
             communication_form.save()
 
