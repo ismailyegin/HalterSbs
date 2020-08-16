@@ -209,6 +209,12 @@ def return_add_coach(request):
 
             user.save()
 
+            log = str(user.get_full_name()) + " Antrenoru ekledi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
+
             person = person_form.save(commit=False)
             communication = communication_form.save(commit=False)
             person.save()
@@ -438,6 +444,9 @@ def deleteCoach(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = Coach.objects.get(pk=pk)
+            log = str(obj.user.get_full_name()) + " Antrenor sildi"
+            log = general_methods.logwrite(request.user, log)
+
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Coach.DoesNotExist:
@@ -773,30 +782,22 @@ def coachUpdate(request, pk):
                            'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
                            'personCoach': person, 'visa_form': visa_form, 'iban_form': iban_form})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
             user.last_name = user_form.cleaned_data['last_name']
             user.email = user_form.cleaned_data['email']
+            user.save()
 
             user = user_form.save(commit=False)
             user.username = user_form.cleaned_data['email']
             user.save()
+
+            log = str(user.get_full_name()) + " Antrenor güncelledi"
+            log = general_methods.logwrite(request.user, log)
+
+
             iban_form.save()
             person_form.save()
             communication_form.save()
