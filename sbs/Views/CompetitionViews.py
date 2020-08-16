@@ -189,6 +189,11 @@ def musabaka_duzenle(request, pk):
             competition_form.save()
             messages.success(request, 'Müsabaka Başarıyla Güncellenmiştir.')
 
+            log = str(request.POST.get('name')) + "  Musabaka guncellendi "
+            log = general_methods.logwrite(request.user, log)
+
+
+
             return redirect('sbs:musabaka-duzenle', pk=pk)
         else:
 
@@ -208,6 +213,9 @@ def musabaka_sil(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = Competition.objects.get(pk=pk)
+
+            log = str(obj.name) + "  Musabaka silindi "
+            log = general_methods.logwrite(request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Competition.DoesNotExist:
@@ -628,6 +636,11 @@ def choose_athlete_update(request, pk, competition):
             if (int(request.POST.get('silk')) + int(request.POST.get('kop'))) - 20 <= int(
                     request.POST.get('total')):
                 compAthlete.save()
+
+                log = str(user.get_full_name()) + " müsabaka basvuru bilgileri güncellendi "
+                log = general_methods.logwrite(request.user, log)
+
+
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
             else:
                 return JsonResponse({'status': 'Fail', 'msg': 'Kural20'})
@@ -684,6 +697,13 @@ def choose_athlete(request, pk, competition):
                 if (int(request.POST.get('silk')) + int(request.POST.get('kop'))) - 20 <= int(
                         request.POST.get('total')):
                     compAthlete.save()
+                    log = str(athlete.user.get_full_name()) + "  Musabaka sporcu eklendi "
+                    log = general_methods.logwrite(request.user, log)
+
+
+
+
+
                     return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
                 else:
                     return JsonResponse({'status': 'Fail', 'msg': 'Kural20'})
@@ -740,6 +760,12 @@ def musabaka_sporcu_sil(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             athlete = CompAthlete.objects.get(pk=pk)
+
+            log = str(athlete.athlete.user.get_full_name()) + "  müsabakadan silindi "
+            log = general_methods.logwrite(request.user, log)
+
+
+
             athlete.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except SandaAthlete.DoesNotExist:

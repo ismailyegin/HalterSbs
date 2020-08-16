@@ -167,7 +167,7 @@ def return_add_athlete_antrenor(request):
             user.groups.add(group)
             user.save()
 
-            log = str(user.get_full_name()) + " sporcu kaydetti"
+            log = str(user.get_full_name()) + " antrenor  sporcu kaydetti"
             log = general_methods.logwrite(request.user, log)
 
             person = person_form.save(commit=False)
