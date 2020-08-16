@@ -206,7 +206,7 @@ urlpatterns = [
 
     url(r'kulup/kulup-uyesi-sec/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
         name='choose-sport-club-user'),
-    url(r'kulup/kusak-listesi-antroner-sil/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
+    url(r'kulup/klupÜyesi-listesi-sec/(?P<pk>\d+)$', ClubViews.choose_sport_club_user,
         name='choose-sport-club-user'),
 
     # Antrenörler

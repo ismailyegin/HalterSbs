@@ -151,6 +151,12 @@ def musabaka_ekle(request):
             musabaka=competition_form.save(commit=False)
             musabaka.juryCount=0;
             musabaka.save()
+
+            log = str(request.POST.get('name')) + "  Musabaka eklendi "
+            log = general_methods.logwrite(request.user, log)
+
+
+
             print(musabaka.pk)
 
             messages.success(request, 'Müsabaka Başarıyla Kaydedilmiştir.')

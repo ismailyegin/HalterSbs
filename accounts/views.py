@@ -199,7 +199,10 @@ def pre_registration(request):
 
 
 def pagelogout(request):
+    log = " Cikis yapti "
+    log = general_methods.logwrite(request.user, log)
     logout(request)
+
     return redirect('accounts:login')
 
 
@@ -334,6 +337,12 @@ def forgot(request):
             msg = EmailMultiAlternatives(subject, '', from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
+
+            log = str(user.get_full_name()) + "yeni şifre email gönderildi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
 
             messages.success(request, "Giriş bilgileriniz mail adresinize gönderildi. ")
             return redirect("accounts:login")

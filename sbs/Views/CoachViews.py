@@ -381,6 +381,10 @@ def antrenor_kademe_ekle(request, pk):
             grade.save()
             coach.grades.add(grade)
             coach.save()
+
+            log = str(coach.user.get_full_name()) + " Kademe eklendi"
+            log = general_methods.logwrite(request.user, log)
+
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
             return redirect('sbs:update-coach', pk=pk)
 
@@ -872,6 +876,12 @@ def kademe_delete(request,grade_pk,coach_pk):
             obj =Level.objects.get(pk=grade_pk)
             coach = Coach.objects.get(pk=coach_pk)
             coach.grades.remove(obj)
+
+            log = str(coach.user.get_full_name()) + " Kademe silindi "
+            log = general_methods.logwrite(request.user, log)
+
+
+
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Level.DoesNotExist:
@@ -894,6 +904,13 @@ def vize_delete(request,grade_pk,coach_pk):
             obj = Level.objects.get(pk=grade_pk)
             coach = Coach.objects.get(pk=coach_pk)
             coach.visa.remove(obj)
+
+            coach = Coach.objects.get(pk=coach_pk)
+
+            log = str(coach.user.get_full_name()) + " vize silindi"
+            log = general_methods.logwrite(request.user, log)
+
+
             obj.delete()
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -921,6 +938,12 @@ def kademe_onay(request,grade_pk,coach_pk):
         grade.status = Level.APPROVED
         grade.isActive = True
         grade.save()
+
+        log = str(coach.user.get_full_name()) + " Kademe onaylandi"
+        log = general_methods.logwrite(request.user, log)
+
+
+
         messages.success(request, 'Kademe   Onaylanmıştır')
     except:
         messages.warning(request, 'Lütfen yeniden deneyiniz.')
@@ -936,6 +959,11 @@ def visa_onay(request,grade_pk,coach_pk):
     visa.status = Level.APPROVED
     visa.save()
 
+    coach = Coach.objects.get(pk=coach_pk)
+
+    log = str(coach.user.get_full_name()) + " vize onaylandi"
+    log = general_methods.logwrite(request.user, log)
+
     messages.success(request, 'Vize onaylanmıştır')
     return redirect('sbs:update-coach', pk=coach_pk)
 
@@ -949,6 +977,11 @@ def kademe_reddet(request,grade_pk,coach_pk):
     grade = Level.objects.get(pk=grade_pk)
     grade.status =Level.DENIED
     grade.save()
+
+    coach = Coach.objects.get(pk=coach_pk)
+
+    log = str(coach.user.get_full_name()) + " Kademe reddedildi"
+    log = general_methods.logwrite(request.user, log)
 
     messages.success(request, 'Kademe Reddedilmistir.')
     return redirect('sbs:update-coach', pk=coach_pk)
@@ -964,6 +997,11 @@ def vize_reddet(request,grade_pk,coach_pk):
     visa = Level.objects.get(pk=grade_pk)
     visa.status = Level.DENIED
     visa.save()
+
+    coach = Coach.objects.get(pk=coach_pk)
+
+    log = str(coach.user.get_full_name()) + " vize reddedildi"
+    log = general_methods.logwrite(request.user, log)
 
     messages.warning(request, 'Vize Reddedilmistir.')
     return redirect('sbs:update-coach', pk=coach_pk)
@@ -984,6 +1022,12 @@ def kademe_update(request,grade_pk,coach_pk):
     if request.method == 'POST':
         if grade_form.is_valid():
             grade_form.save()
+
+            log = str(coach.user.get_full_name()) + " Kademe güncellendi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
             messages.success(request, 'Kademe Başarılı bir şekilde güncellenmiştir.')
             return redirect('sbs:update-coach', pk=coach_pk)
 
@@ -1193,6 +1237,11 @@ def antrenor_vısa_ekle(request, pk):
             coach.visa.add(visa)
             coach.save()
 
+            coach = Coach.objects.get(pk=coach_pk)
+
+            log = str(coach.user.get_full_name()) + " vize eklendi"
+            log = general_methods.logwrite(request.user, log)
+
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('sbs:update-coach', pk=pk)
         except:
@@ -1216,6 +1265,12 @@ def vize_update(request,grade_pk,coach_pk):
         if grade_form.is_valid():
             grade.save()
             messages.success(request, 'Vize Başarılı bir şekilde güncellenmiştir.')
+
+            coach = Coach.objects.get(pk=coach_pk)
+
+            log = str(coach.user.get_full_name()) + " vize güncellendi"
+            log = general_methods.logwrite(request.user, log)
+
             return redirect('sbs:update-coach', pk=coach_pk)
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')

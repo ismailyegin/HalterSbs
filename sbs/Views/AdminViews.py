@@ -42,6 +42,12 @@ def updateProfile(request):
             update_session_auth_hash(request, user)
             messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
 
+            log = str(user.get_full_name()) + " admin sifre guncellendi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
+
             return redirect('sbs:admin-profil-guncelle')
 
         else:

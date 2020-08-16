@@ -77,6 +77,12 @@ def return_add_club(request):
 
             clubsave.save()
 
+            log = str(club_form.cleaned_data['name']) + " Klup eklendi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
+
             messages.success(request, 'Kulüp Başarıyla Kayıt Edilmiştir.')
 
             return redirect('sbs:kulupler')
@@ -226,6 +232,12 @@ def return_add_club_person(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
+            log = str(user.get_full_name()) + " Klupuyesi eklendi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
+
             messages.success(request, 'Kulüp Üyesi Başarıyla Kayıt Edilmiştir.')
 
             return redirect('sbs:kulup-uyeleri')
@@ -302,6 +314,11 @@ def updateClubPersons(request, pk):
             person_form.save()
             communication_form.save()
             sportClubUser_form.save()
+
+            log = str(user.get_full_name()) + " klup uyesi guncellendi"
+            log = general_methods.logwrite(request.user, log)
+
+
 
             messages.success(request, 'Kulüp Üyesi Başarıyla Güncellenmiştir.')
 
@@ -548,6 +565,11 @@ def deleteClubUserFromClub(request, pk, club_pk):
             club = SportsClub.objects.get(pk=club_pk)
 
             club.clubUser.remove(obj)
+
+            log = str(club) + " Klup üyesi cikarildi"
+            log = general_methods.logwrite(request.user, log)
+
+
             club.save()
 
             return JsonResponse({'status': 'Success', 'messages': 'delete successfully'})
@@ -571,6 +593,9 @@ def deleteCoachFromClub(request, pk, club_pk):
             club = SportsClub.objects.get(pk=club_pk)
 
             club.coachs.remove(obj)
+
+            log = str(club) + " Klup antrenör cikarildi"
+            log = general_methods.logwrite(request.user, log)
             club.save()
 
             return JsonResponse({'status': 'Success', 'messages': 'delete successfully'})
@@ -650,8 +675,18 @@ def clubUpdate(request, pk):
                 club.communication=communication
                 club.save()
 
+
+
+
+
+
+
+
             else:
                 communication_form.save()
+
+            log = str(club) + " Klup güncellendi"
+            log = general_methods.logwrite(request.user, log)
 
 
             messages.success(request, 'Başarıyla Güncellendi')
@@ -742,6 +777,14 @@ def choose_sport_club_user(request, pk):
             for club_user in instances:
                 club.clubUser.add(club_user)
             club.save()
+
+            log = str(club) + " Klup uyesi ekledi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
+
+
             messages.success(request, 'Kulüp Üyesi Başarıyla Eklenmiştir.')
 
             return redirect('sbs:update-club', pk=pk)
@@ -890,6 +933,10 @@ def choose_coach_clup(request, pk):
             for coa in coach:
                 clup.coachs.add(Coach.objects.get(pk=coa))
                 clup.save()
+
+            log = str(clup) + " Klup antrenor ekledi"
+            log = general_methods.logwrite(request.user, log)
+
 
         return redirect('sbs:update-club', pk=pk)
     return render(request, 'antrenor/Antrenor-sec.html', {'athletes': athletes})

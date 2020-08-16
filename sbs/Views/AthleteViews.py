@@ -857,6 +857,11 @@ def sporcu_lisans_ekle_antrenor(request, pk):
             athlete.licenses.add(license)
             athlete.save()
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
+
+            log = str(athlete.user.get_full_name()) + " Lisans güncellendi"
+            log = general_methods.logwrite(request.user, log)
+
+
             return redirect('sbs:update-athletes', pk=pk)
 
         else:
@@ -897,6 +902,13 @@ def sporcu_lisans_ekle(request, pk):
             athlete.licenses.add(license)
             athlete.save()
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
+
+            log = str(athlete.user.get_full_name()) + " Lisans eklendi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
+
             return redirect('sbs:update-athletes', pk=pk)
 
         else:
@@ -924,6 +936,12 @@ def sporcu_lisans_onayla(request, license_pk, athlete_pk):
         license.status = License.APPROVED
         license.isActive = True
         license.save()
+
+        log = str(athlete.user.get_full_name()) + " Lisans onaylandi"
+        log = general_methods.logwrite(request.user, log)
+
+
+
         messages.success(request, 'Lisans Onaylanmıştır')
     except:
         messages.warning(request, 'Yeniden deneyiniz.')
@@ -939,10 +957,14 @@ def sporcu_lisans_reddet(request, license_pk, athlete_pk):
         logout(request)
         return redirect('accounts:login')
     if request.POST:
+        athlete = Athlete.objects.get(pk=athlete_pk)
         license = License.objects.get(pk=license_pk)
         license.reddetwhy = request.POST.get('reddetwhy')
         license.status = License.DENIED
         license.save()
+
+        log = str(athlete.user.get_full_name()) + " Lisans reddedildi"
+        log = general_methods.logwrite(request.user, log)
 
     messages.success(request, 'Lisans Reddedilmiştir')
     return redirect('sbs:update-athletes', pk=athlete_pk)
@@ -1224,6 +1246,11 @@ def sporcu_lisans_duzenle_antrenor(request, license_pk, athlete_pk):
 
             lisans.isActive = True
             lisans.save()
+            athlete = Athlete.objects.get(pk=athlete_pk)
+
+            log = str(athlete.user.get_full_name()) + " Lisans güncelledi"
+            log = general_methods.logwrite(request.user, log)
+
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('sbs:update-athletes', pk=athlete_pk)
 
@@ -1268,6 +1295,15 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
             if license.status != 'Onaylandı':
                 license.status = License.WAITED
             license.save()
+            athlete = Athlete.objects.get(pk=athlete_pk)
+
+            log = str(athlete.user.get_full_name()) + " Lisans güncellendi"
+            log = general_methods.logwrite(request.user, log)
+
+
+
+
+
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('sbs:update-athletes', pk=athlete_pk)
 
@@ -1321,6 +1357,10 @@ def sporcu_lisans_sil(request, pk, athlete_pk):
             obj = License.objects.get(pk=pk)
             athlete = Athlete.objects.get(pk=athlete_pk)
             athlete.licenses.remove(obj)
+
+            log = str(athlete.user.get_full_name()) + " Lisans silindi"
+            log = general_methods.logwrite(request.user, log)
+
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Level.DoesNotExist:
