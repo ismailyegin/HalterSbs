@@ -423,7 +423,7 @@ def return_rapor_club(request):
 
 @login_required
 def return_clup(request):
-    print('ben geldim')
+    # print('ben geldim')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
 

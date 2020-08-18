@@ -250,10 +250,6 @@ def sporcu_birlestir(request):
                     lisans.delete()
                     #
 
-                for belt in athleteDel.belts.all():
-                    athleteDel.belts.remove(belt)
-                    athleteDel.save()
-
                 for item in Compathleteforsearch.objects.filter(athlete=athleteDel):
                     item.athlete = athlete
                     item.save
