@@ -23,16 +23,17 @@ def get_client_ip(request):
 
 
 def logwrite(request, user, log):
-    logs = Logs(user=user, subject=log, ip=get_client_ip(request))
-    logs.save()
 
-    f = open("log.txt", "a")
-    log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(user) + " " + log + " \n "
-    f.write(log)
-    f.close()
 
     try:
-        print()
+        logs = Logs(user=user, subject=log, ip=get_client_ip(request))
+        logs.save()
+
+        f = open("log.txt", "a")
+        log = get_client_ip(request) + "    [" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(
+            user) + " " + log + " \n "
+        f.write(log)
+        f.close()
 
     except Exception as e:
         f = open("log.txt", "a")
