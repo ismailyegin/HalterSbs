@@ -67,7 +67,7 @@ def return_log(request):
             email = user_form.cleaned_data.get('email')
 
             if not (firstName or lastName or email):
-                logs = Logs.objects.all().order_by('creationDate')
+                logs = Logs.objects.all().order_by('-creationDate')
 
             else:
                 query = Q()
@@ -78,5 +78,5 @@ def return_log(request):
                 if email:
                     query &= Q(user__email__icontains=email)
 
-                logs = Logs.objects.filter(query)
+                logs = Logs.objects.filter(query).order_by('-creationDate')
     return render(request, 'Log/Logs.html', {'logs': logs, 'user_form': user_form})
