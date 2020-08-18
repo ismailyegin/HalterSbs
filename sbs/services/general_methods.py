@@ -15,19 +15,22 @@ from sbs.models.Logs import Logs
 
 
 def logwrite(user, log):
-    print(user)
+    try:
+        logs = Logs(user=user, subject=log)
+        logs.save()
 
-    logs = Logs(user=user, subject=log)
-    logs.save()
+        f = open("log.txt", "a")
+        log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(user) + " " + log + " \n "
+        f.write(log)
+        f.close()
+    except Exception as e:
+        f = open("log.txt", "a")
+        log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] hata   \n "
+        f.write(log)
+        f.close()
 
 
 
-
-
-    f = open("log.txt", "a")
-    log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(user) + " " + log + " \n "
-    f.write(log)
-    f.close()
 
     return log
 

@@ -2,8 +2,7 @@ import datetime
 import email
 from _socket import gaierror
 from typing import re
-
-from django.contrib.auth import logout
+from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
@@ -836,22 +835,33 @@ def updateCoachProfile(request):
 
     if request.method == 'POST':
 
-        if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid() and password_form.is_valid():
+        data = request.POST.copy()
+        person_form = DisabledPersonForm(data)
 
-            user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name']
-            user.email = user_form.cleaned_data['email']
-            user.set_password(password_form.cleaned_data['new_password1'])
+        if len(request.FILES) > 0:
+            person.profileImage = request.FILES['profileImage']
+            person.save()
+            messages.success(request, 'Profil Fotoğrafı Başarıyla Güncellenmiştir.')
+
+            log = str(user) + " Profil resmini degiştirdi."
+            log = general_methods.logwrite(user.first_name, log)
+
+        if password_form.is_valid():
+
+            print(user)
+
+            log = str(user) + "Şifresini degiştirdi."
+            log = general_methods.logwrite(request.user, log)
+
+            user.set_password(password_form.cleaned_data['new_password2'])
             user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
 
-            person_form.save()
-            communication_form.save()
-            password_form.save()
+            return redirect('sbs:antrenor')
 
-            messages.success(request, 'Antrenör Başarıyla Güncellenmiştir.')
 
-            return redirect('sbs:antrenor-profil-guncelle')
+
 
         else:
 

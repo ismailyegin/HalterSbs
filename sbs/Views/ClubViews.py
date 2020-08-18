@@ -28,7 +28,8 @@ from sbs.Forms.PreRegidtrationForm import PreRegistrationForm
 from sbs.Forms.UserSearchForm import UserSearchForm
 from sbs.Forms.ClupUserSearchForm import ClubSearchForm
 
-from sbs.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level, CategoryItem
+from sbs.models import SportsClub, SportClubUser, Communication, Person, BeltExam, Athlete, Coach, Level, CategoryItem, \
+    License
 from sbs.models.ClubRole import ClubRole
 from sbs.models.EnumFields import EnumFields
 from sbs.models.PreRegistration import PreRegistration
@@ -106,6 +107,7 @@ def return_clubs(request):
     user = request.user
     clubs = SportsClub.objects.none()
     ClupsSearchForm=ClubSearchForm(request.POST)
+
     if request.method == 'POST':
 
         if ClupsSearchForm.is_valid():
@@ -117,10 +119,10 @@ def return_clubs(request):
             if not (kisi or city or name or shortName or clubMail):
                 if user.groups.filter(name='KulupUye'):
                     clubuser = SportClubUser.objects.get(user=user)
-                    clubs = SportsClub.objects.filter(clubUser=clubuser)
+                    clubs = SportsClub.objects.filter(clubUser=clubuser).order_by("-pk")
 
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-                    clubs = SportsClub.objects.all()
+                    clubs = SportsClub.objects.all().order_by("-pk")
 
             else:
                 query = Q()
@@ -141,10 +143,7 @@ def return_clubs(request):
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                     clubs = SportsClub.objects.filter(query)
 
-
-
-
-    return render(request, 'kulup/kulupler.html', {'clubs': clubs,'ClupsSearchForm':ClupsSearchForm})
+    return render(request, 'kulup/kulupler.html', {'clubs': clubs, 'ClupsSearchForm': ClupsSearchForm, })
 
 
 @login_required

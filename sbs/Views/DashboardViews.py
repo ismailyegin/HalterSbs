@@ -41,7 +41,7 @@ def return_referee_dashboard(request):
 
 @login_required
 def return_coach_dashboard(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     athlete_count = 0
