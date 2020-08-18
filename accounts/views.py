@@ -68,7 +68,7 @@ def login(request):
             # correct username and password login the user
             auth.login(request, user)
 
-            log = general_methods.logwrite(username, "giris yapti")
+            log = general_methods.logwrite(request.user, " Giris yapti")
 
             # eger user.groups birden fazla ise klup üyesine gönder yoksa devam et
 
@@ -338,8 +338,8 @@ def forgot(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-            log = str(user.get_full_name()) + "yeni şifre email gönderildi"
-            log = general_methods.logwrite(request.user, log)
+            log = str(user.get_full_name()) + "yeni şifre emaili gönderildi"
+            log = general_methods.logwrite(fdk.user, log)
 
 
 
