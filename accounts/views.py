@@ -68,7 +68,9 @@ def login(request):
             # correct username and password login the user
             auth.login(request, user)
 
-            log = general_methods.logwrite(request.user, " Giris yapti")
+            print(general_methods.get_client_ip(request))
+
+            log = general_methods.logwrite(request, request.user, " Giris yapti")
 
             # eger user.groups birden fazla ise klup üyesine gönder yoksa devam et
 
@@ -200,7 +202,7 @@ def pre_registration(request):
 
 def pagelogout(request):
     log = " Cikis yapti "
-    log = general_methods.logwrite(request.user, log)
+    log = general_methods.logwrite(request, request.user, log)
     logout(request)
 
     return redirect('accounts:login')
@@ -339,7 +341,7 @@ def forgot(request):
             msg.send()
 
             log = str(user.get_full_name()) + "yeni şifre emaili gönderildi"
-            log = general_methods.logwrite(fdk.user, log)
+            log = general_methods.logwrite(request, fdk.user, log)
 
 
 
@@ -396,7 +398,7 @@ def newlogin(request, pk):
                 clup.coachs.add(coach)
                 clup.save()
                 messages.success(request, 'Antrenör şifreniz ile sisteme giriş yapabilirsiniz')
-                log = general_methods.logwrite(user, "Antrenör klup üyesi olarak giris yaptı new login ")
+                log = general_methods.logwrite(request, user, "Antrenör klup üyesi olarak giris yaptı new login ")
 
             else:
 
@@ -503,7 +505,7 @@ def newlogin(request, pk):
             clup.isRegister = True
 
             clup.save()
-            log = general_methods.logwrite(user, "Eski sifre ile giris yapildi")
+            log = general_methods.logwrite(request, user, "Eski sifre ile giris yapildi")
 
             return redirect("accounts:login")
 

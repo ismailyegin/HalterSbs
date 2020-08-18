@@ -69,7 +69,7 @@ def faliyet_ekle(request):
         if competition_form.is_valid():
             competition_form.save()
             log = str(request.POST.get('name')) + " faliyeti sisteme ekledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             messages.success(request, 'Faaliyet Başarıyla Kaydedilmiştir.')
 
@@ -120,7 +120,7 @@ def faliyet_duzenle(request, pk):
             competition_form.save()
 
             log = str(request.POST.get('name')) + " faliyeti guncelledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             messages.success(request, 'Faaliyet Başarıyla Güncellenmiştir.')

@@ -153,7 +153,7 @@ def musabaka_ekle(request):
             musabaka.save()
 
             log = str(request.POST.get('name')) + "  Musabaka eklendi "
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request, request.user, log)
 
 
 
@@ -190,7 +190,7 @@ def musabaka_duzenle(request, pk):
             messages.success(request, 'Müsabaka Başarıyla Güncellenmiştir.')
 
             log = str(request.POST.get('name')) + "  Musabaka guncellendi "
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -215,7 +215,7 @@ def musabaka_sil(request, pk):
             obj = Competition.objects.get(pk=pk)
 
             log = str(obj.name) + "  Musabaka silindi "
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Competition.DoesNotExist:
@@ -638,7 +638,7 @@ def choose_athlete_update(request, pk, competition):
                 compAthlete.save()
 
                 log = str(user.get_full_name()) + " müsabaka basvuru bilgileri güncellendi "
-                log = general_methods.logwrite(request.user, log)
+                log = general_methods.logwrite(request, request.user, log)
 
 
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -698,7 +698,7 @@ def choose_athlete(request, pk, competition):
                         request.POST.get('total')):
                     compAthlete.save()
                     log = str(athlete.user.get_full_name()) + "  Musabaka sporcu eklendi "
-                    log = general_methods.logwrite(request.user, log)
+                    log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -762,7 +762,7 @@ def musabaka_sporcu_sil(request, pk):
             athlete = CompAthlete.objects.get(pk=pk)
 
             log = str(athlete.athlete.user.get_full_name()) + "  müsabakadan silindi "
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 

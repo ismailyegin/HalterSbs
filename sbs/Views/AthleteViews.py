@@ -168,7 +168,7 @@ def return_add_athlete_antrenor(request):
             user.save()
 
             log = str(user.get_full_name()) + " antrenor  sporcu kaydetti"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             person = person_form.save(commit=False)
             communication = communication_form.save(commit=False)
@@ -407,7 +407,7 @@ def return_add_athlete(request):
             user.save()
 
             log = str(user.get_full_name()) + " sporcu kaydetti"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -673,7 +673,7 @@ def updateathletes(request, pk):
 
             log = str(user_form.cleaned_data['first_name']) + " " + str(
                 user_form.cleaned_data['last_name']) + " sporcu güncelledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             person_form.save()
@@ -859,7 +859,7 @@ def sporcu_lisans_ekle_antrenor(request, pk):
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
 
             log = str(athlete.user.get_full_name()) + " Lisans güncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             return redirect('sbs:update-athletes', pk=pk)
@@ -904,7 +904,7 @@ def sporcu_lisans_ekle(request, pk):
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
 
             log = str(athlete.user.get_full_name()) + " Lisans eklendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -938,7 +938,7 @@ def sporcu_lisans_onayla(request, license_pk, athlete_pk):
         license.save()
 
         log = str(athlete.user.get_full_name()) + " Lisans onaylandi"
-        log = general_methods.logwrite(request.user, log)
+        log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -964,7 +964,7 @@ def sporcu_lisans_reddet(request, license_pk, athlete_pk):
         license.save()
 
         log = str(athlete.user.get_full_name()) + " Lisans reddedildi"
-        log = general_methods.logwrite(request.user, log)
+        log = general_methods.logwrite(request, request.user, log)
 
     messages.success(request, 'Lisans Reddedilmiştir')
     return redirect('sbs:update-athletes', pk=athlete_pk)
@@ -1249,7 +1249,7 @@ def sporcu_lisans_duzenle_antrenor(request, license_pk, athlete_pk):
             athlete = Athlete.objects.get(pk=athlete_pk)
 
             log = str(athlete.user.get_full_name()) + " Lisans güncelledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('sbs:update-athletes', pk=athlete_pk)
@@ -1298,7 +1298,7 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
             athlete = Athlete.objects.get(pk=athlete_pk)
 
             log = str(athlete.user.get_full_name()) + " Lisans güncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -1359,7 +1359,7 @@ def sporcu_lisans_sil(request, pk, athlete_pk):
             athlete.licenses.remove(obj)
 
             log = str(athlete.user.get_full_name()) + " Lisans silindi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})

@@ -79,7 +79,7 @@ def add_directory_member(request):
             # msg.send()
 
             log = str(user.get_full_name()) + " Kurul Uyesi kaydedildi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             messages.success(request, 'Kurul Üyesi Başarıyla Kayıt Edilmiştir.')
 
@@ -135,7 +135,7 @@ def delete_directory_member(request, pk):
             obj = DirectoryMember.objects.get(pk=pk)
 
             log = str(obj.user.get_full_name()) + " kurul uyesi silindi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -177,7 +177,7 @@ def update_directory_member(request, pk):
             member_form.save()
 
             log = str(user.get_full_name()) + " Kurul uyesi guncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             messages.success(request, 'Kurul Üyesi Başarıyla Güncellendi')
             # return redirect('sbs:kurul-uyeleri')
@@ -277,7 +277,7 @@ def return_commissions(request):
             commission.save()
 
             log = " Kurul eklendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
             messages.success(request, 'Kurul Başarıyla Kayıt Edilmiştir.')
             return redirect('sbs:kurullar')
 
@@ -300,7 +300,7 @@ def delete_commission(request, pk):
         try:
             obj = DirectoryCommission.objects.get(pk=pk)
             log = str(commission.name) + " kurul silindi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except DirectoryCommission.DoesNotExist:
@@ -326,7 +326,7 @@ def update_commission(request, pk):
             messages.success(request, 'Başarıyla Güncellendi')
 
             log = str(commission.name) + " kurul guncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -380,7 +380,7 @@ def updateDirectoryProfile(request):
             messages.success(request, 'Yönetim Kurul Üyesi Başarıyla Güncellenmiştir.')
 
             log = str(user.get_full_name()) + " yönetim kurulu guncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             return redirect('sbs:yonetim-kurul-profil-guncelle')
 

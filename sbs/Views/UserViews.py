@@ -104,7 +104,7 @@ def active_user(request, pk):
             obj.save()
 
         log = str(obj.get_full_name()) + " ->" + str(obj.is_active) + "Durumu degiştirildi "
-        log = general_methods.logwrite(request.user, log)
+        log = general_methods.logwrite(request, request.user, log)
         print(obj.is_active)
         return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 
@@ -156,7 +156,7 @@ def send_information(request, pk):
         # print(obj.is_active)
 
         log = str(user.get_full_name()) + " sifre gonderildi"
-        log = general_methods.logwrite(request.user, log)
+        log = general_methods.logwrite(request, request.user, log)
 
 
 

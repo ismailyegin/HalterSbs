@@ -79,7 +79,7 @@ def return_add_club(request):
             clubsave.save()
 
             log = str(club_form.cleaned_data['name']) + " Klup eklendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -232,7 +232,7 @@ def return_add_club_person(request):
             msg.send()
 
             log = str(user.get_full_name()) + " Klupuyesi eklendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -315,7 +315,7 @@ def updateClubPersons(request, pk):
             sportClubUser_form.save()
 
             log = str(user.get_full_name()) + " klup uyesi guncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -566,7 +566,7 @@ def deleteClubUserFromClub(request, pk, club_pk):
             club.clubUser.remove(obj)
 
             log = str(club) + " Klup üyesi cikarildi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             club.save()
@@ -594,7 +594,7 @@ def deleteCoachFromClub(request, pk, club_pk):
             club.coachs.remove(obj)
 
             log = str(club) + " Klup antrenör cikarildi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
             club.save()
 
             return JsonResponse({'status': 'Success', 'messages': 'delete successfully'})
@@ -685,7 +685,7 @@ def clubUpdate(request, pk):
                 communication_form.save()
 
             log = str(club) + " Klup güncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             messages.success(request, 'Başarıyla Güncellendi')
@@ -778,7 +778,7 @@ def choose_sport_club_user(request, pk):
             club.save()
 
             log = str(club) + " Klup uyesi ekledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -934,7 +934,7 @@ def choose_coach_clup(request, pk):
                 clup.save()
 
             log = str(clup) + " Klup antrenor ekledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
         return redirect('sbs:update-club', pk=pk)

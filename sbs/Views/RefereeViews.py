@@ -114,7 +114,7 @@ def return_add_referee(request):
             user.save()
 
             log = str(user.get_full_name()) + " Hakemi  ekledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             user.groups.add(group)
@@ -292,7 +292,7 @@ def deleteReferee(request, pk):
         try:
             obj = Judge.objects.get(pk=pk)
             log = str(obj.user.get_full_name()) + " Hakemi sildi."
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Judge.DoesNotExist:
@@ -314,7 +314,7 @@ def refencedeleteReferee(request, pk):
             obj = ReferenceReferee.objects.get(pk=pk)
 
             log = str(obj.first_name) + " " + str(obj.last_name) + " Hakem basvurusu silindi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             obj.delete()
@@ -408,7 +408,7 @@ def refenceapprovalReferee(request, pk):
                 msg.send()
 
                 log = str(user.get_full_name()) + " Hakem basvurusu onaylandi"
-                log = general_methods.logwrite(request.user, log)
+                log = general_methods.logwrite(request, request.user, log)
 
 
             else:
@@ -572,7 +572,7 @@ def updateReferee(request, pk):
             user.save()
 
             log = str(user.get_full_name()) + " Hakemi güncelledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -694,7 +694,7 @@ def hakem_kademe_ekle(request, pk):
             referee.save()
 
             log = str(referee.user.get_full_name()) + " Kademe eklendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -731,7 +731,7 @@ def kademe_onay(request, grade_pk, referee_pk):
         grade.save()
 
         log = str(referee.user.get_full_name()) + " Kademe onaylandi"
-        log = general_methods.logwrite(request.user, log)
+        log = general_methods.logwrite(request, request.user, log)
 
         messages.success(request, 'Kademe   Onaylanmıştır')
     except:
@@ -752,7 +752,7 @@ def kademe_reddet(request, grade_pk, referee_pk):
 
     referee = Judge.objects.get(pk=referee_pk)
     log = str(referee.user.get_full_name()) + " Kademe reddedildi"
-    log = general_methods.logwrite(request.user, log)
+    log = general_methods.logwrite(request, request.user, log)
 
     messages.success(request, 'Kademe Onaylanmıştır')
     return redirect('sbs:hakem-duzenle', pk=referee_pk)
@@ -778,7 +778,7 @@ def kademe_update(request, grade_pk, referee_pk):
                 grade.save()
 
                 log = str(referee.user.get_full_name()) + " Kademe guncellendi"
-                log = general_methods.logwrite(request.user, log)
+                log = general_methods.logwrite(request, request.user, log)
             messages.success(request, 'Kademe Başarılı bir şekilde güncellenmiştir.')
             return redirect('sbs:hakem-duzenle', pk=referee_pk)
 
@@ -805,7 +805,7 @@ def kademe_delete(request, grade_pk, referee_pk):
             referee.grades.remove(obj)
 
             log = str(referee.user.get_full_name()) + " Kademe silindi "
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Level.DoesNotExist:
@@ -847,7 +847,7 @@ def vısa_ekle(request, pk):
             referee.save()
 
             log = str(referee.user.get_full_name()) + " hakem  Vize eklendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
@@ -870,7 +870,7 @@ def visa_onay(request, grade_pk, referee_pk):
     visa.save()
     referee = Judge.objects.get(pk=referee_pk)
     log = str(referee.user.get_full_name()) + " vize onaylandi"
-    log = general_methods.logwrite(request.user, log)
+    log = general_methods.logwrite(request, request.user, log)
 
     messages.success(request, 'Vize onaylanmıştır.')
     return redirect('sbs:hakem-duzenle', pk=referee_pk)
@@ -888,7 +888,7 @@ def visa_reddet(request, grade_pk, referee_pk):
     visa.save()
     referee = Judge.objects.get(pk=referee_pk)
     log = str(referee.user.get_full_name()) + " vize reddedildi"
-    log = general_methods.logwrite(request.user, log)
+    log = general_methods.logwrite(request, request.user, log)
 
     messages.warning(request, 'Vize Reddedilmiştir.')
     return redirect('sbs:hakem-duzenle', pk=referee_pk)
@@ -913,7 +913,7 @@ def vize_update(request, grade_pk, referee_pk):
                 grade.save()
 
                 log = str(referee.user.get_full_name()) + " vize guncellendi"
-                log = general_methods.logwrite(request.user, log)
+                log = general_methods.logwrite(request, request.user, log)
 
 
             messages.success(request, 'Vize Başarılı bir şekilde güncellenmiştir.')
@@ -939,7 +939,7 @@ def vize_delete(request, grade_pk, referee_pk):
             referee.visa.remove(obj)
 
             log = str(referee.user.get_full_name()) + " hakem vize silindi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             obj.delete()
 

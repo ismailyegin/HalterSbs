@@ -78,7 +78,7 @@ def rejected_preRegistration(request,pk):
     veri.save()
     prepegidtration=PreRegistration.objects.all()
     log = str(veri.name) + " Klup basvurusu reddedildi"
-    log = general_methods.logwrite(request.user, log)
+    log = general_methods.logwrite(request, request.user, log)
     return render(request, 'kulup/kulupBasvuru.html',
                   {'prepegidtration': prepegidtration })
 
@@ -183,7 +183,7 @@ def approve_preRegistration(request,pk):
                 messages.success(request, 'Başari ile kaydedildi')
 
                 log = str(clup) + " Klup basvurusu onaylandi"
-                log = general_methods.logwrite(request.user, log)
+                log = general_methods.logwrite(request, request.user, log)
 
 
 

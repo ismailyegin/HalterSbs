@@ -43,7 +43,7 @@ def updateProfile(request):
             messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
 
             log = str(user.get_full_name()) + " admin sifre guncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 

@@ -209,7 +209,7 @@ def return_add_coach(request):
             user.save()
 
             log = str(user.get_full_name()) + " Antrenoru ekledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -382,7 +382,7 @@ def antrenor_kademe_ekle(request, pk):
             coach.save()
 
             log = str(coach.user.get_full_name()) + " Kademe eklendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
             return redirect('sbs:update-coach', pk=pk)
@@ -448,7 +448,7 @@ def deleteCoach(request, pk):
         try:
             obj = Coach.objects.get(pk=pk)
             log = str(obj.user.get_full_name()) + " Antrenor sildi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -631,7 +631,7 @@ def referenappcoverCoach(request, pk):
                 msg.send()
 
                 log = str(user.get_full_name()) + " Antrenor basvurusu onaylandi"
-                log = general_methods.logwrite(request.user, log)
+                log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -663,7 +663,7 @@ def referencedeleteCoach(request, pk):
             obj = ReferenceCoach.objects.get(pk=pk)
 
             log = str(obj.first_name) + " " + str(obj.last_name) + " Hakem basvurusu silindi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Coach.DoesNotExist:
@@ -798,7 +798,7 @@ def coachUpdate(request, pk):
             user.save()
 
             log = str(user.get_full_name()) + " Antrenor güncelledi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             iban_form.save()
@@ -844,14 +844,14 @@ def updateCoachProfile(request):
             messages.success(request, 'Profil Fotoğrafı Başarıyla Güncellenmiştir.')
 
             log = str(user) + " Profil resmini degiştirdi."
-            log = general_methods.logwrite(user.first_name, log)
+            log = general_methods.logwrite(request, request.user, log)
 
         if password_form.is_valid():
 
             print(user)
 
             log = str(user) + "Şifresini degiştirdi."
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             user.set_password(password_form.cleaned_data['new_password2'])
             user.save()
@@ -887,7 +887,7 @@ def kademe_delete(request,grade_pk,coach_pk):
             coach.grades.remove(obj)
 
             log = str(coach.user.get_full_name()) + " Kademe silindi "
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -917,7 +917,7 @@ def vize_delete(request,grade_pk,coach_pk):
             coach = Coach.objects.get(pk=coach_pk)
 
             log = str(coach.user.get_full_name()) + " vize silindi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
             obj.delete()
@@ -949,7 +949,7 @@ def kademe_onay(request,grade_pk,coach_pk):
         grade.save()
 
         log = str(coach.user.get_full_name()) + " Kademe onaylandi"
-        log = general_methods.logwrite(request.user, log)
+        log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -971,7 +971,7 @@ def visa_onay(request,grade_pk,coach_pk):
     coach = Coach.objects.get(pk=coach_pk)
 
     log = str(coach.user.get_full_name()) + " vize onaylandi"
-    log = general_methods.logwrite(request.user, log)
+    log = general_methods.logwrite(request, request.user, log)
 
     messages.success(request, 'Vize onaylanmıştır')
     return redirect('sbs:update-coach', pk=coach_pk)
@@ -990,7 +990,7 @@ def kademe_reddet(request,grade_pk,coach_pk):
     coach = Coach.objects.get(pk=coach_pk)
 
     log = str(coach.user.get_full_name()) + " Kademe reddedildi"
-    log = general_methods.logwrite(request.user, log)
+    log = general_methods.logwrite(request, request.user, log)
 
     messages.success(request, 'Kademe Reddedilmistir.')
     return redirect('sbs:update-coach', pk=coach_pk)
@@ -1010,7 +1010,7 @@ def vize_reddet(request,grade_pk,coach_pk):
     coach = Coach.objects.get(pk=coach_pk)
 
     log = str(coach.user.get_full_name()) + " vize reddedildi"
-    log = general_methods.logwrite(request.user, log)
+    log = general_methods.logwrite(request, request.user, log)
 
     messages.warning(request, 'Vize Reddedilmistir.')
     return redirect('sbs:update-coach', pk=coach_pk)
@@ -1033,7 +1033,7 @@ def kademe_update(request,grade_pk,coach_pk):
             grade_form.save()
 
             log = str(coach.user.get_full_name()) + " Kademe güncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
 
 
@@ -1249,7 +1249,7 @@ def antrenor_vısa_ekle(request, pk):
             coach = Coach.objects.get(pk=coach_pk)
 
             log = str(coach.user.get_full_name()) + " vize eklendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             messages.success(request, 'Vize Başarıyla Eklenmiştir.')
             return redirect('sbs:update-coach', pk=pk)
@@ -1278,7 +1278,7 @@ def vize_update(request,grade_pk,coach_pk):
             coach = Coach.objects.get(pk=coach_pk)
 
             log = str(coach.user.get_full_name()) + " vize güncellendi"
-            log = general_methods.logwrite(request.user, log)
+            log = general_methods.logwrite(request, request.user, log)
 
             return redirect('sbs:update-coach', pk=coach_pk)
         else:
