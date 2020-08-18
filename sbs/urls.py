@@ -1,7 +1,8 @@
 from django.conf.urls import url
 
 from sbs.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
-    CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration, ActivityView, ReferenceView, QuestionViews
+    CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration, ActivityView, ReferenceView, QuestionViews, \
+    LogViews
 
 app_name = 'sbs'
 
@@ -393,6 +394,12 @@ urlpatterns = [
         name='soru-delete'),
     url(r'soru/güncelle/(?P<pk>\d+)$', QuestionViews.soru_update,
         name='soru-guncelle'),
+
+    #   logkayıtlari
+
+    url(r'log/log-kayıtlari/$', LogViews.return_log,
+        name='logs'),
+
 
 
 
