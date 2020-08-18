@@ -164,6 +164,11 @@ urlpatterns = [
     url(r'kulup/kulup-uyesi-guncelle/(?P<pk>\d+)$', ClubViews.updateClubPersons, name='kulup-uyesi-guncelle'),
     url(r'kulup/kulup-uyeleri/$', ClubViews.return_club_person, name='kulup-uyeleri'),
 
+    url(r'kulup/kulup-raporu/$', ClubViews.return_rapor_club, name='kulup-rapor'),
+    url(r'kulup/kulup-raporu/ajax$', ClubViews.return_clup, name='kulup-rapor-ajax'),
+
+
+
     url(r'kulup/kulup-antrenor/$', ClubViews.return_club_coach, name='kulup-antrenor'),
 
     url(r'kulup/kulup-uye-rolu/$', ClubViews.return_club_role, name='kulup-uye-rolu'),

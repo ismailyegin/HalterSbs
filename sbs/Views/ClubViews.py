@@ -408,6 +408,110 @@ def return_club_coach(request):
 
     return render(request, 'kulup/kulup-antrenorler.html',
                   {'athletes': coachs, 'user_form': user_form, 'Sportclup': sportclup})
+
+
+@login_required
+def return_rapor_club(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    return render(request, 'kulup/kulupRapor.html')
+
+
+@login_required
+def return_clup(request):
+    print('ben geldim')
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+
+    # /datatablesten gelen veri kümesi datatables degiskenine alindi
+    if request.method == 'GET':
+        datatables = request.GET
+
+
+    elif request.method == 'POST':
+        datatables = request.POST
+
+    try:
+        draw = int(datatables.get('draw'))
+        # print("draw degeri =", draw)
+        # Ambil start
+        start = int(datatables.get('start'))
+        # print("start degeri =", start)
+        # Ambil length (limit)
+        length = int(datatables.get('length'))
+        # print("lenght  degeri =", length)
+        # Ambil data search
+        search = datatables.get('search[value]')
+        # print("search degeri =", search)
+    except:
+        draw = 1
+        start = 0
+        length = 10
+
+    if length == -1:
+        modeldata = SportsClub.objects.all()
+        total = modeldata.count()
+
+    #     clüp hepsi
+
+    else:
+        if search:
+
+            modeldata = SportsClub.objects.filter(
+                Q(name__icontains=search) | Q(shortName__icontains=search) | Q(clubMail__icontains=search))
+
+            total = modeldata.count()
+
+            print(modeldata)
+
+
+        else:
+            modeldata = SportsClub.objects.all()[
+                        start:start + length]
+            total = SportsClub.objects.all().count()
+
+    say = start + 1
+    start = start + length
+    page = start / length
+
+    beka = []
+    for item in modeldata:
+        athlete = Athlete.objects.filter(licenses__sportsClub=item).count()
+
+        data = {
+            'say': say,
+            'pk': item.pk,
+
+            'name': item.name,
+
+            'birthDate': item.foundingDate,
+            #
+            'athlete': athlete,
+            'coach': item.coachs.all().count(),
+
+        }
+        beka.append(data)
+        say += 1
+
+    response = {
+
+        'data': beka,
+        'draw': draw,
+        'recordsTotal': total,
+        'recordsFiltered': total,
+
+    }
+
+    return JsonResponse(response)
+
+
+
+
+
 @login_required
 def return_club_person(request):
     perm = general_methods.control_access_klup(request)
