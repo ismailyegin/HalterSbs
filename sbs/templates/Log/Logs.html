@@ -259,6 +259,7 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Ip Adresi</th>
                                     <th>Tarih</th>
                                     <th>Kişi</th>
                                     <th>Yapılan işlem</th>
@@ -269,6 +270,7 @@
                                     {% for log in logs %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
+                                            <td>{{ log.ip }} </td>
                                             <td>{{ log.creationDate }} </td>
                                             <td>{{ log.user.first_name }} {{ log.user.last_name }} </td>
                                             <td>{{ log.subject }} </td>
