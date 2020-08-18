@@ -10,12 +10,25 @@ from sbs.models.ReferenceCoach import ReferenceCoach
 from sbs.models.ReferenceReferee import ReferenceReferee
 from datetime import datetime
 
+from sbs.models.Logs import Logs
+
+
 
 def logwrite(user, log):
+    print(user)
+
+    logs = Logs(user=user, subject=log)
+    logs.save()
+
+
+
+
+
     f = open("log.txt", "a")
     log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(user) + " " + log + " \n "
     f.write(log)
     f.close()
+
     return log
 
 

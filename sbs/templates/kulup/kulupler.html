@@ -241,6 +241,11 @@
                                     <th> Kısa Adı</th>
                                     <th>İl</th>
                                     <th>Kuruluş Tarihi</th>
+                                    {#                                    <th>Sporcu sayisi</th>#}
+
+                                    <th>Antrenör sayisi</th>
+
+
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <th>İnceleme/Silme</th>
                                     {% endif %}
@@ -251,6 +256,7 @@
                                 </thead>
                                 <tbody>
                                 {% if clubs.all %}
+
                                     {% for club in clubs %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
@@ -258,6 +264,12 @@
                                             <td>{{ club.shortName }}</td>
                                             <td>{{ club.communication.city }}</td>
                                             <td>{{ club.foundingDate }}</td>
+
+
+                                            <td>{{ club.coachs.count }}</td>
+
+
+
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                             <td>
                                                 <div class="btn-group">
