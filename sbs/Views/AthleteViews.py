@@ -222,45 +222,47 @@ def sporcu_birlestir(request):
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
 
+        athlete = request.POST.get('athlete')
+        athlete = Athlete.objects.get(pk=athlete)
+        secilenler = request.POST.getlist('secilenler[]')
+
+        for item in secilenler:
+            athleteDel = Athlete.objects.get(pk=item)
+            compAthlete = CompAthlete.objects.filter(athlete=athleteDel)
+            print('müsabakalari')
+            for comp in compAthlete:
+                print(comp.competition)
+                comp.athlete = athlete
+                comp.save()
+            print('lisanslari')
+            for lisans in athleteDel.licenses.all():
+                print(lisans.pk)
+
+                athleteDel.licenses.remove(lisans)
+                athleteDel.save()
+
+                # athlete.licenses.add(lisans)
+                # athlete.save()
+
+                lisans = License.objects.get(pk=lisans.pk)
+                lisans.delete()
+                #
+
+            for item in Compathleteforsearch.objects.filter(athlete=athleteDel):
+                item.athlete = athlete
+                item.save
+
+            user = User.objects.get(pk=athleteDel.user.pk)
+            for item in Forgot.objects.filter(user=user):
+                item.user = athlete.user
+                item.save()
+
+            athleteDel.delete()
+            user.delete()
+
         try:
 
-            athlete = request.POST.get('athlete')
-            athlete = Athlete.objects.get(pk=athlete)
-            secilenler = request.POST.getlist('secilenler[]')
-
-            for item in secilenler:
-                athleteDel = Athlete.objects.get(pk=item)
-                compAthlete = CompAthlete.objects.filter(athlete=athleteDel)
-                print('müsabakalari')
-                for comp in compAthlete:
-                    print(comp.competition)
-                    comp.athlete = athlete
-                    comp.save()
-                print('lisanslari')
-                for lisans in athleteDel.licenses.all():
-                    print(lisans.pk)
-
-                    athleteDel.licenses.remove(lisans)
-                    athleteDel.save()
-
-                    # athlete.licenses.add(lisans)
-                    # athlete.save()
-
-                    lisans = License.objects.get(pk=lisans.pk)
-                    lisans.delete()
-                    #
-
-                for item in Compathleteforsearch.objects.filter(athlete=athleteDel):
-                    item.athlete = athlete
-                    item.save
-
-                user = User.objects.get(pk=athleteDel.user.pk)
-                for item in Forgot.objects.filter(user=user):
-                    item.user = athlete.user
-                    item.save()
-
-                athleteDel.delete()
-                user.delete()
+            print()
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except:
