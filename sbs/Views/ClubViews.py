@@ -453,7 +453,7 @@ def return_clup(request):
         length = 10
 
     if length == -1:
-        modeldata = SportsClub.objects.all()
+        modeldata = SportsClub.objects.all().order_by('-creationDate')
         total = modeldata.count()
 
     #     clüp hepsi
@@ -470,7 +470,7 @@ def return_clup(request):
 
 
         else:
-            modeldata = SportsClub.objects.all()[
+            modeldata = SportsClub.objects.all().order_by('-creationDate')[
                         start:start + length]
             total = SportsClub.objects.all().count()
 
@@ -481,6 +481,7 @@ def return_clup(request):
     beka = []
     for item in modeldata:
         athlete = Athlete.objects.filter(licenses__sportsClub=item).count()
+        uye = item.clubUser.all().count()
 
         data = {
             'say': say,
@@ -488,7 +489,7 @@ def return_clup(request):
 
             'name': item.name,
 
-            'birthDate': item.foundingDate,
+            'birthDate': uye,
             #
             'athlete': athlete,
             'coach': item.coachs.all().count(),
