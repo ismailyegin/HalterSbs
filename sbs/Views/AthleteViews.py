@@ -220,10 +220,6 @@ def sporcu_birlestir(request):
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
 
-
-
-
-
         try:
             athlete = request.POST.get('athlete')
             athlete = Athlete.objects.get(pk=athlete)
@@ -255,6 +251,8 @@ def sporcu_birlestir(request):
                 for item in Forgot.objects.filter(user=user):
                     item.user = athlete.user
                     item.save()
+                log = str(user.get_full_name()) + " sporcu birleştirildi ve silindi "
+                log = general_methods.logwrite(request, request.user, log)
 
                 athleteDel.delete()
                 user.delete()
