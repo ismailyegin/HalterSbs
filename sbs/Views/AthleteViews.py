@@ -786,21 +786,21 @@ def sporcu_kusak_ekle(request, pk):
         belt_form = BeltForm(request.POST, request.FILES or None)
 
         if belt_form.is_valid():
-
-            belt = Level(startDate=belt_form.cleaned_data['startDate'],
-                         dekont=belt_form.cleaned_data['dekont'],
-                         definition=belt_form.cleaned_data['definition'],
-                         form=belt_form.cleaned_data['form'],
-                         city=belt_form.cleaned_data['city'], )
-
-            belt.levelType = EnumFields.LEVELTYPE.BELT
-            # last deger kaldirildi yerine alt satiır eklendi
-            belt.branch = belt.definition.branch
-
-            belt.status = Level.WAITED
-            belt.save()
-            athlete.belts.add(belt)
-            athlete.save()
+            #
+            # belt = Level(startDate=belt_form.cleaned_data['startDate'],
+            #              dekont=belt_form.cleaned_data['dekont'],
+            #              definition=belt_form.cleaned_data['definition'],
+            #              form=belt_form.cleaned_data['form'],
+            #              city=belt_form.cleaned_data['city'], )
+            #
+            # belt.levelType = EnumFields.LEVELTYPE.BELT
+            # # last deger kaldirildi yerine alt satiır eklendi
+            # belt.branch = belt.definition.branch
+            #
+            # belt.status = Level.WAITED
+            # belt.save()
+            # athlete.belts.add(belt)
+            # athlete.save()
 
             messages.success(request, 'Kuşak Başarıyla Eklenmiştir.')
             return redirect('sbs:update-athletes', pk=pk)
@@ -1070,15 +1070,15 @@ def sporcu_kusak_listesi_onayla(request, belt_pk):
         logout(request)
         return redirect('accounts:login')
     try:
-        belt = Level.objects.get(pk=belt_pk)
-        athlete = belt.athlete_set.first()
-        for item in athlete.belts.all():
-            if item.branch == belt.branch:
-                item.isActive = False
-                item.save()
-        belt.status = Level.APPROVED
-        belt.isActive = True
-        belt.save()
+        # belt = Level.objects.get(pk=belt_pk)
+        # athlete = belt.athlete_set.first()
+        # for item in athlete.belts.all():
+        #     if item.branch == belt.branch:
+        #         item.isActive = False
+        #         item.save()
+        # belt.status = Level.APPROVED
+        # belt.isActive = True
+        # belt.save()
         messages.success(request, 'Kuşak Onaylanmıştır')
     except:
         messages.success(request, 'Yeniden deneyiniz')
@@ -1093,9 +1093,9 @@ def sporcu_kusak_listesi_reddet(request, belt_pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    belt = Level.objects.get(pk=belt_pk)
-    belt.status = Level.DENIED
-    belt.save()
+    # belt = Level.objects.get(pk=belt_pk)
+    # belt.status = Level.DENIED
+    # belt.save()
     messages.success(request, 'Kuşak reddedilmistir')
     return redirect('sbs:kusak-listesi')
 
@@ -1110,15 +1110,15 @@ def sporcu_kusak_listesi_hepsinionayla(request):
         return redirect('accounts:login')
     try:
         belt = Level.objects.filter(status='Beklemede', levelType=EnumFields.LEVELTYPE.BELT)
-        for bt in belt:
-            athlete = bt.athlete_set.first()
-            for item in athlete.belts.all():
-                if item.branch == bt.branch:
-                    item.isActive = False
-                    item.save()
-            bt.status = Level.APPROVED
-            bt.isActive = True
-            bt.save()
+        # for bt in belt:
+        # athlete = bt.athlete_set.first()
+        # for item in athlete.belts.all():
+        #     if item.branch == bt.branch:
+        #         item.isActive = False
+        #         item.save()
+        # bt.status = Level.APPROVED
+        # bt.isActive = True
+        # bt.save()
 
         messages.success(request, 'Kuşaklar basari  Onaylanmıştır')
     except:
@@ -1135,15 +1135,15 @@ def sporcu_kusak_onayla(request, belt_pk, athlete_pk):
         logout(request)
         return redirect('accounts:login')
     try:
-        belt = Level.objects.get(pk=belt_pk)
-        athlete = Athlete.objects.get(pk=athlete_pk)
-        for item in athlete.belts.all():
-            if item.branch == belt.branch:
-                item.isActive = False
-                item.save()
-        belt.status = Level.APPROVED
-        belt.isActive = True
-        belt.save()
+        # belt = Level.objects.get(pk=belt_pk)
+        # athlete = Athlete.objects.get(pk=athlete_pk)
+        # for item in athlete.belts.all():
+        #     if item.branch == belt.branch:
+        #         item.isActive = False
+        #         item.save()
+        # belt.status = Level.APPROVED
+        # belt.isActive = True
+        # belt.save()
 
         messages.success(request, 'Kuşak Onaylanmıştır')
     except:
@@ -1159,9 +1159,9 @@ def sporcu_kusak_reddet(request, belt_pk, athlete_pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    belt = Level.objects.get(pk=belt_pk)
-    belt.status = Level.DENIED
-    belt.save()
+    # belt = Level.objects.get(pk=belt_pk)
+    # belt.status = Level.DENIED
+    # belt.save()
 
     messages.success(request, 'Kuşak Reddedilmiştir')
     return redirect('sbs:update-athletes', pk=athlete_pk)

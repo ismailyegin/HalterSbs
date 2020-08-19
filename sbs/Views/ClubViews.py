@@ -945,15 +945,15 @@ def approve_belt_exam(request, pk):
         athletes = exam.athletes.all()
         for athlete in athletes:
             level = Level()
-            level.startDate = exam.examDate
-            level.levelType = EnumFields.LEVELTYPE.BELT
-            lastLevel = athlete.belts.last()
-            lastDefinition = lastLevel.definition
-            level.definition = lastDefinition.parent
-            level.status = Level.APPROVED
-            level.save()
-            athlete.belts.add(level)
-            athlete.save()
+            # level.startDate = exam.examDate
+            # level.levelType = EnumFields.LEVELTYPE.BELT
+            # lastLevel = athlete.belts.last()
+            # lastDefinition = lastLevel.definition
+            # level.definition = lastDefinition.parent
+            # level.status = Level.APPROVED
+            # level.save()
+            # athlete.belts.add(level)
+            # athlete.save()
 
 
 
