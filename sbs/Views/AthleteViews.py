@@ -601,7 +601,7 @@ def updateathletes(request, pk):
         logout(request)
         return redirect('accounts:login')
     athlete = Athlete.objects.get(pk=pk)
-    belts_form = athlete.belts.all()
+    # belts_form = athlete.belts.all()
     licenses_form = athlete.licenses.all()
     user = User.objects.get(pk=athlete.user.pk)
     person = Person.objects.get(pk=athlete.person.pk)
@@ -626,7 +626,7 @@ def updateathletes(request, pk):
                 messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 return render(request, 'sporcu/sporcuDuzenle.html',
                               {'user_form': user_form, 'communication_form': communication_form,
-                               'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                               'person_form': person_form, 'licenses_form': licenses_form,
                                'athlete': athlete, 'say': say, 'competition': competition})
 
 
@@ -640,7 +640,7 @@ def updateathletes(request, pk):
                 messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
                 return render(request, 'sporcu/sporcuDuzenle.html',
                               {'user_form': user_form, 'communication_form': communication_form,
-                               'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                               'person_form': person_form, 'licenses_form': licenses_form,
                                'athlete': athlete, 'say': say, 'competition': competition})
 
 
@@ -654,7 +654,7 @@ def updateathletes(request, pk):
             messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
             return render(request, 'sporcu/sporcuDuzenle.html',
                           {'user_form': user_form, 'communication_form': communication_form,
-                           'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                           'person_form': person_form, 'licenses_form': licenses_form,
                            'athlete': athlete, 'say': say, 'competition': competition})
 
         if user_form.is_valid() and communication_form.is_valid() and person_form.is_valid():
@@ -684,7 +684,7 @@ def updateathletes(request, pk):
 
     return render(request, 'sporcu/sporcuDuzenle.html',
                   {'user_form': user_form, 'communication_form': communication_form,
-                   'person_form': person_form, 'belts_form': belts_form, 'licenses_form': licenses_form,
+                   'person_form': person_form, 'licenses_form': licenses_form,
                    'athlete': athlete, 'say': say, 'competition': competition})
 
 
