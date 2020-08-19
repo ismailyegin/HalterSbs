@@ -760,8 +760,6 @@ def clubUpdate(request, pk):
     club = SportsClub.objects.get(id=pk)
 
     athletes = Athlete.objects.filter(licenses__sportsClub=club)
-    for item in athletes:
-        print(item)
 
 
     try:
