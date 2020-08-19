@@ -47,7 +47,6 @@ from sbs.models.PreRegistration import PreRegistration
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
 
-from sbs.models.Compathleteforsearch import Compathleteforsearch
 
 
 @login_required
