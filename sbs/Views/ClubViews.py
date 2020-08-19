@@ -758,6 +758,12 @@ def clubUpdate(request, pk):
         logout(request)
         return redirect('accounts:login')
     club = SportsClub.objects.get(id=pk)
+
+    athletes = Athlete.objects.filter(licenses__sportsClub=club)
+    for item in athletes:
+        print(item)
+
+
     try:
         com_id = club.communication.pk
         communication = Communication.objects.get(id=com_id)
@@ -799,6 +805,7 @@ def clubUpdate(request, pk):
 
     return render(request, 'kulup/kulupDuzenle.html',
                   {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
+                   'athletes': athletes,
                    'club': club, 'clubCoachs': clubCoachs})
 
 
