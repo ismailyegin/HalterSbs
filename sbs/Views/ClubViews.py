@@ -444,7 +444,7 @@ def return_clup(request):
 
     try:
         order = datatables.get('order[0][column]')
-        print('test=', order)
+        # print('test=', order)
         draw = int(datatables.get('draw'))
         # print("draw degeri =", draw)
         # Ambil start
@@ -475,7 +475,7 @@ def return_clup(request):
 
             total = modeldata.count()
 
-            print(modeldata)
+            # print(modeldata)
 
 
         else:
@@ -1029,7 +1029,7 @@ def choose_athlete(request, pk):
         exam_athlete=[]
         for item in sinav.athletes.all():
             exam_athlete.append(item.user.pk)
-        print(sinav.branch)
+        # print(sinav.branch)
         athletes=Athlete.objects.exclude(belts=None).exclude(licenses=None).exclude(beltexam__athletes__user__in = exam_athlete).filter(licenses__branch=sinav.branch,licenses__status='Onaylandı').filter(belts__branch=sinav.branch,belts__status='Onaylandı')
     #   .exclude(belts__definition__parent_id=None)    eklenmeli ama eklendigi zaman kuşaklarindan bir tanesi en üst olunca almıyor
     if request.method == 'POST':
@@ -1126,7 +1126,7 @@ def add_belt_exam(request):
         clubs = SportsClub.objects.filter(clubUser=sc_user)
         clubsPk = []
         for club in clubs:
-            print(club.dataAccessControl)
+            # print(club.dataAccessControl)
             clubsPk.append(club.pk)
         exam_form.fields['sportClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
 
@@ -1147,17 +1147,17 @@ def add_belt_exam(request):
 
 @login_required
 def update_belt_exam(request, pk):
-    print('kusak sinavi düzenle çalisti')
+    # print('kusak sinavi düzenle çalisti')
     perm = general_methods.control_access(request)
     if not perm:
         logout(request)
         return redirect('accounts:login')
     sinav = BeltExam.objects.get(pk=pk)
     # license_form = LicenseForm(request.POST or None, request.FILES or None, instance=license,initial={'sportsClub': license.sportsClub})
-    print(sinav.sportClub)
+    # print(sinav.sportClub)
     exam_form = BeltExamForm(request.POST or None, request.FILES or None, instance=sinav,
                              initial={'sportsClub': sinav.sportClub.name})
-    print(exam_form)
+    # print(exam_form)
     user = request.user
     if user.groups.filter(name='KulupUye'):
         sc_user = SportClubUser.objects.get(user=user)

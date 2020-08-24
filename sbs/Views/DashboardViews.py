@@ -98,7 +98,7 @@ def return_club_user_dashboard(request):
             for club in clubs:
                 if club.dataAccessControl == False or club.dataAccessControl is None:
                     clubsPk.append(club.pk)
-            print(len(clubsPk))
+            # print(len(clubsPk))
             if len(clubsPk) != 0:
                 athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
                 athletes = athletes.filter(user__last_name='') | athletes.filter(user__first_name='') | athletes.filter(
