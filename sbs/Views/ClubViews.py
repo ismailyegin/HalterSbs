@@ -45,7 +45,7 @@ from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
 
 from django.contrib.auth.models import Group, Permission, User
-
+from operator import itemgetter
 @login_required
 def return_add_club(request):
     perm = general_methods.control_access(request)
@@ -436,12 +436,15 @@ def return_clup(request):
     # /datatablesten gelen veri kümesi datatables degiskenine alindi
     if request.method == 'GET':
         datatables = request.GET
+        print(datatables)
 
 
     elif request.method == 'POST':
         datatables = request.POST
 
     try:
+        order = datatables.get('order[0][column]')
+        print('test=', order)
         draw = int(datatables.get('draw'))
         # print("draw degeri =", draw)
         # Ambil start
@@ -485,6 +488,7 @@ def return_clup(request):
     page = start / length
 
     beka = []
+
     for item in modeldata:
         athlete = Athlete.objects.filter(licenses__sportsClub=item).count()
         uye = item.clubUser.all().count()
@@ -495,7 +499,7 @@ def return_clup(request):
 
             'name': item.name,
 
-            'birthDate': uye,
+            'uye': uye,
             #
             'athlete': athlete,
             'coach': item.coachs.all().count(),
@@ -503,6 +507,19 @@ def return_clup(request):
         }
         beka.append(data)
         say += 1
+
+    order = int(order)
+    if order != 0:
+        if order == 1:
+            beka.sort(key=lambda item: item['name'], reverse=True)
+        elif order == 2:
+            beka.sort(key=lambda item: item['uye'], reverse=True)
+        elif order == 3:
+            beka.sort(key=lambda item: item['athlete'], reverse=True)
+        elif order == 4:
+            beka.sort(key=lambda item: item['coach'], reverse=True)
+    else:
+        beka.sort(key=lambda item: item['say'], reverse=False)
 
     response = {
 

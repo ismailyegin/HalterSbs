@@ -318,6 +318,11 @@
 
                 "serverSide": true,
                 "processing": true,
+                'paging': true,
+                'searching': true,
+                'ordering': true,
+                'responsive': true,
+                'autoWidth': true,
                 'ajax': {
 
                     "url": '{% url "sbs:kulup-rapor-ajax"%}',
@@ -334,7 +339,7 @@
                     {#{"targets": -1},#}
                     {'data': 'say'},
                     {'data': 'name'},
-                    {'data': 'birthDate'},
+                    {'data': 'uye'},
                     {#{'data': 'klup'},#}
                     {'data': 'athlete'},
                     {'data': 'coach'},
@@ -342,11 +347,7 @@
 
                 ],
 
-                'paging': true,
-                'searching': true,
-                'ordering': true,
-                'responsive': true,
-                'autoWidth': true,
+
                 dom: 'Bfrtip',
                 language: {
                     buttons: {
