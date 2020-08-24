@@ -157,17 +157,19 @@ def pre_registration(request):
         PreRegistrationform = PreRegistrationForm(request.POST or None, request.FILES or None)
 
         mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
             email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/cluppre-registration.html',
                           {'preRegistrationform': PreRegistrationform})
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
-                tc=tc) or ReferenceReferee.objects.filter(
-            tc=tc) or PreRegistration.objects.filter(tc=tc):
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
             messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
             return render(request, 'registration/cluppre-registration.html',
                           {'preRegistrationform': PreRegistrationform})
@@ -522,15 +524,17 @@ def referenceReferee(request):
     if request.method == 'POST':
         referee = RefereeForm(request.POST, request.FILES)
         mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
                 email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Referee.html', {'preRegistrationform': referee})
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                tc=tc) or PreRegistration.objects.filter(tc=tc):
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
             messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
             return render(request, 'registration/Referee.html',
                           {'preRegistrationform': referee})
@@ -540,11 +544,11 @@ def referenceReferee(request):
         year = request.POST.get('birthDate')
         year = year.split('/')
 
-        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-            return render(request, 'registration/Referee.html',
-                          {'preRegistrationform': referee})
+        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+        #     return render(request, 'registration/Referee.html',
+        #                   {'preRegistrationform': referee})
 
 
         if referee.is_valid():
@@ -557,10 +561,10 @@ def referenceReferee(request):
                                  'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
                 return redirect("accounts:login")
             else:
-                messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
+                messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz. Kademe bilgisi giriniz:')
 
         else:
-            messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
+            messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz. ')
     return render(request, 'registration/Referee.html',
                   {'preRegistrationform': referee})
 
@@ -571,15 +575,18 @@ def referenceCoach(request):
     if request.method == 'POST':
         coach_form = RefereeCoachForm(request.POST, request.FILES)
         mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
-                email=mail):
-            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
             return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                tc=tc) or PreRegistration.objects.filter(tc=tc):
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
             messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
             return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
 

@@ -297,6 +297,8 @@ urlpatterns = [
         name='visaSeminar-hakem-sil'),
     url(r'hakem/visa-Seminar-Onayla/(?P<pk>\d+)$', RefereeViews.visaSeminar_onayla, name='hakem-seminar-onayla'),
     url(r'hakem/basvuru/onayla/(?P<pk>\d+)$', RefereeViews.referenceStatus, name='reference-refere-status'),
+    url(r'hakem/basvuru/reddet/(?P<pk>\d+)$', RefereeViews.referenceStatus_reddet,
+        name='reference-refere-status-reddet'),
 
     url(r'hakem/Kademe-listesi/', RefereeViews.kademe_list, name='hakem-kademe-listesi'),
     url(r'hakem/kademe-Liste-Onayla/(?P<referee_pk>\d+)$', RefereeViews.kademe_onayla,

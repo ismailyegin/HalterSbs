@@ -62,8 +62,10 @@ def return_add_referee(request):
         iban_form = IbanFormJudge(request.POST)
 
         mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
             email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'hakem/hakem-ekle.html',
@@ -71,8 +73,9 @@ def return_add_referee(request):
                            'communication_form': communication_form, 'iban_form': iban_form})
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                tc=tc) or PreRegistration.objects.filter(tc=tc):
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
             messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
             return render(request, 'hakem/hakem-ekle.html',
                           {'user_form': user_form, 'person_form': person_form,
@@ -448,8 +451,10 @@ def referenceUpdateReferee(request, pk):
 
         mail = request.POST.get('email')
         if mail != refere.email:
-            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
                 email=mail):
                 messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 return render(request, 'hakem/HakemBasvuruUpdate.html',
@@ -457,8 +462,10 @@ def referenceUpdateReferee(request, pk):
 
         tc = request.POST.get('tc')
         if tc != refere.tc:
-            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
                 messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
                 return render(request, 'hakem/HakemBasvuruUpdate.html',
                               {'preRegistrationform': refere_form})
@@ -520,8 +527,10 @@ def updateReferee(request, pk):
 
         mail = request.POST.get('email')
         if mail != judge.user.email:
-            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
                 email=mail):
                 messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 return render(request, 'hakem/hakemDuzenle.html',
@@ -531,8 +540,9 @@ def updateReferee(request, pk):
 
         tc = request.POST.get('tc')
         if tc != judge.person.tc:
-            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
                 messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
                 return render(request, 'hakem/hakemDuzenle.html',
                               {'user_form': user_form, 'communication_form': communication_form,
@@ -1078,6 +1088,30 @@ def visaSeminar_Delete_Referee(request, pk, competition):
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
+
+@login_required
+def referenceStatus_reddet(request, pk):
+    reference = ReferenceReferee.objects.get(pk=pk)
+    if reference.status == ReferenceReferee.WAITED:
+        reference.status = ReferenceReferee.DENIED
+        reference.save()
+
+        html_content = ''
+        subject, from_email, to = 'Bilgi Sistemi', 'no-reply@halter.gov.tr', reference.email
+        html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+        html_content = html_content + '<p><strong>Başvurunuz reddedilmiştir.</strong></p>'
+
+        msg = EmailMultiAlternatives(subject, '', from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+    else:
+        messages.success(request, 'Hakem daha önce onaylanmıştır.')
+    try:
+        print()
+    except:
+        messages.warning(request, 'Tekrar deneyiniz.')
+
+    return redirect('sbs:basvuru-referee')
 
 @login_required
 def referenceStatus(request, pk):

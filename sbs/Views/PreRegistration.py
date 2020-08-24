@@ -28,8 +28,9 @@ def update_preRegistration(request, pk):
     if request.method == 'POST':
         mail = request.POST.get('email')
         if mail != veri.email:
-            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
                 email=mail):
                 messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 return render(request, 'kulup/kulup-basvuru-duzenle.html',
@@ -37,8 +38,10 @@ def update_preRegistration(request, pk):
 
         tc = request.POST.get('tc')
         if tc != veri.tc:
-            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
                 messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
                 return render(request, 'kulup/kulup-basvuru-duzenle.html',
                               {'preRegistrationform': form, })

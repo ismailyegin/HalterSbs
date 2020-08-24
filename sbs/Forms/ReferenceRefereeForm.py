@@ -19,9 +19,9 @@ class RefereeForm(ModelForm):
     class Meta:
         model = ReferenceReferee
         fields = (
-            'first_name', 'last_name', 'email', 'is_active', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2',
+            'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2',
             'city', 'kademe_startDate',
-            'country', 'iban', 'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender',
+            'country', 'iban', 'tc', 'profileImage', 'birthDate', 'bloodType', 'gender',
             'birthplace', 'motherName',
             'fatherName')
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
@@ -30,6 +30,8 @@ class RefereeForm(ModelForm):
                   }
         widgets = {
 
+            'profileImage': forms.FileInput(),
+
             'tc': forms.TextInput(attrs={'class': 'form-control ',
                                             'onkeyup': 'if(this.value.length >11){this.value=this.value.substr(0, 11);}',
                                             'id': 'tc',
@@ -37,10 +39,6 @@ class RefereeForm(ModelForm):
 
                                             'value': '',
                                             'required': 'required'}),
-
-            'height': forms.TextInput(attrs={'class': 'form-control'}),
-
-            'weight': forms.TextInput(attrs={'class': 'form-control'}),
 
             'birthplace': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
@@ -71,7 +69,6 @@ class RefereeForm(ModelForm):
                 attrs={'class': 'form-control ', 'required': 'required'}),
             'email': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
-            'is_active': forms.CheckboxInput(attrs={'class': 'iCheck-helper'}),
             'address': forms.Textarea(
                 attrs={'class': 'form-control ', 'rows': '2'}),
 
@@ -93,16 +90,3 @@ class RefereeForm(ModelForm):
 
         }
 
-    def clean_email(self):
-
-        data = self.cleaned_data['email']
-        print(self.instance)
-        if self.instance.id is None:
-            if User.objects.filter(email=data).exists():
-                raise forms.ValidationError("Bu email başka bir kullanıcı tarafından kullanılmaktadır.")
-            return data
-        else:
-            return data
-
-    def __str__(self):
-        return '%s %s' % (self.first_name, self.last_name)

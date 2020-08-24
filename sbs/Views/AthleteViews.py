@@ -116,8 +116,9 @@ def return_add_athlete_antrenor(request):
         license_form = LicenseFormAntrenor(request.POST, request.FILES or None)
 
         mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
             email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'sporcu/sporcu-ekle.html',
@@ -127,8 +128,9 @@ def return_add_athlete_antrenor(request):
                            })
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                tc=tc) or PreRegistration.objects.filter(tc=tc):
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
             messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
             return render(request, 'sporcu/sporcu-ekle.html',
                           {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
@@ -353,8 +355,9 @@ def return_add_athlete(request):
         # controller tc email
 
         mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
             email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'sporcu/sporcu-ekle.html',
@@ -364,8 +367,9 @@ def return_add_athlete(request):
                            })
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                tc=tc) or PreRegistration.objects.filter(tc=tc):
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
             messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
             return render(request, 'sporcu/sporcu-ekle.html',
                           {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
@@ -617,8 +621,9 @@ def updateathletes(request, pk):
 
         mail = request.POST.get('email')
         if user.email != mail:
-            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
                 email=mail):
                 messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 return render(request, 'sporcu/sporcuDuzenle.html',
@@ -632,8 +637,9 @@ def updateathletes(request, pk):
         tc = request.POST.get('tc')
 
         if person.tc != tc:
-            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
                 messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
                 return render(request, 'sporcu/sporcuDuzenle.html',
                               {'user_form': user_form, 'communication_form': communication_form,

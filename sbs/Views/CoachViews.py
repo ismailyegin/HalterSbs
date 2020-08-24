@@ -155,8 +155,10 @@ def return_add_coach(request):
         iban_form=IbanCoachForm(request.POST)
 
         mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
             email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'antrenor/antrenor-ekle.html',
@@ -164,8 +166,9 @@ def return_add_coach(request):
                            'communication_form': communication_form, 'iban_form': iban_form})
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                tc=tc) or PreRegistration.objects.filter(tc=tc):
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
             messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
             return render(request, 'antrenor/antrenor-ekle.html',
                           {'user_form': user_form, 'person_form': person_form,
@@ -685,8 +688,10 @@ def coachreferenceUpdate(request, pk):
 
         mail = request.POST.get('email')
         if mail != coach.email:
-            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
                 email=mail):
                 messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 return render(request, 'antrenor/AntronerBasvuruUpdate.html',
@@ -694,8 +699,9 @@ def coachreferenceUpdate(request, pk):
 
         tc = request.POST.get('tc')
         if tc != coach.tc:
-            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
                 messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
                 return render(request, 'antrenor/AntronerBasvuruUpdate.html',
                               {'preRegistrationform': coach_form})
@@ -753,8 +759,10 @@ def coachUpdate(request, pk):
 
         mail = request.POST.get('email')
         if mail != coach.user.email:
-            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
                 email=mail):
                 messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 return render(request, 'antrenor/antrenorDuzenle.html',
@@ -764,8 +772,9 @@ def coachUpdate(request, pk):
 
         tc = request.POST.get('tc')
         if tc != coach.person.tc:
-            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
-                    tc=tc) or PreRegistration.objects.filter(tc=tc):
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
                 messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
                 return render(request, 'antrenor/antrenorDuzenle.html',
                               {'user_form': user_form, 'communication_form': communication_form,
