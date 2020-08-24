@@ -72,17 +72,12 @@ def return_club_user_dashboard(request):
         logout(request)
         return redirect('accounts:login')
 
-    belts = Level.objects.all()
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     current_user = request.user
     clubuser = SportClubUser.objects.get(user=current_user)
     club = SportsClub.objects.filter(clubUser=clubuser)[0]
-    if user.groups.filter(name='KulupUye'):
 
-        belts = Level.objects.filter(athlete__licenses__sportsClub=club)
-    elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-        belts = Level.objects.all()
 
     total_club_user = club.clubUser.count()
     total_coach = Coach.objects.filter(sportsclub=club).count()
@@ -138,7 +133,7 @@ def return_club_user_dashboard(request):
                 sc_user.save()
 
     return render(request, 'anasayfa/kulup-uyesi.html',
-                  {'total_club_user': total_club_user, 'total_coach': total_coach, 'belts': belts,
+                  {'total_club_user': total_club_user, 'total_coach': total_coach,
                    'total_athlete': total_athlete, 'athletes': athletes})
 
 
