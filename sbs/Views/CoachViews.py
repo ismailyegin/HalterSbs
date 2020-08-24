@@ -655,7 +655,7 @@ def referenappcoverCoach(request, pk):
 
 
 @login_required
-def referencedeleteCoach(request, pk):
+def referencedeniedCoach(request, pk):
     perm = general_methods.control_access(request)
 
     if not perm:
@@ -664,10 +664,12 @@ def referencedeleteCoach(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = ReferenceCoach.objects.get(pk=pk)
+            obj.status = ReferenceCoach.DENIED
+            obj.save()
 
-            log = str(obj.first_name) + " " + str(obj.last_name) + " Hakem basvurusu silindi"
+            log = str(obj.first_name) + " " + str(obj.last_name) + " Antrenor   basvurusu reddedildi"
             log = general_methods.logwrite(request, request.user, log)
-            obj.delete()
+
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Coach.DoesNotExist:
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})

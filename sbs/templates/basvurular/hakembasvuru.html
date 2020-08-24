@@ -37,7 +37,7 @@
                     <h4 class="modal-title">Uyarı</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Silmek istediğinizden emin misiniz?</p>
+                    <p>Reddetmek istediğinizden emin misiniz?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
@@ -198,26 +198,28 @@
                                                     {% if referee.status == "Beklemede" %}
 
 
-                                                        {#                                                        <a href="{% url "sbs:reference-refere-status" referee.pk %}"#}
-                                                        {#                                                           type="button" class="btn btn-success"><i#}
-                                                        {#                                                                class="fa fa-edit"></i> Onayla#}
-                                                        {#                                                        </a>#}
 
-                                                        <a onclick="approvalReferee({{ referee.pk }})" "
-                                                           type="button" class="btn btn-success"><i
-                                                                class="fa fa-edit"></i> Onayla
-                                                        </a>
 
 
 
                                                     {% endif %}
+
+
+                                                    <a onclick="approvalReferee({{ referee.pk }})" "
+                                                    type="button" class="btn btn-success"><i
+                                                        class="fa fa-edit"></i> Onayla
+                                                    </a>
+
+
                                                     <a href="{% url "sbs:hakem-duzenle-basvuru" referee.pk %}"
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i> İncele
                                                     </a>
+
+
                                                     <a class="btn btn-danger"
                                                        data-toggle="modal" onclick=deleteReferee({{ referee.pk }})><i
-                                                            class="fa fa-trash"></i> Sil</a>
+                                                            class="fa fa-trash"></i> Reddet</a>
 
                                                 </div>
                                             </td>
@@ -269,7 +271,7 @@
             $("#modal-danger").on("shown.bs.modal", function (e) {
                 $("#btn-conf").click(function () {
                     $.ajax({
-                        url: "{% url "sbs:referee-delete-basvuru" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                        url: "{% url "sbs:referee-reddet-basvuru" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -277,13 +279,14 @@
                         },
                         success: function (result) {
 
-                            html = 'Hakem Başarıyla Silindi';
+                            html = 'Hakem Reddedildi';
                             debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {
 
-                                    window.location.replace("{% url "sbs:basvuru-referee" %}");
+                                    $('#refere-' + id + ' td').eq(3).text('Reddedildi');
+                                    $('#modal-success').modal('hide');
 
                                 });
 
@@ -295,6 +298,8 @@
                     });
                 });
             }).modal('show');
+
+
             $('#btn-close').click(function () {
                 $('#modal-danger').modal('hide');
             });

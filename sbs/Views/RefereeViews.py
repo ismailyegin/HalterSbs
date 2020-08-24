@@ -315,12 +315,11 @@ def refencedeleteReferee(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = ReferenceReferee.objects.get(pk=pk)
+            obj.status = ReferenceReferee.DENIED
+            obj.save()
 
-            log = str(obj.first_name) + " " + str(obj.last_name) + " Hakem basvurusu silindi"
+            log = str(obj.first_name) + " " + str(obj.last_name) + "     Hakem basvurusu reddedildi"
             log = general_methods.logwrite(request, request.user, log)
-
-
-            obj.delete()
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except Judge.DoesNotExist:

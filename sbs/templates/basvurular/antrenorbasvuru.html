@@ -37,7 +37,7 @@
                     <h4 class="modal-title">Uyarı</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Silmek istediğinizden emin misiniz?</p>
+                    <p>Reddetmek istediğinizden emin misiniz?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
@@ -194,26 +194,41 @@
                                             {#                                            </td>#}
                                             <td>
                                                 <div class="btn-group">
-                                                    {% if referee.status == "Beklemede" %}
-
+                                                    {#                                                    {% if referee.status != "Onaylandı" %}#}
+                                                    {##}
                                                         {#                                                        <a href="{% url "sbs:basvuru-onayla-coach" referee.pk %}"#}
                                                         {#                                                       type="button" class="btn btn-success"><i#}
                                                         {#                                                            class="fa fa-edit"></i> Onayla#}
                                                         {#                                                    </a>#}
-
-
-                                                        <a onclick="approvalCoach({{ referee.pk }})"
+                                                    {#                                     #}
+                                                    {##}
+                                                    {##}
+                                                    {#                                                    {% endif %}#}
+                                                    <a onclick="approvalCoach({{ referee.pk }})"
                                                        type="button" class="btn btn-success"><i
                                                             class="fa fa-edit"></i> Onayla
                                                     </a>
-                                                    {% endif %}
+
+
                                                     <a href="{% url "sbs:update-coach-reference" referee.pk %}"
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i> İncele
                                                     </a>
+
                                                     <a class="btn btn-danger"
                                                        data-toggle="modal" onclick=deleteReferee({{ referee.pk }})><i
-                                                            class="fa fa-trash"></i> Sil</a>
+                                                            class="fa fa-trash"></i> Reddet</a>
+
+
+                                                    {#                                                 {% if referee.status != "Reddedildi" %}#}
+                                                    {##}
+                                                    {##}
+                                                    {#                                         #}
+                                                    {#                                                     {% endif %}#}
+
+
+
+
 
                                                 </div>
                                             </td>
@@ -265,7 +280,7 @@
             $("#modal-danger").on("shown.bs.modal", function (e) {
                 $("#btn-conf").click(function () {
                     $.ajax({
-                        url: "{% url "sbs:delete-coach-basvuru" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                        url: "{% url "sbs:coach-basvuru-reddet" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -273,13 +288,17 @@
                         },
                         success: function (result) {
 
-                            html = 'Antrenör Başarıyla Silindi';
+                            html = 'Antrenör Başarıyla Reddedildi.';
                             debugger;
                             $(".successModal").html(html);
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {
 
-                                    window.location.replace("{% url "sbs:basvuru-coach" %}");
+
+                                    $('#coach-' + id + ' td').eq(3).text('Reddedildi');
+                                    $('#modal-success').modal('hide');
+
+                                    {#window.location.replace("{% url "sbs:basvuru-coach" %}");#}
 
                                 });
 
