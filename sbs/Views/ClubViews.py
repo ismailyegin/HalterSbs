@@ -511,7 +511,7 @@ def return_clup(request):
     order = int(order)
     if order != 0:
         if order == 1:
-            beka.sort(key=lambda item: item['name'], reverse=True)
+            beka.sort(key=lambda item: item['name'], reverse=False)
         elif order == 2:
             beka.sort(key=lambda item: item['uye'], reverse=True)
         elif order == 3:
