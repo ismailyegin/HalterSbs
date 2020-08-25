@@ -299,7 +299,8 @@ def delete_commission(request, pk):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = DirectoryCommission.objects.get(pk=pk)
-            log = str(commission.name) + " kurul silindi"
+
+            log = str(obj.name) + " kurul silindi"
             log = general_methods.logwrite(request, request.user, log)
             obj.delete()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
