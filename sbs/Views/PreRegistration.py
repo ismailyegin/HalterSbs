@@ -95,7 +95,10 @@ def approve_preRegistration(request,pk):
         return redirect('accounts:login')
     basvuru=PreRegistration.objects.get(pk=pk)
     if basvuru.status!=PreRegistration.APPROVED:
-        if not (User.objects.filter(email=basvuru.email).exists()):
+        if not (User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+            email=mail)):
 
             try:
                 # user kaydet
@@ -200,7 +203,7 @@ def approve_preRegistration(request,pk):
 
 
         else:
-            messages.warning(request, 'Mail adresi sistem de kayıtlıdır. ')
+            messages.warning(request, 'Mail adresi sistem de kayıtlıdır.')
     else:
         messages.warning(request,'Bu basvuru sisteme kaydedilmistir.')
 
