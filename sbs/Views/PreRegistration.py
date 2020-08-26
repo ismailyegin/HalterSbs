@@ -28,7 +28,6 @@ def update_preRegistration(request, pk):
 
     veri=PreRegistration.objects.get(pk=pk)
 
-    print(veri.kademe_definition)
     try:
         if CategoryItem.objects.get(name=veri.kademe_definition):
             kategori = CategoryItem.objects.get(name=veri.kademe_definition)
@@ -38,7 +37,6 @@ def update_preRegistration(request, pk):
             form = PreRegistrationForm(request.POST or None, request.FILES or None, instance=veri)
     except:
         form = PreRegistrationForm(request.POST or None, request.FILES or None, instance=veri)
-
     if request.method == 'POST':
         mail = request.POST.get('email')
         if mail != veri.email:
@@ -72,10 +70,11 @@ def update_preRegistration(request, pk):
             return render(request, 'kulup/kulup-basvuru-duzenle.html',
                           {'preRegistrationform': form, })
         form = PreRegistrationForm(request.POST, request.FILES or None, instance=veri)
+
         if form.is_valid():
-            form.save(commit=False)
-            form.kademe_definition = request.POST.get('kademe_definition')
             form.save()
+            print(request.POST.get('kademe_definition'))
+
             messages.success(request,'Basarili bir şekilde kaydedildi ')
             return redirect('sbs:basvuru-listesi')
         else:
@@ -90,7 +89,6 @@ def rejected_preRegistration(request,pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    print('geldim ben pk= ',pk)
     messages.success(request, 'Klup basvurusu reddedildi ')
     veri=PreRegistration.objects.get(pk=pk)
     veri.status=PreRegistration.DENIED

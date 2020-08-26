@@ -10,7 +10,7 @@ class PreRegistrationForm(ModelForm):
     kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'),
                                                to_field_name='name',
                                                empty_label="Seçiniz",
-
+                                               required=False,
                                                label="Kademe",
                                                widget=forms.Select(
                                                    attrs={'class': 'form-control select2 ',
