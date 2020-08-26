@@ -4,6 +4,7 @@ from sbs.models.Country import Country
 from sbs.models.SportClubUser import SportClubUser
 from sbs.models.Coach import Coach
 from sbs.models.ClubRole import ClubRole
+from sbs.models.CategoryItem import CategoryItem
 
 
 
@@ -28,6 +29,12 @@ class PreRegistration(models.Model):
         (True, 'Spor Kulubü'),
         (False, 'Diger(Özel Salon-Dojo-Sportif Dernek)'),
     )
+
+    IsCoach = (
+        (True, 'Evet '),
+        (False, 'Hayır'),
+    )
+
 
     BLOODTYPE = (
         (AB1, 'AB Rh+'),
@@ -90,6 +97,8 @@ class PreRegistration(models.Model):
     clubcity = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl')
     clubcountry = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke')
 
+    isCoach = models.BooleanField(default=False, choices=IsCoach)
+
 
      #userForm
     first_name = models.CharField( max_length=30, blank=True)
@@ -103,6 +112,11 @@ class PreRegistration(models.Model):
     petition = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Antrenör Yetki Belgesi  ')
     # Sportclup user
     role = models.ForeignKey(ClubRole, on_delete=models.DO_NOTHING, verbose_name='Üye Rolü')
+
+    kademe_definition = models.CharField(null=True, blank=True, max_length=150)
+    kademe_startDate = models.DateField(null=True, blank=True, verbose_name='Başlangıç Tarihi ')
+    kademe_belge = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Belge')
+    iban = models.CharField(max_length=120, null=True, blank=True, verbose_name='İban Adresi')
 
 
     class Meta:

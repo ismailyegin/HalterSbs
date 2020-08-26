@@ -203,7 +203,7 @@ def pre_registration(request):
 
 
 def pagelogout(request):
-    log = " Cikis yapti "
+    log = "  Cikis yapti "
     log = general_methods.logwrite(request, request.user, log)
     logout(request)
 

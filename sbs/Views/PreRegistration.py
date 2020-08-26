@@ -10,11 +10,12 @@ from sbs.Forms.PreRegidtrationForm import PreRegistrationForm
 from sbs.models import SportsClub, SportClubUser, Communication, Person
 from sbs.models.PreRegistration import PreRegistration
 from sbs.services import general_methods
-
+from sbs.models.CategoryItem import CategoryItem
 from zeep import Client
 
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
+from sbs.models.Coach import Coach
 
 
 def update_preRegistration(request, pk):
@@ -23,8 +24,20 @@ def update_preRegistration(request, pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+
     veri=PreRegistration.objects.get(pk=pk)
-    form = PreRegistrationForm(request.POST or None, request.FILES or None, instance=veri)
+
+    print(veri.kademe_definition)
+    try:
+        if CategoryItem.objects.get(name=veri.kademe_definition):
+            kategori = CategoryItem.objects.get(name=veri.kademe_definition)
+            form = PreRegistrationForm(request.POST or None, request.FILES or None, instance=veri,
+                                       initial={'kademe_definition': kategori.name})
+        else:
+            form = PreRegistrationForm(request.POST or None, request.FILES or None, instance=veri)
+    except:
+        form = PreRegistrationForm(request.POST or None, request.FILES or None, instance=veri)
+
     if request.method == 'POST':
         mail = request.POST.get('email')
         if mail != veri.email:
@@ -57,8 +70,10 @@ def update_preRegistration(request, pk):
             messages.warning(request, 'Tc kimlik numarasi ile isim,soyisim,dogum yılı  bilgileri uyuşmamaktadır. ')
             return render(request, 'kulup/kulup-basvuru-duzenle.html',
                           {'preRegistrationform': form, })
-
+        form = PreRegistrationForm(request.POST, request.FILES or None, instance=veri)
         if form.is_valid():
+            form.save(commit=False)
+            form.kademe_definition = request.POST.get('kademe_definition')
             form.save()
             messages.success(request,'Basarili bir şekilde kaydedildi ')
             return redirect('sbs:basvuru-listesi')
@@ -169,6 +184,13 @@ def approve_preRegistration(request,pk):
             clup.save()
             clup.clubUser.add(Sportclup)
             clup.save()
+            # burada kadik
+            if basvuru.isCoach:
+                coach = Coach()
+                coach.user = user
+                coach.person = person
+                coach.communication = com
+                coach.save()
 
             basvuru.status = PreRegistration.APPROVED
             basvuru.save()
