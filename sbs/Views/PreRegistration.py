@@ -16,6 +16,7 @@ from sbs.models.PreRegistration import PreRegistration
 from sbs.models.ReferenceCoach import ReferenceCoach
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.services import general_methods
+from sbs.models.EnumFields import EnumFields
 
 
 def update_preRegistration(request, pk):
@@ -187,6 +188,9 @@ def approve_preRegistration(request,pk):
                 coach.communication = com
                 coach.iban = basvuru.iban
                 coach.save()
+                group = Group.objects.get(name='Antrenor')
+                user.groups.add(group)
+                user.save()
                 grade = Level(
                     startDate=basvuru.kademe_startDate,
                     dekont=basvuru.kademe_belge,
