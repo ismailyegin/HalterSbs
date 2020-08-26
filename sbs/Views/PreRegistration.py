@@ -4,19 +4,18 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
+from zeep import Client
 
 from accounts.models import Forgot
 from sbs.Forms.PreRegidtrationForm import PreRegistrationForm
 from sbs.models import SportsClub, SportClubUser, Communication, Person
-from sbs.models.PreRegistration import PreRegistration
-from sbs.services import general_methods
 from sbs.models.CategoryItem import CategoryItem
-from zeep import Client
-from sbs.models.Level import Level
-
-from sbs.models.ReferenceReferee import ReferenceReferee
-from sbs.models.ReferenceCoach import ReferenceCoach
 from sbs.models.Coach import Coach
+from sbs.models.Level import Level
+from sbs.models.PreRegistration import PreRegistration
+from sbs.models.ReferenceCoach import ReferenceCoach
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.services import general_methods
 
 
 def update_preRegistration(request, pk):
@@ -181,63 +180,59 @@ def approve_preRegistration(request,pk):
             clup.save()
             # burada kadik
             if basvuru.isCoach:
+
                 coach = Coach()
                 coach.user = user
                 coach.person = person
                 coach.communication = com
-        coach.iban = basvuru.iban
-        coach.save()
-        grade = Level(
-            startDate=basvuru.kademe_startDate,
-            dekont=basvuru.kademe_belge,
-            branch=EnumFields.HALTER.value)
-        try:
-            grade.definition = CategoryItem.objects.get(name=basvuru.kademe_definition)
-        except:
-            grade.definition = CategoryItem.objects.get(name='1.Kademe')
+                coach.iban = basvuru.iban
+                coach.save()
+                grade = Level(
+                    startDate=basvuru.kademe_startDate,
+                    dekont=basvuru.kademe_belge,
+                    branch=EnumFields.HALTER.value)
+                try:
+                    grade.definition = CategoryItem.objects.get(name=basvuru.kademe_definition)
+                except:
+                    grade.definition = CategoryItem.objects.get(name='1.Kademe')
 
-        grade.levelType = EnumFields.LEVELTYPE.GRADE
-        grade.status = Level.APPROVED
-        grade.isActive = True
-        grade.save()
-        coach.grades.add(grade)
-        coach.save()
+                grade.levelType = EnumFields.LEVELTYPE.GRADE
+                grade.status = Level.APPROVED
+                grade.isActive = True
+                grade.save()
+                coach.grades.add(grade)
+                coach.save()
 
-        clup.coachs.add(coach)
-        clup.save()
-        basvuru.status = PreRegistration.APPROVED
-        basvuru.save()
+                clup.coachs.add(coach)
+                clup.save()
 
-        fdk = Forgot(user=user, status=False)
-        fdk.save()
+            basvuru.status = PreRegistration.APPROVED
+            basvuru.save()
 
-        html_content = ''
-        subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-        html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-        html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-        html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
-            fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
-        msg = EmailMultiAlternatives(subject, '', from_email, [to])
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
-        messages.success(request, 'Başari ile kaydedildi')
+            fdk = Forgot(user=user, status=False)
+            fdk.save()
 
-        log = str(clup) + " Klup basvurusu onaylandi"
-        log = general_methods.logwrite(request, request.user, log)
+            html_content = ''
+            subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
+                fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+            messages.success(request, 'Başari ile kaydedildi')
 
-        try:
-            # user kaydet
-            print()
-        except:
-            messages.warning(request, 'Lütfen sistem yöneticisi ile görüşünüz ')
-            log = str(basvuru.name) + " Klup basvurusu hata oldu"
+            log = str(clup) + " Klup basvurusu onaylandi"
             log = general_methods.logwrite(request, request.user, log)
 
-
-
-
-
-
+            try:
+                # user kaydet
+                print()
+            except:
+                messages.warning(request, 'Lütfen sistem yöneticisi ile görüşünüz ')
+                log = str(basvuru.name) + " Klup basvurusu hata oldu"
+                log = general_methods.logwrite(request, request.user, log)
 
         else:
             messages.warning(request, 'Mail adresi sistem de kayıtlıdır.')
