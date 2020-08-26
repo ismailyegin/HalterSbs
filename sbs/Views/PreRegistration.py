@@ -12,6 +12,7 @@ from sbs.models.PreRegistration import PreRegistration
 from sbs.services import general_methods
 from sbs.models.CategoryItem import CategoryItem
 from zeep import Client
+from sbs.models.Level import Level
 
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
@@ -90,7 +91,7 @@ def rejected_preRegistration(request,pk):
         logout(request)
         return redirect('accounts:login')
     print('geldim ben pk= ',pk)
-    messages.success(request, 'Öneri reddedildi ')
+    messages.success(request, 'Klup basvurusu reddedildi ')
     veri=PreRegistration.objects.get(pk=pk)
     veri.status=PreRegistration.DENIED
     veri.save()
@@ -99,8 +100,6 @@ def rejected_preRegistration(request,pk):
     log = general_methods.logwrite(request, request.user, log)
     return render(request, 'kulup/kulupBasvuru.html',
                   {'prepegidtration': prepegidtration })
-
-
 
 @login_required
 def approve_preRegistration(request,pk):
@@ -113,8 +112,7 @@ def approve_preRegistration(request,pk):
         mail = basvuru.email
         if not (User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
                 email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-            email=mail)):
+            email=mail) :
 
             user = User()
             user.username = basvuru.email
@@ -190,7 +188,26 @@ def approve_preRegistration(request,pk):
                 coach.user = user
                 coach.person = person
                 coach.communication = com
+        coach.iban = basvuru.iban
+        coach.save()
+        grade = Level(
+            startDate=basvuru.kademe_startDate,
+            dekont=basvuru.kademe_belge,
+            branch=EnumFields.HALTER.value)
+        try:
+            grade.definition = CategoryItem.objects.get(name=basvuru.kademe_definition)
+        except:
+            grade.definition = CategoryItem.objects.get(name='1.Kademe')
+
+        grade.levelType = EnumFields.LEVELTYPE.GRADE
+        grade.status = Level.APPROVED
+        grade.isActive = True
+        grade.save()
+        coach.grades.add(grade)
                 coach.save()
+
+        clup.coachs.add(coach)
+        clup.save()
 
             basvuru.status = PreRegistration.APPROVED
             basvuru.save()
