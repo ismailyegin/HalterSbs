@@ -479,6 +479,8 @@ def return_athletes_antrenor(request):
                     for item in clup:
                         clupsPk.append(item.pk)
                     athletes = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).distinct()
+                    athletes |= Athlete.objects.filter(licenses__coach=coach).distinct()
+
 
                 elif user.groups.filter(name='Admin'):
                     athletes = Athlete.objects.all()
@@ -498,6 +500,7 @@ def return_athletes_antrenor(request):
                     for item in clup:
                         clupsPk.append(item.pk)
                     athletes = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).filter(query).distinct()
+                    athletes |= Athlete.objects.filter(licenses__coach=coach).filter(query).distinct()
                 elif user.groups.filter(name='Admin'):
                     athletes = Athlete.objects.filter(query).distinct()
 
