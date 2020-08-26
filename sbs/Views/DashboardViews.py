@@ -44,8 +44,15 @@ def return_coach_dashboard(request):
     perm = general_methods.control_access_klup(request)
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-    athlete_count = 0
-    athlete_count = Athlete.objects.filter(licenses__coach__user=user).distinct().count()
+    coach = Coach.objects.get(user=user)
+    clup = SportsClub.objects.filter(coachs=coach)
+    clupsPk = []
+    for item in clup:
+        clupsPk.append(item.pk)
+    athletes = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).distinct()
+    athletes |= Athlete.objects.filter(licenses__coach=coach).distinct()
+
+    athlete_count = athletes.count()
 
     return render(request, 'anasayfa/antrenor.html', {'athlete_count': athlete_count})
 
