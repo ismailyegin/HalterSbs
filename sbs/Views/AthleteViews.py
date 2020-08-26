@@ -84,9 +84,8 @@ def return_add_athlete_antrenor(request):
         for club in clups:
             clubsPk.append(club.pk)
         license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(id__in=clubsPk)
+        license_form.fields['sportsClub'].queryset |= SportsClub.objects.filter(name='FERDI')
 
-        for item in clups:
-            print(item)
     else:
         if SportsClub.objects.get(name='FERDI'):
             license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(name='FERDI')
@@ -845,22 +844,25 @@ def sporcu_lisans_ekle_antrenor(request, pk):
     athlete = Athlete.objects.get(pk=pk)
     user = request.user
 
+    coach = Coach.objects.get(user=user)
+
     license_form = LicenseForm(request.POST, request.FILES or None)
 
+    license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(coachs=coach)
+    license_form.fields['sportsClub'].queryset |= SportsClub.objects.filter(name="FERDI")
+
     if request.method == 'POST':
-        coach = Coach.objects.get(user=user)
         license_form = LicenseFormAntrenor(request.POST, request.FILES or None)
+
         if license_form.is_valid():
             license = license_form.save()
-            ferdi = SportsClub.objects.get(name='FERDi')
-            license.sportsClub = ferdi
             license.coach = coach
             license.save()
             athlete.licenses.add(license)
             athlete.save()
             messages.success(request, 'Lisans Başarıyla Eklenmiştir.')
 
-            log = str(athlete.user.get_full_name()) + " Lisans güncellendi"
+            log = str(athlete.user.get_full_name()) + "  sporcuya Lisans ekledi"
             log = general_methods.logwrite(request, request.user, log)
 
 
@@ -1236,11 +1238,16 @@ def sporcu_lisans_duzenle_antrenor(request, license_pk, athlete_pk):
     license = License.objects.get(pk=license_pk)
     user = request.user
     coach = Coach.objects.get(user=user)
+
     license_form = LicenseFormAntrenor(request.POST or None, request.FILES or None, instance=license,
                                        initial={'sportsClub': license.sportsClub})
-
     license_form.fields['sportsClub'].queryset = SportsClub.objects.filter(coachs=coach)
+    license_form.fields['sportsClub'].queryset |= SportsClub.objects.filter(name="FERDI")
+
+
+
     if request.method == 'POST':
+
         if license_form.is_valid():
             lisans = license_form.save(commit=False)
             if lisans.status != License.APPROVED:
@@ -1255,9 +1262,7 @@ def sporcu_lisans_duzenle_antrenor(request, license_pk, athlete_pk):
 
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('sbs:update-athletes', pk=athlete_pk)
-
         else:
-
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'sporcu/sporcu-lisans-düzenle-antrenor.html',

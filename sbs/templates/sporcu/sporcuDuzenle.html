@@ -388,13 +388,9 @@
 
 
 
-                                                        <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"
-                                                           type="button" class="btn btn-danger"><i
-                                                                class="fa fa-edit"></i>Sil
-                                                        </a>
+
 
                                                     {% endif %}
-                                                    {% if license.status != 'Onaylandı' or  user.groups.all.0.name == 'Admin' %}
 
                                                         {% if user.groups.all.0.name == 'Antrenor' %}
 
@@ -415,9 +411,16 @@
                                                             </a>
 
 
+
                                                         {% endif %}
 
-                                                    {% endif %}
+
+
+
+                                                    <a onclick="deleteLisans({{ license.id }}, {{ athlete.pk }})"
+                                                       type="button" class="btn btn-danger"><i
+                                                            class="fa fa-edit"></i>Sil
+                                                    </a>
 
 
                                                 </div>

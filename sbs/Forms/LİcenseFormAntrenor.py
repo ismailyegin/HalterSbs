@@ -15,15 +15,11 @@ class LicenseFormAntrenor(ModelForm):
                                             attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                    'style': 'width: 100%; '}))
 
-
-
-
-
     class Meta:
         model = License
 
         fields = (
-            'startDate', 'branch', 'licenseNo', 'cityHeadShip', 'expireDate', 'lisansPhoto')
+            'startDate', 'branch', 'sportsClub', 'licenseNo', 'cityHeadShip', 'expireDate', 'lisansPhoto')
 
         labels = {'startDate': 'Başlangıç Tarihi', 'branch': 'Branş',
                   'licenseNo': 'Lisans No', 'cityHeadShip': 'Verildiği İl', 'expireDate': 'Geçer. Süresi',

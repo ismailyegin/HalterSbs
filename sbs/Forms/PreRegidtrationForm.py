@@ -10,9 +10,10 @@ class PreRegistrationForm(ModelForm):
     kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'),
                                                to_field_name='name',
                                                empty_label="Seçiniz",
+
                                                label="Kademe",
                                                widget=forms.Select(
-                                                   attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                   attrs={'class': 'form-control select2 ',
                                                           'style': 'width: 100%; '}))
 
     class Meta:
@@ -21,7 +22,7 @@ class PreRegistrationForm(ModelForm):
         fields = (
             'tc', 'profileImage', 'height', 'weight', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName','fatherName', 'first_name', 'last_name', 'email', 'is_active','phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city', 'country', 'name', 'shortName', 'foundingDate', 'logo', 'clubMail', 'isFormal',
             'clubphoneNumber', 'clubaddress', 'clubpostalCode', 'clubphoneNumber2', 'clubcity', 'clubcountry',
-            'petition', 'role', 'isCoach', 'kademe_belge', 'kademe_startDate', 'iban')
+            'petition', 'role', 'isCoach', 'kademe_belge', 'kademe_startDate', 'iban', 'kademe_definition')
         labels = {'tc': 'T.C.', 'gender': 'Cinsiyet', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu',
                   'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu', 'city': 'İl', 'country': 'Ülke',
