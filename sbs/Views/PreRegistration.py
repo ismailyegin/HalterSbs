@@ -95,109 +95,109 @@ def approve_preRegistration(request,pk):
         return redirect('accounts:login')
     basvuru=PreRegistration.objects.get(pk=pk)
     if basvuru.status!=PreRegistration.APPROVED:
+        mail = basvuru.email
         if not (User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
                 email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
             email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
             email=mail)):
 
+            user = User()
+            user.username = basvuru.email
+            user.first_name = basvuru.first_name
+            user.last_name = basvuru.last_name
+            user.email = basvuru.email
+            user.is_active = True
+            user.is_staff = basvuru.is_staff
+            group = Group.objects.get(name='KulupUye')
+            password = User.objects.make_random_password()
+            user.set_password(password)
+            user.save()
+            user.groups.add(group)
+            user.save()
+
+            # person kaydet
+            person = Person()
+            person.tc = basvuru.tc
+            person.birthplace = basvuru.birthplace
+            person.motherName = basvuru.motherName
+            person.fatherName = basvuru.fatherName
+            person.profileImage = basvuru.profileImage
+            person.birthDate = basvuru.birthDate
+            person.bloodType = basvuru.bloodType
+            if basvuru.gender == 'Erkek':
+                person.gender = Person.MALE
+            else:
+                person.gender = Person.FEMALE
+            person.save()
+
+            # Communication kaydet
+            com = Communication()
+            com.postalCode = basvuru.postalCode
+            com.phoneNumber = basvuru.phoneNumber
+            com.phoneNumber2 = basvuru.phoneNumber2
+            com.address = basvuru.address
+            com.city = basvuru.city
+            com.country = basvuru.country
+            com.save()
+
+            Sportclup = SportClubUser()
+            Sportclup.user = user
+            Sportclup.person = person
+            Sportclup.communication = com
+            Sportclup.role = basvuru.role
+            Sportclup.save()
+
+            comclup = Communication()
+            comclup.postalCode = basvuru.clubpostalCode
+            comclup.phoneNumber = basvuru.clubphoneNumber
+            comclup.phoneNumber2 = basvuru.clubphoneNumber2
+            comclup.address = basvuru.clubaddress
+            comclup.city = basvuru.clubcity
+            comclup.country = basvuru.clubcountry
+            comclup.save()
+
+            # SportClup
+            clup = SportsClub()
+            clup.name = basvuru.name
+            clup.shortName = basvuru.shortName
+            clup.foundingDate = basvuru.foundingDate
+            clup.clubMail = basvuru.clubMail
+            clup.logo = basvuru.logo
+            clup.isFormal = basvuru.isFormal
+            clup.petition = basvuru.petition
+            clup.communication = comclup
+            clup.save()
+            clup.clubUser.add(Sportclup)
+            clup.save()
+
+            basvuru.status = PreRegistration.APPROVED
+            basvuru.save()
+
+            fdk = Forgot(user=user, status=False)
+            fdk.save()
+
+            html_content = ''
+            subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
+                fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+            messages.success(request, 'Başari ile kaydedildi')
+
+            log = str(clup) + " Klup basvurusu onaylandi"
+            log = general_methods.logwrite(request, request.user, log)
+
             try:
                 # user kaydet
-                user = User()
-                user.username = basvuru.email
-                user.first_name = basvuru.first_name
-                user.last_name = basvuru.last_name
-                user.email = basvuru.email
-                user.is_active = True
-                user.is_staff = basvuru.is_staff
-                group = Group.objects.get(name='KulupUye')
-                password = User.objects.make_random_password()
-                user.set_password(password)
-                user.save()
-                user.groups.add(group)
-                user.save()
-
-                # person kaydet
-                person = Person()
-                person.tc = basvuru.tc
-                person.birthplace = basvuru.birthplace
-                person.motherName = basvuru.motherName
-                person.fatherName = basvuru.fatherName
-                person.profileImage = basvuru.profileImage
-                person.birthDate = basvuru.birthDate
-                person.bloodType = basvuru.bloodType
-                if basvuru.gender == 'Erkek':
-                    person.gender = Person.MALE
-                else:
-                    person.gender = Person.FEMALE
-                person.save()
-
-                # Communication kaydet
-                com = Communication()
-                com.postalCode = basvuru.postalCode
-                com.phoneNumber = basvuru.phoneNumber
-                com.phoneNumber2 = basvuru.phoneNumber2
-                com.address = basvuru.address
-                com.city = basvuru.city
-                com.country = basvuru.country
-                com.save()
-
-                Sportclup = SportClubUser()
-                Sportclup.user = user
-                Sportclup.person = person
-                Sportclup.communication = com
-                Sportclup.role = basvuru.role
-                Sportclup.save()
-
-                comclup = Communication()
-                comclup.postalCode = basvuru.clubpostalCode
-                comclup.phoneNumber = basvuru.clubphoneNumber
-                comclup.phoneNumber2 = basvuru.clubphoneNumber2
-                comclup.address = basvuru.clubaddress
-                comclup.city = basvuru.clubcity
-                comclup.country = basvuru.clubcountry
-                comclup.save()
-
-                # SportClup
-                clup = SportsClub()
-                clup.name = basvuru.name
-                clup.shortName = basvuru.shortName
-                clup.foundingDate = basvuru.foundingDate
-                clup.clubMail = basvuru.clubMail
-                clup.logo = basvuru.logo
-                clup.isFormal = basvuru.isFormal
-                clup.petition = basvuru.petition
-                clup.communication = comclup
-                clup.save()
-                clup.clubUser.add(Sportclup)
-                clup.save()
-
-                basvuru.status = PreRegistration.APPROVED
-                basvuru.save()
-
-                fdk = Forgot(user=user, status=False)
-                fdk.save()
-
-                html_content = ''
-                subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-                html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-                html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-                html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
-                    fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
-                msg = EmailMultiAlternatives(subject, '', from_email, [to])
-                msg.attach_alternative(html_content, "text/html")
-                msg.send()
-                messages.success(request, 'Başari ile kaydedildi')
-
-                log = str(clup) + " Klup basvurusu onaylandi"
-                log = general_methods.logwrite(request, request.user, log)
-
-
-
-
-
-
+                print()
             except:
                 messages.warning(request, 'Lütfen sistem yöneticisi ile görüşünüz ')
+                log = str(basvuru.name) + " Klup basvurusu hata oldu"
+                log = general_methods.logwrite(request, request.user, log)
+
 
 
 
