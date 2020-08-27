@@ -1586,17 +1586,18 @@ def updateAthleteProfile(request, pk):
 
 @login_required
 def sporcu_lisans_listesi_hepsionay(request):
+    licenses = License.objects.filter(status='Beklemede')
+    for license in licenses:
+        athlete = license.athlete_set.first()
+        for item in athlete.licenses.all():
+            if item.branch == license.branch:
+                item.isActive = False
+                item.save()
+        license.status = Level.APPROVED
+        license.isActive = True
+        license.save()
     try:
-        licenses = License.objects.filter(status='Beklemede')
-        for license in licenses:
-            athlete = license.athlete_set.first()
-            for item in athlete.licenses.all():
-                if item.branch == license.branch:
-                    item.isActive = False
-                    item.save()
-            license.status = Level.APPROVED
-            license.isActive = True
-            license.save()
+        print()
     except:
         messages.warning(request, 'Yeniden deneyiniz')
 
