@@ -1299,8 +1299,7 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
         if license_form.is_valid():
             license = license_form.save(commit=False)
             license.isActive = False
-            if license.status != 'Onaylandı':
-                license.status = License.WAITED
+            license.status = License.WAITED
             license.save()
             athlete = Athlete.objects.get(pk=athlete_pk)
 
