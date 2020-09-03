@@ -424,6 +424,7 @@ def return_add_athlete(request):
             license = license_form.save()
             athlete.save()
             athlete.licenses.add(license)
+            athlete.save()
 
             # subject, from_email, to = 'WUSHU - Sporcu Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'ik@oxityazilim.com', user.email
             # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
@@ -1305,11 +1306,6 @@ def sporcu_lisans_duzenle(request, license_pk, athlete_pk):
 
             log = str(athlete.user.get_full_name()) + " Lisans güncellendi"
             log = general_methods.logwrite(request, request.user, log)
-
-
-
-
-
             messages.success(request, 'Lisans Başarıyla Güncellenmiştir.')
             return redirect('sbs:update-athletes', pk=athlete_pk)
 

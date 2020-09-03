@@ -153,11 +153,7 @@ def musabaka_ekle(request):
             musabaka.save()
 
             log = str(request.POST.get('name')) + "  Musabaka eklendi "
-            log = general_methods.logwrite(request, request, request.user, log)
-
-
-
-            print(musabaka.pk)
+            log = general_methods.logwrite(request, request.user, log)
 
             messages.success(request, 'Müsabaka Başarıyla Kaydedilmiştir.')
 

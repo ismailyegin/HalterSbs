@@ -29,15 +29,15 @@ def logwrite(request, user, log):
         logs = Logs(user=user, subject=log, ip=get_client_ip(request))
         logs.save()
 
-        f = open("log.txt", "a")
-        log = get_client_ip(request) + "    [" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(
-            user) + " " + log + " \n "
-        f.write(log)
-        f.close()
+        # f = open("log.txt", "a")
+        # log = get_client_ip(request) + "    [" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] " + str(
+        #     user) + " " + log + " \n "
+        # f.write(log)
+        # f.close()
 
     except Exception as e:
         f = open("log.txt", "a")
-        log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "] hata   \n "
+        log = "[" + datetime.today().strftime('%d-%m-%Y %H:%M') + "]  lag kaydetme hata   \n "
         f.write(log)
         f.close()
 
