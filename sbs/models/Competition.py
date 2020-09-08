@@ -20,11 +20,14 @@ class Competition(models.Model):
     INTERUNIVERSITY = 0
     INTERSCHOOL = 1
     PERSONAL = 2
+    GRANDPRİX = 3
+
 
     COMPTYPE = (
         (INTERUNIVERSITY, 'Üniversiteler Arası'),
         (INTERSCHOOL, 'Okullar Arası'),
         (PERSONAL, 'Ferdi'),
+        (GRANDPRİX, 'Grand Prix')
     )
 
     compType = models.IntegerField(db_column='compType', blank=True, null=True, choices=COMPTYPE)  # Field name made lowercase.
