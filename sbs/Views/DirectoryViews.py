@@ -25,6 +25,11 @@ from sbs.models.DirectoryMember import DirectoryMember
 from sbs.models.DirectoryMemberRole import DirectoryMemberRole
 from sbs.services import general_methods
 
+from zeep import Client
+from sbs.models.PreRegistration import PreRegistration
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.ReferenceCoach import ReferenceCoach
+
 
 @login_required
 def add_directory_member(request):
@@ -44,6 +49,39 @@ def add_directory_member(request):
         person_form = PersonForm(request.POST, request.FILES)
         communication_form = CommunicationForm(request.POST)
         member_form = DirectoryForm(request.POST)
+
+        # controller tc email
+
+        mail = request.POST.get('email')
+        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+            email=mail):
+            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            return render(request, 'yonetim/kurul-uyesi-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                           'member_form': member_form})
+
+        tc = request.POST.get('tc')
+        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+            return render(request, 'yonetim/kurul-uyesi-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                           'member_form': member_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'yonetim/kurul-uyesi-ekle.html',
+                          {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                           'member_form': member_form})
 
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
             user = User()
@@ -165,6 +203,46 @@ def update_directory_member(request, pk):
     communication_form = CommunicationForm(request.POST or None, instance=communication)
     member_form = DirectoryForm(request.POST or None, instance=member)
     if request.method == 'POST':
+
+        # controller tc email
+
+        mail = request.POST.get('email')
+        if user.email != mail:
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+                email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'yonetim/kurul-uyesi-duzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'member_form': member_form})
+
+        tc = request.POST.get('tc')
+
+        if person.tc != tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+                return render(request, 'yonetim/kurul-uyesi-duzenle.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'member_form': member_form})
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'yonetim/kurul-uyesi-duzenle.html',
+                          {'user_form': user_form, 'communication_form': communication_form,
+                           'person_form': person_form, 'member_form': member_form})
+
+
+
+
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
 
             user.username = user_form.cleaned_data['email']
