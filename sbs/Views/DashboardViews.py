@@ -18,6 +18,12 @@ from datetime import date,datetime
 
 
 @login_required
+def return_message(request):
+    return render(request, 'Chat/chat.html')
+
+
+
+@login_required
 def return_athlete_dashboard(request):
     perm = general_methods.control_access(request)
 

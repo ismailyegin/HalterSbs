@@ -407,7 +407,8 @@ urlpatterns = [
     url(r'log/log-kayıtlari/$', LogViews.return_log,
         name='logs'),
 
-
+    url(r'message/messages/$', DashboardViews.return_message,
+        name='message'),
 
 
 
