@@ -20,139 +20,14 @@
     </style>
 
 
-
-
-    <!-- success modal -->
-    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">İşlem Başarılı</h4>
-                </div>
-                <div class="modal-body successModal">
-                    ...
-                </div>
-                <div class="modal-footer">
-
-                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-
-    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
-         aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Uyarı</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Silmek istediğinizden emin misiniz?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
-                            data-dismiss="modal">Evet
-                    </button>
-                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-
-
-
-    {% if messages %}
-        {% for message in messages %}
-
-
-            {% if message.tags == 'warning' %}
-
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
-
-
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li class="{{ message.tags }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-
-
-                </div>
-
-            {% endif %}
-
-
-            {% if message.tags == 'success' %}
-
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-ban"></i> Başarılı!</h4>
-
-
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li class="{{ message.tags }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-
-
-                </div>
-
-            {% endif %}
-        {% endfor %}
-
-
-    {% endif %}
-
-
-
-
-
-
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-
-
-            <div class="modal-content" style="height:fit-content">
-
-                <div class="modal-header" style="background-color:#3c8dbc ">
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body bodys">
-                    ...
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
-
     <section class="content">
 
-        {% if compCategory.all %}
-            {% for categori in compCategory %}
+
                 <div class="box box-primary">
                     <center>
                         <h2 class="header">
                             <div class="content">
-                                {{ categori.name }}
+                                {{ competition.name }} <br> SONUÇLARI
                             </div>
                         </h2>
                     </center>
@@ -167,6 +42,10 @@
                                 </th>
                                 <th rowspan="2">
                                     <center>Ad Soyad</center>
+                                </th>
+
+                                <th rowspan="2">
+                                    <center>Kategori</center>
                                 </th>
                                 <th rowspan="2">
                                     <center>Doğum <br> Yılı</center>
@@ -221,19 +100,33 @@
 
                                 {% for athlete in compAthlete %}
 
-                                    {% if athlete.compcategory.pk is categori.pk %}
 
 
 
 
-                                        <tr>
+
+                                    <tr>
 
 
                                             <th>
-                                                <div align="right" class="ui tiny header">{{ athlete.degree }}</div>
+                                                <div align="right" class="ui tiny header">
+
+                                                    {% if athlete.degree != 0 %}
+
+                                                        {{ athlete.degree }}
+                                                    {% else %}
+                                                        <p>-</p>
+                                                    {% endif %}
+
+                                                </div>
+
                                             </th>
                                             <th>{{ athlete.athlete.user.first_name }} {{ athlete.athlete.user.last_name }}</th>
-                                            <th>
+
+                                        <th>{{ athlete.sıklet.weight }} KG</th>
+
+
+                                        <th>
                                                 <center>{{ athlete.athlete.person.birthDate |date }}</center>
                                             </th>
                                             <th>
@@ -340,7 +233,7 @@
                                             </th>
                                         </tr>
 
-                                    {% endif %}
+
 
                                 {% endfor %}
                             {% endif %}
@@ -352,82 +245,88 @@
                     </div>
                 </div>
 
-            {% endfor %}
-        {% endif %}
-
 
     </section>
     <script>
         $(function () {
-            {#$('.sonuclar').DataTable({#}
-            {##}
-            {#    'bubble': false,#}
-            {#    'padding': false,#}
-            {#    'lengthChange': false,#}
-            {#    'searching': false,#}
-            {#    'ordering': false,#}
-            {#    'info': false,#}
-            {#    'autoWidth': false,#}
-            {#    'responsive': false,#}
-            {#    'select': false,#}
-            {##}
-            {##}
-            {# });#}
+            $('.sonuclar').DataTable({
+                dom: 'Bfrtip',
+                orderFixed: [[2, 'asc']],
+                rowGroup: {
+                    dataSrc: 2
+                },
+                buttons: [
 
-        });
+                    {
+                        extend: 'print',
+                        title: 'SPOR BİLGİ SİSTEMİ <br> {{ competition.name }}',
+                        text: '<i class="fa  fa-print"> </i>',
+                        exportOptions: {
+                            columns: [0, 1, ':visible']
+                        },
+
+                        titleAttr: 'Yazdır'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'SPOR BİLGİ SİSTEMİ SONUÇLAR',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        exportOptions: {
+                            columns: [0, 1, ':visible']
+                        },
+
+                        titleAttr: 'Pdf Kaydet'
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        title: 'SPOR BİLGİ SİSTEMİ <br> {{ competition.name }}',
+                        text: '<i class="fa fa-file-excel-o"></i>',
+                        messageTop: 'Başvuru Listesi ',
+                        exportOptions: {
+                            columns: [0, 1, ':visible']
+                        },
+
+                        titleAttr: 'Excel Kaydet'
+                    },
+                    {
+                        text: '<i class="fa fa-file-text-o"></i>',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'result.json'
+                            );
+                        }
+                    }
 
 
-    </script>
-
-
-
-
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-    <script>
-        $(function () {
-            //Enable iCheck plugin for checkboxes
-            //iCheck for checkbox and radio inputs
-            $('.berktug input[type="checkbox"]').iCheck({
-
-                checkboxClass: 'icheckbox_flat-blue',
-
-            });
-
-        });
-    </script>
-
-    <script>
-        $(function () {
-            $('#sporcular').DataTable({
-                'paging': true,
+                ],
+                'paging': false,
                 'lengthChange': true,
                 'searching': true,
-                'ordering': true,
+                'ordering': [[2, 'asc']],
                 'info': true,
-                'autoWidth': true
-            });
-            $('#sonuclar').DataTable({
-                'paging': false,
-                'lengthChange': false,
-                'searching': false,
-                'ordering': true,
-                'info': false,
-                'autoWidth': true
-            })
+                'autoWidth': true,
+                'responsive': true,
 
-        })
+
+            });
+
+
+        });
+
+
     </script>
+
+
+
+
+
+
+
 
 {% endblock %}
 

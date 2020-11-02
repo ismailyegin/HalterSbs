@@ -778,13 +778,17 @@ def result_list(request, pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    competition = Competition.objects.filter(pk=pk)
+    competition = Competition.objects.get(pk=pk)
 
     compAthlete = CompAthlete.objects.filter(competition=pk).order_by('degree')
-    compCategory = CompCategory.objects.filter(competition=pk).order_by('-name')
+
+    for item in compAthlete:
+        print(item.athlete)
+
+    # compCategory = CompCategory.objects.filter(competition=pk).order_by('-name')
 
     return render(request, 'musabaka/musabaka-sonuclar.html',
-                  {'compCategory': compCategory, 'compAthlete': compAthlete})
+                  {'compAthlete': compAthlete, 'competition': competition})
 
 
 
