@@ -123,7 +123,17 @@
                                             </th>
                                             <th>{{ athlete.athlete.user.first_name }} {{ athlete.athlete.user.last_name }}</th>
 
-                                        <th>{{ athlete.sıklet.weight }} KG</th>
+                                        <th>
+
+
+                                            {% if athlete.compcategory.sex == 0 %}
+                                                ERKEK  {{ athlete.sıklet.weight }} KG
+                                            {% else %}
+                                                BAYAN  {{ athlete.sıklet.weight }} KG
+                                            {% endif %}
+
+
+                                        </th>
 
 
                                         <th>
@@ -264,6 +274,7 @@
                         exportOptions: {
                             columns: [0, 1, ':visible']
                         },
+                        footer: true,
 
                         titleAttr: 'Yazdır'
                     },
@@ -281,7 +292,7 @@
 
                     {
                         extend: 'excelHtml5',
-                        title: 'SPOR BİLGİ SİSTEMİ <br> {{ competition.name }}',
+                        title: 'SPOR BİLGİ SİSTEMİ',
                         text: '<i class="fa fa-file-excel-o"></i>',
                         messageTop: 'Başvuru Listesi ',
                         exportOptions: {
@@ -307,7 +318,7 @@
                 'paging': false,
                 'lengthChange': true,
                 'searching': true,
-                'ordering': [[2, 'asc']],
+                'ordering': true,
                 'info': true,
                 'autoWidth': true,
                 'responsive': true,
