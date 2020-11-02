@@ -124,9 +124,7 @@
                                             <th>{{ athlete.athlete.user.first_name }} {{ athlete.athlete.user.last_name }}</th>
 
                                         <th>
-
-
-                                            {% if athlete.compcategory.sex == 0 %}
+                                            {% if athlete.athlete.person.gender == 0 %}
                                                 ERKEK  {{ athlete.sıklet.weight }} KG
                                             {% else %}
                                                 BAYAN  {{ athlete.sıklet.weight }} KG
