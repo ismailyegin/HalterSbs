@@ -259,7 +259,7 @@ def return_preRegistration(request):
         logout(request)
         return redirect('accounts:login')
 
-    prepegidtration = PreRegistration.objects.all().order_by('status')
+    prepegidtration = PreRegistration.objects.all().order_by('-creationDate')
     return render(request, 'kulup/kulupBasvuru.html',
                   {'prepegidtration': prepegidtration })
 
