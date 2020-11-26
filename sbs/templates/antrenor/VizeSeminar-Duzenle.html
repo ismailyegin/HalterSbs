@@ -254,6 +254,74 @@
                 </div>
             </div>
 
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"> Basvuru Yapan Antrenörler</h3>
+                        </div>
+
+                        <div class="box-body">
+                            <table id="sporcular" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Doğum Tarihi</th>
+                                    <th>Onay Durumu</th>
+                                    <th>İşlemler</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if competition %}
+                                    {% for athlete in competition.coachApplication.all %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ athlete.coach.user.first_name }} {{ athlete.coach.user.last_name }} </td>
+                                            <td>{{ athlete.coach.person.birthDate |date }} </td>
+                                            <td>{{ athlete.status }} </td>
+
+
+                                            <td>
+                                                <div class="btn-group">
+
+                                                    <a onclick="
+                                                            {#deleteAthlete({{ athlete.id }}, {{ competition.pk }})#}
+                                                            "
+                                                       type="button" class="btn btn-success"><i
+                                                            class="fa fa-edit"></i>Onayla
+                                                    </a>
+                                                    <a onclick="
+                                                            {#deleteAthlete({{ athlete.id }}, {{ competition.pk }})#}
+                                                            "
+                                                       type="button" class="btn btn-danger"><i
+                                                            class="fa fa-edit"></i>Reddet
+                                                    </a>
+
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
         </form>
 
 

@@ -11,6 +11,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from pip._internal import req
 
 from sbs.Forms import VisaForm
 from sbs.Forms.CategoryItemForm import CategoryItemForm
@@ -48,6 +49,8 @@ from sbs.models.PreRegistration import PreRegistration
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
 
+from sbs.models.CoachApplication import CoachApplication
+
 # visaseminer ekle
 @login_required
 def visaSeminar_ekle(request):
@@ -75,18 +78,53 @@ def visaSeminar_ekle(request):
                   {'competition_form': visaSeminar})
 
 
-# visaseminar liste
 @login_required
-def return_visaSeminar(request):
-    perm = general_methods.control_access(request)
-
+def return_visaSeminar_Basvuru(request):
+    perm = general_methods.control_access_klup(request)
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    user = request.user
+    if request.user.groups.filter(name='Antrenor').exists():
+        seminar = VisaSeminar.objects.filter(coachApplication__coach__user=user).filter(forWhichClazz='COACH')
+    else:
+        seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
 
-    Seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
+    return render(request, 'antrenor/VisaSeminarApplication.html', {'competitions': seminar})
+# visaseminar liste
+@login_required
+def return_visaSeminar(request):
+    perm = general_methods.control_access_klup(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    user = request.user
+    if request.user.groups.filter(name='Antrenor').exists():
+        seminar = VisaSeminar.objects.exclude(coachApplication__coach__user=user).filter(forWhichClazz='COACH')
+    else:
+        seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
 
-    return render(request, 'antrenor/VisaSeminar.html', {'competitions': Seminar})
+    if request.method == 'POST':
+        if user.groups.filter(name='Antrenor').exists():
+            vizeSeminer = VisaSeminar.objects.get(pk=request.POST.get('pk'))
+            coach = Coach.objects.get(user=request.user)
+            try:
+                if request.FILES['file']:
+                    document = request.FILES['file']
+                    data = CoachApplication()
+                    data.dekont = document
+                    data.coach = coach
+                    data.save()
+                    vizeSeminer.coachApplication.add(data)
+                    vizeSeminer.save()
+
+                    messages.success(request, 'Vize Seminerine Başvuru  gerçekleşmiştir.')
+
+
+            except:
+                messages.warning(request, 'Lütfen yeniden deneyiniz')
+
+    return render(request, 'antrenor/VisaSeminar.html', {'competitions': seminar})
 
 @login_required
 def visaSeminar_duzenle(request, pk):
@@ -131,9 +169,6 @@ def visaSeminar_sil(request, pk):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-
-
-
 
 @login_required
 def return_add_coach(request):
