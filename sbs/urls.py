@@ -288,6 +288,17 @@ urlpatterns = [
     url(r'antrenor/visa-Seminar/antroner-sec/(?P<pk>\d+)$', CoachViews.choose_coach, name='vize-semineri-antroner-sec'),
     url(r'antrenor/visa-Seminar/antroner-sil/(?P<pk>\d+)/(?P<competition>\d+)$', CoachViews.visaSeminar_Delete_Coach,
         name='visaSeminar-antrenör-sil'),
+
+    url(r'antrenor/visa-Seminar/antroner-basvuru-reddet/(?P<pk>\d+)/(?P<competition>\d+)$',
+        CoachViews.visaSeminar_Delete_Coach_application,
+        name='visaSeminar-antrenorbasvuru-reddet'),
+
+    url(r'antrenor/visa-Seminar/antroner-basvuru-onayla/(?P<pk>\d+)/(?P<competition>\d+)$',
+        CoachViews.visaSeminar_Onayla_Coach_application,
+        name='visaSeminar-antrenorbasvuru-onayla'),
+
+
+
     # Hakem
     url(r'hakem/visa-Seminar$', RefereeViews.return_visaSeminar, name='hakem-visa-seminar'),
     url(r'hakem/visa-Seminar-ekle$', RefereeViews.visaSeminar_ekle, name='hakem-visa-seminar-ekle'),

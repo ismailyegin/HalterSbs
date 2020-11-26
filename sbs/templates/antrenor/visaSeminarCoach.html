@@ -150,22 +150,24 @@
                                     <tr>
                                         <th>Seç</th>
                                         <th>Ad Soyad</th>
-                                        <th>Kuşak</th>
-                                        <th>Lisans No</th>
+                                        <th>T.C.</th>
+                                        <th>Mail</th>
+                                        <th>Telefon</th>
 
 
                                     </tr>
                                     </thead>
                                     <tbody>
                                     {% if athletes.all %}
-                                        {% for athlete in athletes %}
+                                        {% for coach in athletes %}
                                             <tr>
 
                                                 <td><input type="checkbox" name="selected_options"
                                                            value="{{ athlete.pk }}"></td>
-                                                <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                                <td>{{ athlete.belts.last.definition.name }}</td>
-                                                <td>{{ athlete.licenses.last.licenseNo }}</td>
+                                                <td>{{ coach.user.first_name }} {{ coach.user.last_name }} </td>
+                                                <td>{{ coach.person.tc }}</td>
+                                                <td>{{ coach.user.email }}</td>
+                                                <td>{{ coach.communication.phoneNumber }}</td>
 
                                             </tr>
 

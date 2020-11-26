@@ -1345,8 +1345,7 @@ def choose_coach(request, pk):
     coa = []
     for item in visa.coach.all():
         coa.append(item.user.pk)
-
-    athletes = Coach.objects.exclude(visaseminar__coach__user_id__in=coa)
+    coachs = Coach.objects.exclude(user_id__in=coa)
     if request.method == 'POST':
         athletes1 = request.POST.getlist('selected_options')
         if athletes1:
@@ -1355,7 +1354,56 @@ def choose_coach(request, pk):
                     visa.coach.add(x)
                     visa.save()
         return redirect('sbs:seminar-duzenle', pk=pk)
-    return render(request, 'antrenor/visaSeminarCoach.html', {'athletes': athletes})
+    return render(request, 'antrenor/visaSeminarCoach.html', {'athletes': coachs})
+
+
+@login_required
+def visaSeminar_Onayla_Coach_application(request, pk, competition):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        coachApplication = CoachApplication.objects.get(pk=pk)
+        seminer = VisaSeminar.objects.get(pk=competition)
+
+        seminer.coach.add(coachApplication.coach)
+        seminer.save()
+
+        coachApplication.status = CoachApplication.APPROVED
+        coachApplication.save()
+        try:
+            print()
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def visaSeminar_Delete_Coach_application(request, pk, competition):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        coachApplication = CoachApplication.objects.get(pk=pk)
+        coachApplication.status = CoachApplication.DENIED
+        coachApplication.save()
+        try:
+            print()
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
 @login_required
