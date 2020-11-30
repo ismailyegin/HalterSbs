@@ -106,7 +106,8 @@ def return_visaSeminar(request):
     user = request.user
     if request.user.groups.filter(name='Antrenor').exists():
         seminar = VisaSeminar.objects.exclude(coachApplication__coach__user=user,
-                                              coachApplication__status=CoachApplication.APPROVED).filter(
+                                              coachApplication__status=CoachApplication.APPROVED,
+                                              coachApplication__status=CoachApplication.WAITED).filter(
             forWhichClazz='COACH')
     else:
         seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
@@ -126,6 +127,7 @@ def return_visaSeminar(request):
                     vizeSeminer.save()
 
                     messages.success(request, 'Vize Seminerine Başvuru  gerçekleşmiştir.')
+                    return redirect('sbs:visa-seminar-basvuru')
 
 
             except:

@@ -228,7 +228,7 @@
                                             <td>{% for basvuru in item.coachApplication.all %}
 
                                                 {% if basvuru.coach.user == user %}
-                                                {{ forloop.counter }}  - {{ basvuru.status }}<br>
+                                                    {{ basvuru.status }}<br>
                                                 {% endif %}
                                             {% endfor %}
 
