@@ -197,7 +197,7 @@
 
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Vize Seminerleri Basvuru Listesi</h3>
+                            <h3 class="box-title">Başvurularım </h3>
                         </div>
 
                         <div class="box-body">
@@ -208,19 +208,28 @@
                                     <th>İsim</th>
                                     <th>Başl. Tarihi</th>
                                     <th>Bitiş. Tarihi</th>
+
                                     <th>Yer</th>
+                                    <th>Başvurularim</th>
 
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if competitions.all %}
-                                    {% for competition in competitions %}
-                                        <tr id="seminer-{{ competition.pk }}">
+                                {% if seminer.all %}
+                                    {% for item in seminer %}
+                                        <tr id="seminer-{{ item.pk }}">
                                             <td>{{ forloop.counter }} </td>
-                                            <td>{{ competition.name }}</td>
-                                            <td>{{ competition.startDate |date }} </td>
-                                            <td>{{ competition.finishDate |date }}</td>
-                                            <td>{{ competition.location }}</td>
+                                            {#                                            belt.athlete_set.first#}
+                                            <td>{{ item.name }}</td>
+                                            <td>{{ item.startDate |date }} </td>
+                                            <td>{{ item.finishDate |date }}</td>
+                                            <td>{{ item.location }}</td>
+
+                                            <td>{% for basvuru in item.coachApplication.all %}
+                                                {{ forloop.counter }}  - {{ basvuru.status }}<br>
+                                            {% endfor %}
+
+                                            </td>
 
                                         </tr>
 

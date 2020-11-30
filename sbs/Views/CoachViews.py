@@ -86,11 +86,16 @@ def return_visaSeminar_Basvuru(request):
         return redirect('accounts:login')
     user = request.user
     if request.user.groups.filter(name='Antrenor').exists():
-        seminar = VisaSeminar.objects.filter(coachApplication__coach__user=user).filter(forWhichClazz='COACH')
+        seminar = VisaSeminar.objects.filter(coachApplication__coach__user=user).filter(
+            forWhichClazz='COACH').distinct()
+        basvurularim = CoachApplication.objects.filter(coach__user=user)
+
     else:
         seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
 
-    return render(request, 'antrenor/VisaSeminarApplication.html', {'competitions': seminar})
+    return render(request, 'antrenor/VisaSeminarApplication.html', {'seminer': seminar,
+                                                                    'basvuru': basvurularim,
+                                                                    'user': user})
 # visaseminar liste
 @login_required
 def return_visaSeminar(request):
@@ -100,7 +105,9 @@ def return_visaSeminar(request):
         return redirect('accounts:login')
     user = request.user
     if request.user.groups.filter(name='Antrenor').exists():
-        seminar = VisaSeminar.objects.exclude(coachApplication__coach__user=user).filter(forWhichClazz='COACH')
+        seminar = VisaSeminar.objects.exclude(coachApplication__coach__user=user,
+                                              coachApplication__status=CoachApplication.APPROVED).filter(
+            forWhichClazz='COACH')
     else:
         seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
 
