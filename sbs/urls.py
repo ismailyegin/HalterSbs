@@ -279,7 +279,7 @@ urlpatterns = [
 
     # visa seminar
     # Antrenör
-    url(r'antrenor/visa-Seminar$', CoachViews.return_visaSeminar, name='visa-seminar'),
+    url(r'antrenor/visa-Seminar/$', CoachViews.return_visaSeminar, name='visa-seminar'),
     url(r'antrenor/visa-Seminar/basvuruListesi$', CoachViews.return_visaSeminar_Basvuru, name='visa-seminar-basvuru'),
     url(r'antrenor/visa-Seminar-ekle$', CoachViews.visaSeminar_ekle, name='visa-seminar-ekle'),
     url(r'antrenor/visa-Seminar-duzenle/(?P<pk>\d+)$', CoachViews.visaSeminar_duzenle, name='seminar-duzenle'),

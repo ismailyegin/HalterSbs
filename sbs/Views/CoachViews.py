@@ -105,7 +105,12 @@ def return_visaSeminar(request):
         return redirect('accounts:login')
     user = request.user
     if request.user.groups.filter(name='Antrenor').exists():
-        seminar = VisaSeminar.objects.exclude(coachApplication__coach__user=user).filter(forWhichClazz='COACH')
+        seminar = VisaSeminar.objects.filter(forWhichClazz='COACH').exclude(
+            coachApplication__status=CoachApplication.WAITED).exclude(
+            coachApplication__status=CoachApplication.APPROVED).exclude(coachApplication__coach__user=user)
+        seminar |= VisaSeminar.objects.exclude(coachApplication__status=CoachApplication.APPROVED).filter(
+            coachApplication__coach__user=user).filter(coachApplication__status=CoachApplication.DENIED).exclude(
+            coachApplication__status=CoachApplication.WAITED)
     else:
         seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
 
@@ -1354,9 +1359,10 @@ def choose_coach(request, pk):
     coachs = Coach.objects.exclude(user_id__in=coa)
     if request.method == 'POST':
         athletes1 = request.POST.getlist('selected_options')
+        print(athletes1)
         if athletes1:
             for x in athletes1:
-                if not visa.coach.all().filter(beltexam__coachs__user_id=x):
+                if not visa.coach.filter(beltexam__coachs__user_id=x):
                     visa.coach.add(x)
                     visa.save()
         return redirect('sbs:seminar-duzenle', pk=pk)
@@ -1422,6 +1428,7 @@ def visaSeminar_Delete_Coach(request, pk, competition):
     if request.method == 'POST' and request.is_ajax():
         try:
             visa = VisaSeminar.objects.get(pk=competition)
+            print('xxx')
             visa.coach.remove(Coach.objects.get(pk=pk))
             visa.save()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
