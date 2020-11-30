@@ -228,7 +228,7 @@
                                             <td>{% for basvuru in item.coachApplication.all %}
 
                                                 {% if basvuru.coach.user == user %}
-                                                    {{ basvuru.status }}<br>
+                                                    {{ basvuru.creationDate |date }} -{{ basvuru.status }}<br>
                                                 {% endif %}
                                             {% endfor %}
 
