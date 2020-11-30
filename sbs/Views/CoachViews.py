@@ -1374,16 +1374,33 @@ def visaSeminar_Onayla_Coach_application(request, pk, competition):
         logout(request)
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
-        coachApplication = CoachApplication.objects.get(pk=pk)
-        seminer = VisaSeminar.objects.get(pk=competition)
 
-        seminer.coach.add(coachApplication.coach)
-        seminer.save()
 
-        coachApplication.status = CoachApplication.APPROVED
-        coachApplication.save()
+
+
+
+
+
         try:
-            print()
+            coachApplication = CoachApplication.objects.get(pk=pk)
+            seminer = VisaSeminar.objects.get(pk=competition)
+            seminer.coach.add(coachApplication.coach)
+            seminer.save()
+            coachApplication.status = CoachApplication.APPROVED
+            coachApplication.save()
+
+            html_content = ''
+            subject, from_email, to = 'THF Bilgi Sistemi', 'no-reply@halter.gov.tr', coachApplication.coach.user.email
+            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = '<p><strong>' + str(seminer.name) + '</strong> Seminer  başvurunuz onaylanmıştır.</p>'
+
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+            log =str(seminer.name)  + "    seminer basvusu onaylanmıştır    "+str(coachApplication.coach.user.get_full_name())
+            log = general_methods.logwrite(request, request.user, log)
+
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
         except:
@@ -1425,7 +1442,6 @@ def visaSeminar_Delete_Coach(request, pk, competition):
     if request.method == 'POST' and request.is_ajax():
         try:
             visa = VisaSeminar.objects.get(pk=competition)
-            print('xxx')
             visa.coach.remove(Coach.objects.get(pk=pk))
             visa.save()
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
