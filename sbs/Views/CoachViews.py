@@ -106,7 +106,12 @@ def return_visaSeminar(request):
     user = request.user
     if request.user.groups.filter(name='Antrenor').exists():
         seminar = VisaSeminar.objects.filter(forWhichClazz='COACH').exclude(coachApplication__coach__user=user)
-        seminar |= VisaSeminar.objects.filter(forWhichClazz='COACH').exclude(coachApplication__status=CoachApplication.APPROVED).filter(coachApplication__coach__user=user).exclude(coachApplication__status=CoachApplication.WAITED)
+        for item in seminar:
+            print(item.name)
+        seminar |= VisaSeminar.objects.filter(forWhichClazz='COACH').filter(coachApplication__coach__user=user).exclude(coachApplication__status=CoachApplication.APPROVED).exclude(coachApplication__status=CoachApplication.WAITED)
+        print('---------------------')
+        for item in seminar:
+            print(item.name)
         seminar=seminar.distinct()
     else:
         seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
