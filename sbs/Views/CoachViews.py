@@ -105,9 +105,9 @@ def return_visaSeminar(request):
         return redirect('accounts:login')
     user = request.user
     if request.user.groups.filter(name='Antrenor').exists():
-        seminar = VisaSeminar.objects.exclude(coachApplication__coach__user=user,
-                                              coachApplication__status=CoachApplication.APPROVED,
-                                              coachApplication__status=CoachApplication.WAITED).filter(
+        seminar = VisaSeminar.objects.exclude(coachApplication__coach__user=user).exclude(
+            coachApplication__status=CoachApplication.APPROVED).exclude(
+            coachApplication__status=CoachApplication.WAITED).filter(
             forWhichClazz='COACH')
     else:
         seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
