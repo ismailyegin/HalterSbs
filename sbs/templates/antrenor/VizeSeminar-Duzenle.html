@@ -278,8 +278,13 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Ad Soyad</th>
-                                    <th>Doğum Tarihi</th>
+                                    <th>T.C.</th>
+                                    <th>Mail Adresi</th>
+                                    <th>Telefon</th>
+                                    <th>Dekont</th>
+
                                     <th>Onay Durumu</th>
+
                                     <th>İşlemler</th>
 
 
@@ -291,8 +296,12 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ athlete.coach.user.first_name }} {{ athlete.coach.user.last_name }} </td>
-                                            <td>{{ athlete.coach.person.birthDate |date }} </td>
-                                            <td>{{ athlete.status }} </td>
+                                            <td>{{ athlete.coach.person.tc }} </td>
+                                            <td>{{ athlete.coach.user.email }} </td>
+                                            <td>{{ athlete.coach.communication.phoneNumber }} </td>
+                                            <td><a href="{{ MEDIA_URL }}{{ athlete.dekont }}">{{ athlete.dekont }}</a>
+                                            </td>
+                                            <td> {{ athlete.status }}</td>
 
 
                                             <td>
