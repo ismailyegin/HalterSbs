@@ -51,6 +51,9 @@ from sbs.models.ReferenceCoach import ReferenceCoach
 
 from sbs.models.CoachApplication import CoachApplication
 
+
+
+
 # visaseminer ekle
 @login_required
 def visaSeminar_ekle(request):
@@ -104,12 +107,15 @@ def return_visaSeminar(request):
         logout(request)
         return redirect('accounts:login')
     user = request.user
-    if request.user.groups.filter(name='Antrenor').exists():
-        seminar = VisaSeminar.objects.filter(forWhichClazz='COACH').exclude(coachApplication__coach__user=user)
-        seminar |= VisaSeminar.objects.filter(forWhichClazz='COACH').filter(coachApplication__coach__user=user).exclude(coachApplication__status=CoachApplication.APPROVED).exclude(coachApplication__status=CoachApplication.WAITED)
-        seminar=seminar.distinct()
-    else:
-        seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
+
+    seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
+    # işlemlere bakılacak
+    # if request.user.groups.filter(name='Antrenor').exists():
+    #     seminar = VisaSeminar.objects.filter(forWhichClazz='COACH').exclude(coachApplication__coach__user=user)
+    #     seminar |= VisaSeminar.objects.filter(forWhichClazz='COACH').filter(coachApplication__coach__user=user).exclude(coachApplication__status=CoachApplication.APPROVED).exclude(coachApplication__status=CoachApplication.WAITED)
+    #     seminar=seminar.distinct()
+    # else:
+    #     seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
 
     if request.method == 'POST':
         if user.groups.filter(name='Antrenor').exists():
@@ -1421,6 +1427,22 @@ def visaSeminar_Delete_Coach_application(request, pk, competition):
         coachApplication = CoachApplication.objects.get(pk=pk)
         coachApplication.status = CoachApplication.DENIED
         coachApplication.save()
+
+        seminer=VisaSeminar.objects.get(pk=competition)
+
+        html_content = ''
+        subject, from_email, to = 'THF Bilgi Sistemi', 'no-reply@halter.gov.tr', coachApplication.coach.user.email
+        html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+        html_content = '<p><strong>' + str(seminer.name) + '</strong> Seminer  başvurunuz onaylanmıştır.</p>'
+
+        msg = EmailMultiAlternatives(subject, '', from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+        log = str(seminer.name) + "    seminer basvusu onaylanmıştır    " + str(
+            coachApplication.coach.user.get_full_name())
+        log = general_methods.logwrite(request, request.user, log)
+
         try:
             print()
 
