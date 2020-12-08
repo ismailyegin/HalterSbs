@@ -236,15 +236,6 @@ def return_add_coach(request):
                            'communication_form': communication_form, 'iban_form': iban_form})
 
 
-
-
-
-
-
-
-
-
-
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and iban_form.is_valid():
             user = User()
             user.username = user_form.cleaned_data['email']
@@ -292,8 +283,8 @@ def return_add_coach(request):
             subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
             html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
             html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
-                fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:81/newpassword?query=' + str(
+                fdk.uuid) + '">https://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
             msg = EmailMultiAlternatives(subject, '', from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
@@ -588,8 +579,8 @@ def referenceCoachStatus(request, pk):
             subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
             html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
             html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
-                fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:81/newpassword?query=' + str(
+                fdk.uuid) + '">https://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
             msg = EmailMultiAlternatives(subject, '', from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
@@ -676,8 +667,8 @@ def referenappcoverCoach(request, pk):
                 subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
                 html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
                 html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-                html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.halter.gov.tr:81/newpassword?query=' + str(
-                    fdk.uuid) + '">http://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:81/newpassword?query=' + str(
+                    fdk.uuid) + '">https://sbs.halter.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
                 msg = EmailMultiAlternatives(subject, '', from_email, [to])
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()

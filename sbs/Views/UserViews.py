@@ -133,8 +133,8 @@ def send_information(request, pk):
         subject, from_email, to = 'TWF Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@twf.gov.tr', user.email
         html_content = '<h2>TÜRKİYE Halter FEDERASYONU BİLGİ SİSTEMİ</h2>'
         html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-        html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.twf.gov.tr:81/newpassword?query=' + str(
-            fdk.uuid) + '">http://sbs.twf.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+        html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.twf.gov.tr:81/newpassword?query=' + str(
+            fdk.uuid) + '">https://sbs.twf.gov.tr:81/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
         msg = EmailMultiAlternatives(subject, '', from_email, [to])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
