@@ -240,7 +240,7 @@
 
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <div class="btn-group">
-                                                    <a href="{% url "sbs:seminar-duzenle" competition.pk %}"
+                                                    <a href="{% url "sbs:hakem-seminar-duzenle" competition.pk %}"
                                                        type="button" class="btn btn-warning"><i
                                                             class="fa fa-edit"></i>İncele
                                                     </a>

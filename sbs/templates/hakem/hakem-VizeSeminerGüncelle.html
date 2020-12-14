@@ -113,7 +113,7 @@
                     <div class="text-right">
                         <a href="{% url "sbs:hakem-seminar-onayla" competition.pk %}"
                            type="button" class="btn btn-warning"><i
-                                class="fa fa-edit"></i>Onaylax
+                                class="fa fa-edit"></i>Onayla
                         </a>
                     </div>
                 </div>
@@ -189,7 +189,7 @@
                 <div class="col-lg-12">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title"> Seçili Antrenörler</h3>
+                            <h3 class="box-title"> Seçili Hakemler</h3>
                         </div>
                         <div class="box-header with-border">
                             <div class="btn-group">
@@ -207,10 +207,11 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Ad Soyad</th>
-                                    <th>Doğum Tarihi</th>
-                                    {#                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
-                                    {#                                        <th>Kulüp</th>#}
-                                    {#                                    {% endif %}#}
+                                    <th>T.C.</th>
+
+                                    <th>Mail Adresi</th>
+                                    <th>Telefon</th>
+
                                     <th>İşlemler</th>
 
 
@@ -222,7 +223,10 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                            <td>{{ athlete.person.birthDate }} </td>
+
+                                            <td>{{ athlete.person.tc }} </td>
+                                            <td>{{ athlete.user.email }} </td>
+                                            <td>{{ athlete.communication.phoneNumber }} </td>
 
 
                                             <td>
@@ -254,12 +258,141 @@
                 </div>
             </div>
 
+         <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"> Basvuru Yapan Hakemler</h3>
+                        </div>
+
+                        <div class="box-body">
+                            <table id="sporcular" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ad Soyad</th>
+                                    <th>T.C.</th>
+                                    <th>Mail Adresi</th>
+                                    <th>Telefon</th>
+                                    <th>Dekont</th>
+
+                                    <th>Onay Durumu</th>
+
+                                    <th>İşlemler</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if competition %}
+                                    {% for athlete in competition.judgeApplication.all %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ athlete.judge.user.first_name }} {{ athlete.judge.user.last_name }} </td>
+                                            <td>{{ athlete.judge.person.tc }} </td>
+                                            <td>{{ athlete.judge.user.email }} </td>
+                                            <td>{{ athlete.judge.communication.phoneNumber }} </td>
+                                            <td><a href="/media/{{ athlete.dekont }}">{{ athlete.dekont }}</a>
+                                            </td>
+                                            <td> {{ athlete.status }}</td>
+
+
+                                            <td>
+                                                <div class="btn-group">
+
+                                                    <a onclick="onayla({{ athlete.id }}, {{ competition.pk }})"
+                                                       type="button" class="btn btn-success"><i
+                                                            class="fa fa-edit"></i>Onayla
+                                                    </a>
+                                                    <a onclick="reddet({{ athlete.id }}, {{ competition.pk }})"
+                                                       type="button" class="btn btn-danger"><i
+                                                            class="fa fa-edit"></i>Reddet
+                                                    </a>
+
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
         </form>
 
 
     </section>
 
     <script>
+        function reddet(coachApplicationPk, seminerpk) {
+            $.ajax({
+                url: "{% url "sbs:visaSeminar-hakem-basvuru-reddet" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, coachApplicationPk.toString()).replace(/999999999999999/, seminerpk.toString()),
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    isActive: 'False'
+                },
+                success: function (result) {
+
+                    html = ' Reddedildi.';
+                    debugger;
+                    $(".successModal").html(html);
+                    $('#modal-success').on("shown.bs.modal", function (e) {
+                        $(".btn-ok").click(function () {
+
+                            window.location.replace("{% url "sbs:hakem-seminar-duzenle" competition.pk %}");
+
+                        });
+
+                    }).modal('show');
+
+
+                    console.log(result.status)
+                }
+            });
+
+
+        }
+        function onayla(coachApplicationPk, seminerpk) {
+            $.ajax({
+                url: "{% url "sbs:visaSeminar-hakem-basvuru-onayla" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, coachApplicationPk.toString()).replace(/999999999999999/, seminerpk.toString()),
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    isActive: 'False'
+                },
+                success: function (result) {
+
+                    html = ' Hakem   eklendi';
+                    debugger;
+                    $(".successModal").html(html);
+                    $('#modal-success').on("shown.bs.modal", function (e) {
+                        $(".btn-ok").click(function () {
+
+                            window.location.replace("{% url "sbs:hakem-seminar-duzenle" competition.pk %}");
+
+                        });
+
+                    }).modal('show');
+
+
+                    console.log(result.status)
+                }
+            });
+        }
         function deleteAthlete(id, competition) {
             var html = '';
             $("#modal-danger").on("shown.bs.modal", function (e) {

@@ -1357,7 +1357,8 @@ def choose_coach(request, pk):
         print(athletes1)
         if athletes1:
             for x in athletes1:
-                if not visa.coach.filter(beltexam__coachs__user_id=x):
+                # bakılacak visa seminer ile bagıntılı şekilde yazılacak
+                if not visa.coach.filter(user_id_in=x):
                     visa.coach.add(x)
                     visa.save()
         return redirect('sbs:seminar-duzenle', pk=pk)
@@ -1425,13 +1426,13 @@ def visaSeminar_Delete_Coach_application(request, pk, competition):
         html_content = ''
         subject, from_email, to = 'THF Bilgi Sistemi', 'no-reply@halter.gov.tr', coachApplication.coach.user.email
         html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-        html_content = '<p><strong>' + str(seminer.name) + '</strong> Seminer  başvurunuz onaylanmıştır.</p>'
+        html_content = '<p><strong>' + str(seminer.name) + '</strong> Seminer  başvurunuz reddilmiştir.</p>'
 
         msg = EmailMultiAlternatives(subject, '', from_email, [to])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
 
-        log = str(seminer.name) + "    seminer basvusu onaylanmıştır    " + str(
+        log = str(seminer.name) + "    seminer basvusu reddedilmiştir.    " + str(
             coachApplication.coach.user.get_full_name())
         log = general_methods.logwrite(request, request.user, log)
 

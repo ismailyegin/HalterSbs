@@ -329,6 +329,14 @@ urlpatterns = [
     url(r'hakem/vize-Liste-Onayla/(?P<referee_pk>\d+)$', RefereeViews.vize_onayla_liste,
         name='hakem-vize-list-onay'),
 
+    url(r'hakem/visa-Seminar/hakem-basvuru-reddet/(?P<pk>\d+)/(?P<competition>\d+)$',
+        RefereeViews.visaSeminar_Delete_Judge_application,
+        name='visaSeminar-hakem-basvuru-reddet'),
+
+    url(r'hakem/visa-Seminar/hakem-basvuru-onayla/(?P<pk>\d+)/(?P<competition>\d+)$',
+        RefereeViews.visaSeminar_Onayla_Judge_application,
+        name='visaSeminar-hakem-basvuru-onayla'),
+
     # Yönetim Kurulu
     url(r'yonetim/kurul-uyeleri/$', DirectoryViews.return_directory_members, name='kurul-uyeleri'),
     url(r'yonetim/kurul-uyesi-ekle/$', DirectoryViews.add_directory_member, name='kurul-uyesi-ekle'),

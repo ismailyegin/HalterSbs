@@ -1,10 +1,6 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
-
-
-
-
     <!-- success modal -->
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
@@ -150,8 +146,9 @@
                                     <tr>
                                         <th>Seç</th>
                                         <th>Ad Soyad</th>
-                                        <th>Kuşak</th>
-                                        <th>Lisans No</th>
+                                        <th>T.C.</th>
+                                        <th>Mail</th>
+                                        <th>Telefon</th>
 
 
                                     </tr>
@@ -164,8 +161,9 @@
                                                 <td><input type="checkbox" name="selected_options"
                                                            value="{{ athlete.pk }}"></td>
                                                 <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
-                                                <td>{{ athlete.belts.last.definition.name }}</td>
-                                                <td>{{ athlete.licenses.last.licenseNo }}</td>
+                                                <td>{{ athlete.person.tc }}</td>
+                                                <td>{{ athlete.user.email }}</td>
+                                                <td>{{ athlete.communication.phoneNumber }}</td>
 
                                             </tr>
 

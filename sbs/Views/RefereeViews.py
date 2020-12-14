@@ -1,12 +1,16 @@
-from django.contrib.auth import logout, authenticate, update_session_auth_hash
+from datetime import date
+
+from django.contrib import messages
+from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
-from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.utils import timezone
+from zeep import Client
 
 from accounts.models import Forgot
 from sbs.Forms.CategoryItemForm import CategoryItemForm
@@ -14,33 +18,26 @@ from sbs.Forms.CommunicationForm import CommunicationForm
 from sbs.Forms.DisabledCommunicationForm import DisabledCommunicationForm
 from sbs.Forms.DisabledPersonForm import DisabledPersonForm
 from sbs.Forms.DisabledUserForm import DisabledUserForm
-from sbs.Forms.UserForm import UserForm
-from sbs.Forms.PersonForm import PersonForm
-from sbs.Forms.UserSearchForm import UserSearchForm
 from sbs.Forms.GradeFormReferee import GradeFormReferee
-from sbs.Forms.RefereeSearchForm import RefereeSearchForm
-from sbs.Forms.SearchClupForm import SearchClupForm
 from sbs.Forms.IbanFormJudge import IbanFormJudge
-
+from sbs.Forms.PersonForm import PersonForm
+from sbs.Forms.RefereeSearchForm import RefereeSearchForm
+from sbs.Forms.ReferenceRefereeForm import RefereeForm
+from sbs.Forms.SearchClupForm import SearchClupForm
+from sbs.Forms.UserForm import UserForm
 from sbs.Forms.VisaForm import VisaForm
 from sbs.Forms.VisaSeminarForm import VisaSeminarForm
-
-from sbs.Forms.ReferenceRefereeForm import RefereeForm
-from sbs.models.ReferenceReferee import ReferenceReferee
-
 from sbs.models import Judge, CategoryItem, Communication, Level
-from sbs.models.VisaSeminar import VisaSeminar
 from sbs.models.EnumFields import EnumFields
-from sbs.services import general_methods
-from datetime import date, datetime
-from django.utils import timezone
-
-from zeep import Client
+from sbs.models.JudgeApplication import JudgeApplication
 from sbs.models.Person import Person
 from sbs.models.PreRegistration import PreRegistration
 # from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
-from sbs.models.JudgeApplication import JudgeApplication
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.models.VisaSeminar import VisaSeminar
+from sbs.services import general_methods
+
 
 @login_required
 def return_add_referee(request):
@@ -1078,23 +1075,22 @@ def choose_referee(request, pk):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    login_user = request.user
-    user = User.objects.get(pk=login_user.pk)
+    user =request.user
     visa = VisaSeminar.objects.get(pk=pk)
     coa = []
     for item in visa.referee.all():
         coa.append(item.user.pk)
+    judge = Judge.objects.exclude(user__id__in=coa)
 
-    athletes = Judge.objects.exclude(visaseminar__referee__user_id__in=coa)
     if request.method == 'POST':
         athletes1 = request.POST.getlist('selected_options')
         if athletes1:
             for x in athletes1:
-                if not visa.referee.all().filter(visaseminar__referee__user_id=x):
+                if not visa.referee.filter(user_id__in=x):
                     visa.referee.add(x)
                     visa.save()
         return redirect('sbs:hakem-seminar-duzenle', pk=pk)
-    return render(request, 'hakem/hakem-vizeseminerHakemEkle.html', {'athletes': athletes})
+    return render(request, 'hakem/hakem-vizeseminerHakemEkle.html', {'athletes': judge})
 
 
 @login_required
@@ -1427,3 +1423,77 @@ def return_visaSeminar_Basvuru(request):
     return render(request, 'hakem/VisaSeminar.html', {'seminer': seminar,
                                                                     'basvuru': basvurularim,
                                                                     'user': user})
+
+
+@login_required
+def visaSeminar_Delete_Judge_application(request, pk, competition):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        coachApplication = JudgeApplication.objects.get(pk=pk)
+        coachApplication.status = JudgeApplication.DENIED
+        coachApplication.save()
+
+        seminer = VisaSeminar.objects.get(pk=competition)
+
+        html_content = ''
+        subject, from_email, to = 'THF Bilgi Sistemi', 'no-reply@halter.gov.tr', coachApplication.judge.user.email
+        html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+        html_content = '<p><strong>' + str(seminer.name) + '</strong> Seminer  başvurunuz reddedilmiştir.</p>'
+
+        msg = EmailMultiAlternatives(subject, '', from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+        log = str(seminer.name) + "    seminer basvusu reddedilmiştir    " + str(
+            coachApplication.judge.user.get_full_name())
+        log = general_methods.logwrite(request, request.user, log)
+
+        try:
+            print()
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def visaSeminar_Onayla_Judge_application(request, pk, competition):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+
+
+            application = JudgeApplication.objects.get(pk=pk)
+            seminer = VisaSeminar.objects.get(pk=competition)
+            seminer.referee.add(application.judge)
+            seminer.save()
+            application.status = JudgeApplication.APPROVED
+            application.save()
+
+            html_content = ''
+            subject, from_email, to = 'THF Bilgi Sistemi', 'no-reply@halter.gov.tr', application.judge.user.email
+            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = '<p><strong>' + str(seminer.name) + '</strong> Seminer  başvurunuz onaylanmıştır.</p>'
+
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+            log = str(seminer.name) + "    seminer basvusu onaylanmıştır    " + str(
+                application.judge.user.get_full_name())
+            log = general_methods.logwrite(request, request.user, log)
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
