@@ -40,7 +40,7 @@ from sbs.models.Person import Person
 from sbs.models.PreRegistration import PreRegistration
 # from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
-
+from sbs.models.JudgeApplication import JudgeApplication
 
 @login_required
 def return_add_referee(request):
@@ -961,15 +961,44 @@ def vize_delete(request, grade_pk, referee_pk):
 
 @login_required
 def return_visaSeminar(request):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_judge(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
 
-    Seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE')
 
-    return render(request, 'hakem/Hakem-VizeSeminer.html', {'competitions': Seminar})
+    user=request.user
+
+    seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE')
+    print('ben geldim ')
+    for item in seminar:
+        print(item)
+
+
+    if request.method == 'POST':
+        if user.groups.filter(name='Hakem').exists():
+            vizeSeminer = VisaSeminar.objects.get(pk=request.POST.get('pk'))
+            judge = Judge.objects.get(user=request.user)
+            try:
+                if request.FILES['file']:
+                    document = request.FILES['file']
+                    data = JudgeApplication()
+                    data.dekont = document
+                    data.judge = judge
+                    data.save()
+                    vizeSeminer.judgeApplication.add(data)
+                    vizeSeminer.save()
+                    print('işlem tamam ')
+
+                    messages.success(request, 'Vize Seminerine Başvuru  gerçekleşmiştir.')
+                    return redirect('sbs:hakem-visa-seminar-basvuru')
+            except:
+                messages.warning(request, 'Lütfen yeniden deneyiniz')
+
+
+
+    return render(request, 'hakem/Hakem-VizeSeminer.html', {'competitions': seminar})
 
 
 # visaseminer ekle
@@ -1376,3 +1405,25 @@ def vize_reddet_liste(request, referee_pk):
     visa.save()
     messages.success(request, 'Vize reddedilmistir.')
     return redirect('sbs:hakem-vize-listesi')
+
+
+
+@login_required
+def return_visaSeminar_Basvuru(request):
+    perm = general_methods.control_access_judge(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    user = request.user
+    basvurularim=JudgeApplication.objects.none()
+    if request.user.groups.filter(name='Hakem').exists():
+        seminar = VisaSeminar.objects.filter(judgeApplication__judge__user=user).filter(
+            forWhichClazz='REFEREE').distinct()
+        basvurularim = JudgeApplication.objects.filter(judge__user=user)
+
+    else:
+        seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE')
+
+    return render(request, 'hakem/VisaSeminar.html', {'seminer': seminar,
+                                                                    'basvuru': basvurularim,
+                                                                    'user': user})

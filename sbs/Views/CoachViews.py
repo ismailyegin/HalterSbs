@@ -88,6 +88,7 @@ def return_visaSeminar_Basvuru(request):
         logout(request)
         return redirect('accounts:login')
     user = request.user
+    basvurularim = CoachApplication.objects.none()
     if request.user.groups.filter(name='Antrenor').exists():
         seminar = VisaSeminar.objects.filter(coachApplication__coach__user=user).filter(
             forWhichClazz='COACH').distinct()

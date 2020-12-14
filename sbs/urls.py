@@ -304,6 +304,7 @@ urlpatterns = [
     url(r'hakem/visa-Seminar-ekle$', RefereeViews.visaSeminar_ekle, name='hakem-visa-seminar-ekle'),
     url(r'hakem/visa-Seminar-duzenle/(?P<pk>\d+)$', RefereeViews.visaSeminar_duzenle, name='hakem-seminar-duzenle'),
     url(r'hakem/visa-Seminar/Seminer-sil(?P<pk>\d+)$', RefereeViews.visaSeminar_sil, name='hakem-seminar-sil'),
+    url(r'hakem/visa-Seminar/basvuruListesi$', RefereeViews.return_visaSeminar_Basvuru, name='hakem-visa-seminar-basvuru'),
     url(r'hakem/visa-Seminar/hakem-sec/(?P<pk>\d+)$', RefereeViews.choose_referee, name='vize-semineri-hakem-sec'),
     url(r'hakem/visa-Seminar/hakem-sil/(?P<pk>\d+)/(?P<competition>\d+)$', RefereeViews.visaSeminar_Delete_Referee,
         name='visaSeminar-hakem-sil'),

@@ -197,18 +197,9 @@
 
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Vize Seminerleri</h3>
+                            <h3 class="box-title">Başvurularım </h3>
                         </div>
-                        <div class="box-header with-border">
-                            <div class="btn-group">
-                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                    <a href="{% url "sbs:visa-seminar-ekle" %}"
-                                       type="button" class="btn btn-success"><i
-                                            class="fa fa-edit"></i> Yeni Seminer Ekle
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
+
                         <div class="box-body">
                             <table id="musabakalar" class="table table-bordered table-hover">
                                 <thead>
@@ -217,49 +208,29 @@
                                     <th>İsim</th>
                                     <th>Başl. Tarihi</th>
                                     <th>Bitiş. Tarihi</th>
+
                                     <th>Yer</th>
-                                    <th>İşlemler</th>
-
-
-
+                                    <th>Başvurularim</th>
 
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if competitions.all %}
-                                    {% for competition in competitions %}
-                                        <tr id="seminer-{{ competition.pk }}">
+                                {% if seminer.all %}
+                                    {% for item in seminer %}
+                                        <tr id="seminer-{{ item.pk }}">
                                             <td>{{ forloop.counter }} </td>
-                                            <td>{{ competition.name }}</td>
-                                            <td>{{ competition.startDate |date }} </td>
-                                            <td>{{ competition.finishDate |date }}</td>
-                                            <td>{{ competition.location }}</td>
+                                            {#                                            belt.athlete_set.first#}
+                                            <td>{{ item.name }}</td>
+                                            <td>{{ item.startDate |date }} </td>
+                                            <td>{{ item.finishDate |date }}</td>
+                                            <td>{{ item.location }}</td>
 
-                                            <td>
+                                            <td>{% for basvuru in item.judgeApplication.all %}
 
-
-                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                <div class="btn-group">
-                                                    <a href="{% url "sbs:seminar-duzenle" competition.pk %}"
-                                                       type="button" class="btn btn-warning"><i
-                                                            class="fa fa-edit"></i>İncele
-                                                    </a>
-                                                </div>
-
-
-                                                    <a class="btn btn-danger"
-                                                       data-toggle="modal"
-                                                       onclick=deleteCompetition({{ competition.pk }})><i
-                                                            class="fa fa-trash"></i>Sil</a>
-                                                {% else %}
-
-                                                    <a onclick="modalApplication({{ competition.pk }})"
-                                                       type="button" class="btn btn-success"><i
-                                                            class="fa fa-edit"></i>Basvuru Yap
-                                                    </a>
-
+                                                {% if basvuru.judge.user == user %}
+                                                    {{ basvuru.creationDate |date }} -{{ basvuru.status }}<br>
                                                 {% endif %}
-
+                                            {% endfor %}
 
                                             </td>
 
@@ -287,31 +258,7 @@
     </section>
 
     <script>
-        function modalApplication(competitionId) {
 
-
-            $("#application").on("shown.bs.modal", function (e) {
-
-
-                {#$('#title option:selected').text($('#personel-' + competitionId + ' td').eq(1).text());#}
-                {#$('#employee option:selected').text($('#personel-' + competitionId + ' td').eq(2).text());#}
-
-                $('#name').val($('#seminer-' + competitionId + ' td').eq(1).text());
-                $('#start').val($('#seminer-' + competitionId + ' td').eq(2).text());
-                $('#finish').val($('#seminer-' + competitionId + ' td').eq(3).text());
-                $('#location').val($('#seminer-' + competitionId + ' td').eq(4).text());
-                $('#pk').val(competitionId.toString()).hide();
-
-
-            }).modal('show');
-            $('#btn-closereddet').click(function () {
-
-
-                $('#modelsubcompany').modal('hide');
-                $('.modal').modal('hide');
-
-            });
-        };
         $(function () {
             $('#musabakalar').DataTable({
                 dom: 'Bfrtip',
@@ -405,44 +352,7 @@
 
         })
 
-        function deleteCompetition(id) {
 
-            console.log(id);
-            var html = ''
-            $("#modal-danger").on("shown.bs.modal", function (e) {
-                $("#btn-conf").click(function () {
-                    $.ajax({
-                        url: "{% url "sbs:seminar-sil" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False'
-                        },
-                        success: function (result) {
-
-                            html = 'Seminer Başarıyla Silindi';
-                        debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
-
-                                    window.location.replace("{% url "sbs:hakem-visa-seminar" %}");
-
-                                });
-
-                            }).modal('show');
-
-
-                            console.log(result.status)
-                        }
-                    });
-                });
-            }).modal('show');
-            $('#btn-close').click(function () {
-                $('#modal-danger').modal('hide');
-            });
-
-        }
     </script>
 
 
