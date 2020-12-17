@@ -107,6 +107,9 @@ def return_clubs(request):
     user = request.user
     clubs = SportsClub.objects.none()
     ClupsSearchForm=ClubSearchForm(request.POST)
+    if user.groups.filter(name='KulupUye'):
+        clubuser = SportClubUser.objects.get(user=user)
+        clubs = SportsClub.objects.filter(clubUser=clubuser).order_by("-pk")
 
     if request.method == 'POST':
 
