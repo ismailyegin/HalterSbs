@@ -776,12 +776,17 @@ def clubDelete(request, pk):
 
 @login_required
 def clubUpdate(request, pk):
-    perm = general_methods.control_access(request)
+    perm = general_methods.control_access_klup(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
+
     club = SportsClub.objects.get(id=pk)
+
+    if request.user.groups.filter(name='KulupUye'):
+        if not (club.clubUser.filter(user=request.user)):
+            return redirect('sbs:kulupler')
 
     athletes = Athlete.objects.filter(licenses__sportsClub=club)
 
@@ -805,12 +810,6 @@ def clubUpdate(request, pk):
                 communication.save()
                 club.communication=communication
                 club.save()
-
-
-
-
-
-
 
 
             else:
