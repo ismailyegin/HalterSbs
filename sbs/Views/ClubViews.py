@@ -820,7 +820,7 @@ def clubUpdate(request, pk):
 
 
             messages.success(request, 'Başarıyla Güncellendi')
-            return redirect('sbs:kulupler')
+            return redirect('sbs:update-club', club.pk)
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
