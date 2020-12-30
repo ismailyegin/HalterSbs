@@ -431,13 +431,12 @@ urlpatterns = [
     url(r'message/messages/$', DashboardViews.return_message,
         name='message'),
 
-
-
 #     destek ve talep
 
     url(r'destek-talep-listesi', ClaimView.return_claim, name='destek-talep-listesi'),
-
     url(r'destek/Destekekle', ClaimView.claim_add, name='destek-talep-ekle'),
+    url(r'destek/sil/(?P<pk>\d+)$', ClaimView.claim_delete,name='destek-delete'),
+    url(r'destek/guncelle/(?P<pk>\d+)$', ClaimView.claim_update, name='destek-guncelle'),
 
 
 

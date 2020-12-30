@@ -74,5 +74,42 @@ def claim_add(request):
         claim_form=ClaimForm(request.POST)
         if claim_form.is_valid():
             claim_form.save()
+            messages.success(request, 'Destek Talep  Eklendi.')
 
     return render(request, 'Destek/Desktek-ekle.html', {'claim_form': claim_form, })
+
+
+@login_required
+def claim_update(request,pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    clain=Claim.objects.get(pk=pk)
+    claim_form = ClaimForm(request.POST or None, instance=clain)
+
+    if request.method == 'POST':
+        if claim_form.is_valid():
+            claim_form.save()
+            messages.success(request, 'Destek Talep  Güncellendi.')
+
+    return render(request, 'Destek/Desktek-ekle.html', {'claim_form': claim_form, })
+
+
+
+
+
+@login_required
+def claim_delete(request,pk):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    clain=Claim.objects.get(pk=pk)
+    clain.delete()
+
+    messages.success(request, 'Destek Talep  Silindi.')
+
+    return redirect('sbs:destek-talep-listesi')
