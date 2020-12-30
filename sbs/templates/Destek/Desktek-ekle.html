@@ -150,25 +150,42 @@
                                 {% csrf_token %}
 
 
+                                                                <div class="form-group">
+                                    <label> {{ claim_form.project.label }}</label>
+                                    {{ claim_form.project }}
+                                </div>
+
+
                                 <div class="form-group">
-                                    <label> {{ form.question.label }}</label>
-                                    {{ form.question }}
+                                    <label> {{ claim_form.title.label }}</label>
+                                    {{ claim_form.title }}
                                 </div>
 
                                 <div class="form-group">
-                                    <label> {{ form.reaply.label }}</label>
-                                    {{ form.reaply }}
+                                    <label> {{ claim_form.importanceSort.label }}</label>
+                                    {{ claim_form.importanceSort }}
                                 </div>
 
                                 <div class="form-group">
-                                    <label> {{ form.count.label }}</label>
-                                    {{ form.count }}
+                                    <label> {{ claim_form.project.label }}</label>
+                                    {{ claim_form.project }}
                                 </div>
 
                                 <div class="form-group">
-                                    <label> {{ form.isActiv.label }}</label>
-                                    {{ form.isActiv }}
+                                    <label> {{ claim_form.pay.label }}</label>
+                                    {{ claim_form.pay }}
                                 </div>
+                                                                <div class="form-group">
+                                    <label> {{ claim_form.status.label }}</label>
+                                    {{ claim_form.status }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label> {{ claim_form.definition.label }}</label>
+                                    {{ claim_form.definition }}
+                                </div>
+
+
 
 
                             </div>
