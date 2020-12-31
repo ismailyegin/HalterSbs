@@ -24,7 +24,8 @@ def return_claim(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    destek = Claim.objects.all()
+    destek = Claim.objects.all().order_by('-creationDate')
+
     return render(request, 'Destek/DestekTalepListesi.html' , {'claims': destek})
 
 
@@ -106,4 +107,4 @@ def menu(request):
         # item.parent=int(MenuDirectory.objects.get(pk=m.parent.pk).pk) if m.parent  else None
         item.sorting=m.sorting if m.sorting else None
         item.save()
-    return render(request, 'Destek/Desktek-ekle.html', {'claim_form': claim_form, })
+    return render(request, 'Destek/Desktek-ekle.html', {})

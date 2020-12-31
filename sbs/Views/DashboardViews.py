@@ -69,18 +69,44 @@ def return_directory_dashboard(request):
     if not group.name == "Yonetim":
         logout(request)
         return redirect('accounts:login')
-    return render(request, 'anasayfa/federasyon.html')
+    # son eklenen 8 sporcuyu ekledik
+    last_athlete = Athlete.objects.order_by('-creationDate')[:8]
+    total_club = SportsClub.objects.all().count()
+    total_athlete = Athlete.objects.all().count()
+    total_athlete_gender_man = Athlete.objects.filter(person__gender=Person.MALE).count()
+    total_athlete_gender_woman = Athlete.objects.filter(person__gender=Person.FEMALE).count()
+    total_athlate_last_month = Athlete.objects.exclude(user__date_joined__month=datetime.now().month).count()
+    total_club_user = SportClubUser.objects.all().count()
+    total_coachs = Coach.objects.all().count()
+    total_judge = Judge.objects.all().count()
+    total_user = User.objects.all().count()
+
+    # total_notifications_refere = ReferenceReferee.objects.filter(status=ReferenceReferee.WAITED).count()
+    # total_notifications_coach = ReferenceReferee.objects.filter(status=ReferenceCoach.WAITED).count()
+    # total_notifications_clup = PreRegistration.objects.filter(status=PreRegistration.WAITED).count()
+    # notifications_tatal = total_notifications_refere + total_notifications_coach + total_notifications_clup
+
+    return render(request, 'anasayfa/federasyon.html',
+                  {'total_club_user': total_club_user, 'total_club': total_club,
+                   'total_athlete': total_athlete, 'total_coachs': total_coachs, 'last_athletes': last_athlete,
+                   'total_athlete_gender_man': total_athlete_gender_man,
+                   'total_athlete_gender_woman': total_athlete_gender_woman,
+                   'total_athlate_last_month': total_athlate_last_month,
+                   'total_judge': total_judge, 'total_user': total_user,
+                   # 'total_notifications_refere': total_notifications_refere,
+                   # 'total_notifications_coach': total_notifications_coach,
+                   # 'total_notifications_clup': total_notifications_clup,
+                   # 'notifications_tatal': notifications_tatal
+
+                   })
+
+
+
 
 
 @login_required
 def return_club_user_dashboard(request):
     perm = general_methods.control_access_klup(request)
-    # x = general_methods.import_csv()
-
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
-
     if not perm:
         logout(request)
         return redirect('accounts:login')
