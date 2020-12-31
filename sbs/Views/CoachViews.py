@@ -1357,8 +1357,9 @@ def choose_coach(request, pk):
         print(athletes1)
         if athletes1:
             for x in athletes1:
+                print(x)
                 # bakılacak visa seminer ile bagıntılı şekilde yazılacak
-                if not visa.coach.filter(user_id_in=x):
+                if not visa.coach.filter(user_id=x):
                     visa.coach.add(x)
                     visa.save()
         return redirect('sbs:seminar-duzenle', pk=pk)
@@ -1475,7 +1476,7 @@ def visaSeminar_onayla(request, pk):
         for item in seminar.coach.all():
 
             visa = Level(dekont='Federasyon', branch=seminar.branch)
-            visa.startDate = date(timezone.now().year, 1, 1)
+            visa.startDate = date(int(seminar.year), 1, 1)
             visa.definition = CategoryItem.objects.get(forWhichClazz='VISA')
             visa.levelType = EnumFields.LEVELTYPE.VISA
             visa.status = Level.APPROVED

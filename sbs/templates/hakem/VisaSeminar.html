@@ -203,13 +203,14 @@
                         <div class="box-body">
                             <table id="musabakalar" class="table table-bordered table-hover">
                                 <thead>
-                                <tr>
+                                <th>
                                     <th>#</th>
                                     <th>İsim</th>
                                     <th>Başl. Tarihi</th>
                                     <th>Bitiş. Tarihi</th>
 
                                     <th>Yer</th>
+                                   <th> Geçerlilik Yılı </th>
                                     <th>Başvurularim</th>
 
                                 </tr>
@@ -224,6 +225,7 @@
                                             <td>{{ item.startDate |date }} </td>
                                             <td>{{ item.finishDate |date }}</td>
                                             <td>{{ item.location }}</td>
+                                            <td>{{ item.year }}</td>
 
                                             <td>{% for basvuru in item.judgeApplication.all %}
 

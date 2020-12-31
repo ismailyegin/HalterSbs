@@ -1230,7 +1230,7 @@ def visaSeminar_onayla(request, pk):
 
         for item in seminar.referee.all():
             visa = Level(dekont='Federasyon', branch=seminar.branch)
-            visa.startDate = date(timezone.now().year, 1, 1)
+            visa.startDate = date(int(seminar.year), 1, 1)
             visa.definition = CategoryItem.objects.get(forWhichClazz='VISA')
             visa.levelType = EnumFields.LEVELTYPE.VISA
             visa.status = Level.APPROVED

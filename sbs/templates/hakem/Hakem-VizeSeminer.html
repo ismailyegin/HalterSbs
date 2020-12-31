@@ -202,7 +202,7 @@
                         <div class="box-header with-border">
                             <div class="btn-group">
                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                    <a href="{% url "sbs:visa-seminar-ekle" %}"
+                                    <a href="{% url "sbs:hakem-visa-seminar-ekle" %}"
                                        type="button" class="btn btn-success"><i
                                             class="fa fa-edit"></i> Yeni Seminer Ekle
                                     </a>
@@ -218,6 +218,8 @@
                                     <th>Başl. Tarihi</th>
                                     <th>Bitiş. Tarihi</th>
                                     <th>Yer</th>
+                                    <th>Geçerlilik Yılı</th>
+                                    <th>Onay Durumu </th>
                                     <th>İşlemler</th>
 
 
@@ -234,6 +236,8 @@
                                             <td>{{ competition.startDate |date }} </td>
                                             <td>{{ competition.finishDate |date }}</td>
                                             <td>{{ competition.location }}</td>
+                                            <td>{{ competition.year }}</td>
+                                        <td>{{ competition.status }}</td>
 
                                             <td>
 

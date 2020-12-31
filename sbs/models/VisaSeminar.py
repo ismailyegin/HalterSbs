@@ -37,6 +37,7 @@ class VisaSeminar(models.Model):
     judgeApplication=models.ManyToManyField(JudgeApplication, related_name='JudgeApplication')
     referee = models.ManyToManyField(Judge ,related_name='judge')
     forWhichClazz = models.CharField(blank=False, null=False, max_length=255)
+    year=models.CharField(null=True,blank=True ,max_length=100)
 
 
     def __str__(self):

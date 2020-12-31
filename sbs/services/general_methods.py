@@ -126,7 +126,7 @@ def control_access_judge(request):
         if request.resolver_match.url_name == perm.name:
             is_exist = True
 
-    if group.name == "Admin" or group.name == "Hakem":
+    if group.name == "Admin" or group.name == "Hakem" or group.name == "Yonetim":
         is_exist = True
 
     return is_exist
@@ -171,7 +171,7 @@ def control_access_klup(request):
             if request.resolver_match.url_name == perm.name:
                 is_exist = True
 
-        if group.name == "Admin" or group.name == "KulupUye" or group.name == "Antrenor":
+        if group.name == "Admin" or group.name == "KulupUye" or group.name == "Antrenor" or group.name == "Yonetim":
             is_exist = True
 
 
