@@ -146,6 +146,8 @@ def control_access(request):
 
     if group.name == "Admin":
         is_exist = True
+    elif group.name =='Yonetim':
+        is_exist = True
 
     return is_exist
 

@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from sbs.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
     CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration, ActivityView, ReferenceView, QuestionViews, \
-    LogViews,ClaimView
+    LogViews, ClaimView
 
 app_name = 'sbs'
 
@@ -437,6 +437,8 @@ urlpatterns = [
     url(r'destek/Destekekle', ClaimView.claim_add, name='destek-talep-ekle'),
     url(r'destek/sil/(?P<pk>\d+)$', ClaimView.claim_delete,name='destek-delete'),
     url(r'destek/guncelle/(?P<pk>\d+)$', ClaimView.claim_update, name='destek-guncelle'),
+
+    url(r'menu', ClaimView.menu, name='destek-talep-menu'),
 
 
 
