@@ -277,6 +277,8 @@ urlpatterns = [
         name='kademe-list-onay-hepsi'),
     url(r'antrenor/kademe-Liste-bekle-hepsi$', CoachViews.kademe_bekle_hepsi, name='kademe-list-bekle-hepsi'),
 
+    url(r'antrenor/belge/(?P<pk>\d+)$', CoachViews.document,name='document-coach'),
+
     # visa seminar
     # Antrenör
     url(r'antrenor/visa-Seminar/$', CoachViews.return_visaSeminar, name='visa-seminar'),

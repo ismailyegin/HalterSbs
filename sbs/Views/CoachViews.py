@@ -53,6 +53,55 @@ from sbs.models.CoachApplication import CoachApplication
 
 
 
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+
+
+
+
+# pdf
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import PageBreak
+
+
+
+# resim
+
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.utils import ImageReader
+from oxiterp.settings.base import MEDIA_URL
+
+
+
+import reportlab.rl_config
+reportlab.rl_config.warnOnMissingFontGlyphs = 0
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+
+from reportlab.lib.units import inch
+
+from reportlab.pdfbase.pdfmetrics import registerFontFamily
+
+
+
+
+# zaman
+import datetime
+from django.utils import timezone
+
+# excel
+import csv
+import xlwt
+
+
+from django.conf import settings
+from django.conf.urls.static import static
 
 # visaseminer ekle
 @login_required
@@ -1497,3 +1546,40 @@ def visaSeminar_onayla(request, pk):
 
     return render(request, 'antrenor/VisaSeminar.html')
     # {'grade_form': grade_form})
+
+
+
+
+
+
+@login_required
+def document(request, pk):
+    coach=Coach.objects.get(pk=pk)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="ProjeTakip.pdf"'
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer)
+    c.setTitle('Antrenor Belge')
+
+    logo = ImageReader(settings.MEDIA_ROOT+'/belge.png')
+    c.drawImage(logo, 0, 0, width=600, height=850, mask='auto')
+
+
+    c.setFont("Times-Roman",32)
+
+    c.rotate(90)
+    # change color
+    # c.setFillColorRGB(0, 0, 0.77)
+    # say hello (note after rotate the y coord ne
+    c.drawString(350,-310, coach.user.get_full_name())
+
+
+    c.showPage()
+
+    c.save()
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+
+    return response
