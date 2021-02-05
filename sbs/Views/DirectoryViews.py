@@ -29,7 +29,7 @@ from zeep import Client
 from sbs.models.PreRegistration import PreRegistration
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.ReferenceCoach import ReferenceCoach
-
+from sbs.Forms.DirectorySearchForm import DirectorySearchForm
 
 @login_required
 def add_directory_member(request):
@@ -141,13 +141,21 @@ def return_directory_members(request):
         return redirect('accounts:login')
     members = DirectoryMember.objects.none()
     user_form = UserSearchForm()
+
+    commission_form=DirectorySearchForm()
     if request.method == 'POST':
-        user_form = UserSearchForm(request.POST)
-        if user_form.is_valid():
+        user_form = UserSearchForm(request.POST or None)
+        commission_form = DirectorySearchForm(request.POST or None)
+        if user_form.is_valid() or commission_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
-            if not (firstName or lastName or email):
+            commission=request.POST.get('commission')
+            role=request.POST.get('role')
+
+            search=DirectoryMember.objects.filter(commission_id__in=commission)
+
+            if not (firstName or lastName or email or commission or role):
                 members = DirectoryMember.objects.all()
             else:
                 query = Q()
@@ -157,8 +165,12 @@ def return_directory_members(request):
                     query &= Q(user__first_name__icontains=firstName)
                 if email:
                     query &= Q(user__email__icontains=email)
+                if commission:
+                    query &= Q(commission_id__in=commission)
+                if role:
+                    query &= Q(role__id__in=role)
                 members = DirectoryMember.objects.filter(query)
-    return render(request, 'yonetim/kurul-uyeleri.html', {'members': members, 'user_form': user_form})
+    return render(request, 'yonetim/kurul-uyeleri.html', {'members': members, 'user_form': user_form,'commission_form':commission_form})
 
 
 @login_required
