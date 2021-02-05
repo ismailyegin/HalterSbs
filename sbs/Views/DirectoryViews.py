@@ -71,17 +71,17 @@ def add_directory_member(request):
                           {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
                            'member_form': member_form})
 
-        name = request.POST.get('first_name')
-        surname = request.POST.get('last_name')
-        year = request.POST.get('birthDate')
-        year = year.split('/')
+        # name = request.POST.get('first_name')
+        #         # surname = request.POST.get('last_name')
+        #         # year = request.POST.get('birthDate')
+        #         # year = year.split('/')
 
-        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-            return render(request, 'yonetim/kurul-uyesi-ekle.html',
-                          {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
-                           'member_form': member_form})
+        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+        #     return render(request, 'yonetim/kurul-uyesi-ekle.html',
+        #                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+        #                    'member_form': member_form})
 
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
             user = User()
@@ -228,17 +228,17 @@ def update_directory_member(request, pk):
                               {'user_form': user_form, 'communication_form': communication_form,
                                'person_form': person_form, 'member_form': member_form})
 
-        name = request.POST.get('first_name')
-        surname = request.POST.get('last_name')
-        year = request.POST.get('birthDate')
-        year = year.split('/')
-
-        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-            return render(request, 'yonetim/kurul-uyesi-duzenle.html',
-                          {'user_form': user_form, 'communication_form': communication_form,
-                           'person_form': person_form, 'member_form': member_form})
+        # name = request.POST.get('first_name')
+        # surname = request.POST.get('last_name')
+        # year = request.POST.get('birthDate')
+        # year = year.split('/')
+        #
+        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+        #     return render(request, 'yonetim/kurul-uyesi-duzenle.html',
+        #                   {'user_form': user_form, 'communication_form': communication_form,
+        #                    'person_form': person_form, 'member_form': member_form})
 
 
 
