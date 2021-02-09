@@ -213,6 +213,7 @@
                                     <th>Geçerlilik yılı</th>
                                     <th>Başvurularim</th>
 
+
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -227,15 +228,30 @@
                                             <td>{{ item.location }}</td>
                                             <td>{{ item.year }}</td>
 
-                                            <td>{% for basvuru in item.coachApplication.all %}
+                                            <td>
+                                                {% for basvuru in item.coachApplication.all %}
 
                                                 {% if basvuru.coach.user == user %}
-                                                    {{ basvuru.creationDate |date }} -{{ basvuru.status }}<br>
+
+                                                    {% if item.status == "Onaylandı" %}
+
+
+                                                        <a href="{% url "sbs:document-coach" pk=basvuru.coach.pk %}"
+                                                           type="button" class="btn btn-warning"><i
+                                                                class="fa fa-edit"></i>Belge Yazdır
+                                                        </a>
+
+                                                    {% else %}
+
+
+                                                        {{ basvuru.creationDate |date }} -{{ basvuru.status }}<br>
+                                                    {% endif %}
+
                                                 {% endif %}
+
+
                                             {% endfor %}
-
                                             </td>
-
                                         </tr>
 
                                     {% endfor %}

@@ -1572,7 +1572,7 @@ def document(request, pk):
     # change color
     # c.setFillColorRGB(0, 0, 0.77)
     # say hello (note after rotate the y coord ne
-    c.drawString(350,-310, coach.user.get_full_name())
+    c.drawString(270,-310, coach.user.get_full_name())
 
 
     c.showPage()
