@@ -48,9 +48,9 @@ def return_activity(request):
                 query &= Q(year=startDate)
             if type:
                 query &= Q(type__in=type)
-            activity= Activity.objects.filter(query).order_by('-year').distinct()
+            activity= Activity.objects.filter(query).order_by('-creationDate').distinct()
         else:
-            activity= Activity.objects.all().order_by('-year')
+            activity= Activity.objects.all().order_by('-creationDate')
     return render(request, 'faliyet/faaliyetler.html',{'activity':activity,'query':comquery})
 
 
