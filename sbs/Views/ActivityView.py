@@ -34,7 +34,7 @@ def return_activity(request):
         return redirect('accounts:login')
 
     comquery=CompetitionSearchForm()
-    activity = Activity.objects.all().order_by('-year')
+    activity = Activity.objects.none
     if request.method == 'POST':
         name= request.POST.get('name')
         startDate= request.POST.get('startDate')
@@ -50,9 +50,9 @@ def return_activity(request):
                 query &= Q(compType__in=compType)
             if compGeneralType:
                 query &= Q(compGeneralType__in=compGeneralType)
-            activity= Activity.objects.filter(query).distinct()
+            activity= Activity.objects.filter(query).order_by('-year').distinct()
         else:
-            activity= Activity.objects.all()
+            activity= Activity.objects.all().order_by('-year')
     return render(request, 'faliyet/faaliyetler.html',{'activity':activity,'query':comquery})
 
 
