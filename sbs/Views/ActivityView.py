@@ -38,18 +38,16 @@ def return_activity(request):
     if request.method == 'POST':
         name= request.POST.get('name')
         startDate= request.POST.get('startDate')
-        compType= request.POST.get('compType')
-        compGeneralType= request.POST.get('compGeneralType')
-        if name or startDate or compType or compGeneralType:
+        type= request.POST.get('type')
+
+        if name or startDate or type:
             query = Q()
             if name:
                 query &= Q(name__icontains=name)
             if startDate:
-                query &= Q(startDate__year=int(startDate))
-            if compType:
-                query &= Q(compType__in=compType)
-            if compGeneralType:
-                query &= Q(compGeneralType__in=compGeneralType)
+                query &= Q(year=startDate)
+            if type:
+                query &= Q(type__in=type)
             activity= Activity.objects.filter(query).order_by('-year').distinct()
         else:
             activity= Activity.objects.all().order_by('-year')

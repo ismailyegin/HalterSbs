@@ -156,16 +156,21 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label> {{ query.compType.label }}</label>
-                                        {{ query.compType }}
+                                        <label> Faaliyet Türü </label>
+                                        <select name="type" class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%; " id="id_type">
+                                            <option value="" selected>---------</option>
+
+                                            <option value="0">YURT İÇİ FAALİYETLERİ</option>
+
+                                            <option value="1">YURT DIŞI FAALİYETLERİ</option>
+
+                                            <option value="2">EGİTİM FAALİYETLERİ</option>
+
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label> {{ query.compGeneralType.label }}</label>
-                                        {{ query.compGeneralType }}
-                                    </div>
-                                </div>
+
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label> {{ query.startDate.label }}</label>
@@ -253,8 +258,23 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ competition.name }}</td>
                                             <td>{{ competition.eventPlace }}</td>
-                                            <td>{{ competition.startDate | date }} </td>
-                                            <td>{{ competition.finishDate | date }}</td>
+                                            <td>
+                                                {% if competition.startDate %}
+                                                    {{ competition.startDate | date }}
+                                                {% else %}
+                                                    MUHTELİF
+                                                {% endif %}
+
+                                            </td>
+                                            <td>
+                                                {% if competition.finishDate %}
+                                                    {{ competition.finishDate | date }}
+                                                {% else %}
+                                                    MUHTELİF
+                                                {% endif %}
+
+                                            </td>
+
                                             <td>{{ competition.year }}</td>
                                             {% if competition.type == 0 %}
                                                 <td>YURT İÇİ FAALİYETLERİ</td>
