@@ -278,6 +278,7 @@ urlpatterns = [
     url(r'antrenor/kademe-Liste-bekle-hepsi$', CoachViews.kademe_bekle_hepsi, name='kademe-list-bekle-hepsi'),
 
     url(r'antrenor/belge/(?P<pk>\d+)$', CoachViews.document,name='document-coach'),
+    url(r'hakem/belge/(?P<pk>\d+)$', RefereeViews.document, name='document-referee'),
 
     # visa seminar
     # Antrenör

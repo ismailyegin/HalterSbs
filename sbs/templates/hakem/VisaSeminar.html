@@ -203,7 +203,7 @@
                         <div class="box-body">
                             <table id="musabakalar" class="table table-bordered table-hover">
                                 <thead>
-                                <th>
+                                <tr>
                                     <th>#</th>
                                     <th>İsim</th>
                                     <th>Başl. Tarihi</th>
@@ -212,6 +212,7 @@
                                     <th>Yer</th>
                                    <th> Geçerlilik Yılı </th>
                                     <th>Başvurularim</th>
+                                    <th>Belge</th>
 
                                 </tr>
                                 </thead>
@@ -232,9 +233,21 @@
                                                 {% if basvuru.judge.user == user %}
                                                     {{ basvuru.creationDate |date }} -{{ basvuru.status }}<br>
                                                 {% endif %}
+
                                             {% endfor %}
 
                                             </td>
+                                        <td>
+
+                                            {% if item.status == 'Onaylandı' %}
+                                                <a href="{% url 'sbs:document-referee' judge.pk %}" class="btn btn-success"> Belge Yazdır </a>
+                                            {% endif %}
+
+
+
+
+                                        </td>
+
 
                                         </tr>
 

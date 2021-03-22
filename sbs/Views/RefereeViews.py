@@ -1,5 +1,7 @@
 from datetime import date
+from io import BytesIO
 
+import reportlab.rl_config
 from django.contrib import messages
 from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -7,9 +9,13 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User, Group
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
+from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from reportlab.lib.utils import ImageReader
+# pdf
+from reportlab.pdfgen import canvas
 from zeep import Client
 
 from accounts.models import Forgot
@@ -37,6 +43,11 @@ from sbs.models.ReferenceCoach import ReferenceCoach
 from sbs.models.ReferenceReferee import ReferenceReferee
 from sbs.models.VisaSeminar import VisaSeminar
 from sbs.services import general_methods
+
+# resim
+reportlab.rl_config.warnOnMissingFontGlyphs = 0
+
+from django.conf import settings
 
 
 @login_required
@@ -1412,6 +1423,7 @@ def return_visaSeminar_Basvuru(request):
         return redirect('accounts:login')
     user = request.user
     basvurularim=JudgeApplication.objects.none()
+    judge=Judge.objects.get(user=user)
     if request.user.groups.filter(name='Hakem').exists():
         seminar = VisaSeminar.objects.filter(judgeApplication__judge__user=user).filter(
             forWhichClazz='REFEREE').distinct()
@@ -1422,7 +1434,8 @@ def return_visaSeminar_Basvuru(request):
 
     return render(request, 'hakem/VisaSeminar.html', {'seminer': seminar,
                                                                     'basvuru': basvurularim,
-                                                                    'user': user})
+                                                                    'user': user,
+                                                      'judge':judge})
 
 
 @login_required
@@ -1497,3 +1510,39 @@ def visaSeminar_Onayla_Judge_application(request, pk, competition):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+
+
+
+@login_required
+def document(request, pk):
+    coach=Judge.objects.get(pk=pk)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="ProjeTakip.pdf"'
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer)
+    c.setTitle('Hakem Belge')
+
+    logo = ImageReader(settings.MEDIA_ROOT+'/hakembelge.png')
+    c.drawImage(logo, 0, 0, width=600, height=850, mask='auto')
+
+
+    c.setFont("Times-Roman",32)
+
+    c.rotate(90)
+    # change color
+    # c.setFillColorRGB(0, 0, 0.77)
+    # say hello (note after rotate the y coord ne
+    c.drawString(270,-310, coach.user.get_full_name())
+
+
+    c.showPage()
+
+    c.save()
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+
+    return response
