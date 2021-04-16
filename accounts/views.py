@@ -1,54 +1,32 @@
-from urllib import request
-
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group, Permission, User
-from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
-from django.core.mail import EmailMultiAlternatives
-from django.db.models import Q
-from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect, render_to_response
-from accounts.forms import LoginForm, PermForm
-from accounts.models import Forgot
-
-
-from sbs.Forms.PreRegidtrationForm import PreRegistrationForm
+import datetime
 
 from django.contrib import auth, messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.models import Group, Permission, User
+from django.core.mail import EmailMultiAlternatives
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from zeep import Client
 
+from accounts.models import Forgot
 from sbs import urls
-from sbs.models import MenuAthlete, MenuCoach, MenuReferee, MenuDirectory, MenuAdmin, MenuClubUser, SportsClub, \
-    SportClubUser, CategoryItem, Coach
-from sbs.models.PreRegistration import PreRegistration
-from sbs.services import general_methods
-from sbs.services.general_methods import show_urls
-
 from sbs.Forms.ClubForm import ClubForm
-from sbs.Forms.ClubRoleForm import ClubRoleForm
 from sbs.Forms.CommunicationForm import CommunicationForm
-from sbs.Forms.DisabledCommunicationForm import DisabledCommunicationForm
-from sbs.Forms.DisabledPersonForm import DisabledPersonForm
-from sbs.Forms.DisabledSportClubUserForm import DisabledSportClubUserForm
-from sbs.Forms.DisabledUserForm import DisabledUserForm
 from sbs.Forms.PersonForm import PersonForm
+from sbs.Forms.PreRegidtrationForm import PreRegistrationForm
+from sbs.Forms.ReferenceCoachForm import RefereeCoachForm
+from sbs.Forms.ReferenceRefereeForm import RefereeForm
 from sbs.Forms.SportClubUserForm import SportClubUserForm
 from sbs.Forms.UserForm import UserForm
-from sbs.Forms.ReferenceRefereeForm import RefereeForm
-from sbs.Forms.ReferenceCoachForm import RefereeCoachForm
-
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-
-from sbs.models.ReferenceReferee import ReferenceReferee
-from sbs.models.ReferenceCoach import ReferenceCoach
-from sbs.models.PreRegistration import PreRegistration
-
+from sbs.models import SportsClub, \
+    SportClubUser, CategoryItem, Coach, Athlete, Judge
 from sbs.models.Person import Person
-from zeep import Client
-import datetime
-import os
-
-
-
+from sbs.models.PreRegistration import PreRegistration
+from sbs.models.ReferenceCoach import ReferenceCoach
+from sbs.models.ReferenceReferee import ReferenceReferee
+from sbs.services import general_methods
 
 
 def index(request):
@@ -618,24 +596,101 @@ def referenceCoach(request):
                   {'preRegistrationform': coach_form})
 
 
-def referenceAthlete(request):
-    logout(request)
-    athlete = RefereeAthleteForm()
-    if request.method == 'POST':
-        athlete = RefereeAthleteForm(request.POST, request.FILES)
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
-                email=mail):
-            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-            return render(request, 'registration/Athlete.html', {'preRegistrationform': athlete})
-        if athlete.is_valid():
-            athlete.save()
-            messages.success(request,
-                             'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
-            return redirect("accounts:login")
+#
+# def referenceAthlete(request):
+#     logout(request)
+#     athlete = RefereeAthleteForm()
+#     if request.method == 'POST':
+#         athlete = RefereeAthleteForm(request.POST, request.FILES)
+#         if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+#                 email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+#                 email=mail):
+#             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+#             return render(request, 'registration/Athlete.html', {'preRegistrationform': athlete})
+#         if athlete.is_valid():
+#             athlete.save()
+#             messages.success(request,
+#                              'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
+#             return redirect("accounts:login")
+#
+#         else:
+#             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
+#
+#     return render(request, 'registration/Athlete.html',
+#                   {'preRegistrationform': athlete})
 
-        else:
-            messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
 
-    return render(request, 'registration/Athlete.html',
-                  {'preRegistrationform': athlete})
+def count(request):
+
+    total_club = SportsClub.objects.count()
+    total_athlete = Athlete.objects.count()
+    total_athlete_gender_man = Athlete.objects.filter(person__gender=Person.MALE).count()
+    total_athlete_gender_woman = Athlete.objects.filter(person__gender=Person.FEMALE).count()
+    total_club_user = SportClubUser.objects.count()
+    total_coachs = Coach.objects.count()
+    total_judge = Judge.objects.count()
+    total_user = User.objects.count()
+
+    return JsonResponse({'status': 'Success',
+                         'messages': 'Verilen degerler',
+                         'total_club_user': total_club_user,
+                         'total_club': total_club,
+                         'total_athlete': total_athlete,
+                         'total_coachs': total_coachs,
+                         'total_athlete_gender_man': total_athlete_gender_man,
+                         'total_athlete_gender_woman': total_athlete_gender_woman,
+                         'total_judge': total_judge,
+                         'total_user': total_user,
+                         })
+
+    if request.POST:
+        try:
+            permissions = request.POST.getlist('values[]')
+            group = Group.objects.get(pk=request.POST.get('group'))
+
+            group.permissions.clear()
+            group.save()
+            if len(permissions) == 0:
+                return JsonResponse({'status': 'Success', 'messages': 'Sınıf listesi boş'})
+            else:
+                for id in permissions:
+                    perm = Permission.objects.get(pk=id)
+                    group.permissions.add(perm)
+
+            group.save()
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Permission.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+    last_athlete = Athlete.objects.order_by('-creationDate')[:8]
+    total_club = SportsClub.objects.all().count()
+    total_athlete = Athlete.objects.all().count()
+    total_athlete_gender_man = Athlete.objects.filter(person__gender=Person.MALE).count()
+    total_athlete_gender_woman = Athlete.objects.filter(person__gender=Person.FEMALE).count()
+    total_athlate_last_month = Athlete.objects.exclude(user__date_joined__month=datetime.now().month).count()
+    total_club_user = SportClubUser.objects.all().count()
+    total_coachs = Coach.objects.all().count()
+    total_judge = Judge.objects.all().count()
+    total_user = User.objects.all().count()
+
+    # total_notifications_refere = ReferenceReferee.objects.filter(status=ReferenceReferee.WAITED).count()
+    # total_notifications_coach = ReferenceReferee.objects.filter(status=ReferenceCoach.WAITED).count()
+    # total_notifications_clup = PreRegistration.objects.filter(status=PreRegistration.WAITED).count()
+    # notifications_tatal = total_notifications_refere + total_notifications_coach + total_notifications_clup
+
+    return render(request, 'anasayfa/federasyon.html',
+                  {'total_club_user': total_club_user, 'total_club': total_club,
+                   'total_athlete': total_athlete, 'total_coachs': total_coachs, 'last_athletes': last_athlete,
+                   'total_athlete_gender_man': total_athlete_gender_man,
+                   'total_athlete_gender_woman': total_athlete_gender_woman,
+                   'total_athlate_last_month': total_athlate_last_month,
+                   'total_judge': total_judge, 'total_user': total_user,
+                   # 'total_notifications_refere': total_notifications_refere,
+                   # 'total_notifications_coach': total_notifications_coach,
+                   # 'total_notifications_clup': total_notifications_clup,
+                   # 'notifications_tatal': notifications_tatal
+
+                   })
