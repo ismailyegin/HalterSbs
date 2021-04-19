@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'referee/$', views.referenceReferee, name='referee'),
     url(r'coach/$', views.referenceCoach, name='coach'),
     url(r'sayilar/$', views.count, name='count'),
+    url(r'city/$', views.city_count, name='city_count'),
 
 ]

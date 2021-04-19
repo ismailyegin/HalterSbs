@@ -1,4 +1,5 @@
 import datetime
+from builtins import print
 
 from django.contrib import auth, messages
 from django.contrib.auth import logout
@@ -8,6 +9,8 @@ from django.contrib.auth.models import Group, Permission, User
 from django.core.mail import EmailMultiAlternatives
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.test import override_settings
+from django.views.decorators.csrf import csrf_exempt
 from zeep import Client
 
 from accounts.models import Forgot
@@ -642,7 +645,6 @@ def count(request):
                          'total_athlete_gender_woman': total_athlete_gender_woman,
                          'total_judge': total_judge,
                          'total_user': total_user,
-
                          })
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
@@ -650,54 +652,34 @@ def count(request):
     response["Access-Control-Allow-Headers"] = "*"
     return  response
 
-    # if request.POST:
-    #     try:
-    #         permissions = request.POST.getlist('values[]')
-    #         group = Group.objects.get(pk=request.POST.get('group'))
-    #
-    #         group.permissions.clear()
-    #         group.save()
-    #         if len(permissions) == 0:
-    #             return JsonResponse({'status': 'Success', 'messages': 'Sınıf listesi boş'})
-    #         else:
-    #             for id in permissions:
-    #                 perm = Permission.objects.get(pk=id)
-    #                 group.permissions.add(perm)
-    #
-    #         group.save()
-    #         return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
-    #     except Permission.DoesNotExist:
-    #         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
-    #
-    # else:
-    #     return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-    #
-    # last_athlete = Athlete.objects.order_by('-creationDate')[:8]
-    # total_club = SportsClub.objects.all().count()
-    # total_athlete = Athlete.objects.all().count()
-    # total_athlete_gender_man = Athlete.objects.filter(person__gender=Person.MALE).count()
-    # total_athlete_gender_woman = Athlete.objects.filter(person__gender=Person.FEMALE).count()
-    # total_athlate_last_month = Athlete.objects.exclude(user__date_joined__month=datetime.now().month).count()
-    # total_club_user = SportClubUser.objects.all().count()
-    # total_coachs = Coach.objects.all().count()
-    # total_judge = Judge.objects.all().count()
-    # total_user = User.objects.all().count()
-    #
-    # # total_notifications_refere = ReferenceReferee.objects.filter(status=ReferenceReferee.WAITED).count()
-    # # total_notifications_coach = ReferenceReferee.objects.filter(status=ReferenceCoach.WAITED).count()
-    # # total_notifications_clup = PreRegistration.objects.filter(status=PreRegistration.WAITED).count()
-    # # notifications_tatal = total_notifications_refere + total_notifications_coach + total_notifications_clup
-    #
-    # return render(request, 'anasayfa/federasyon.html',
-    #               {'total_club_user': total_club_user, 'total_club': total_club,
-    #                'total_athlete': total_athlete, 'total_coachs': total_coachs, 'last_athletes': last_athlete,
-    #                'total_athlete_gender_man': total_athlete_gender_man,
-    #                'total_athlete_gender_woman': total_athlete_gender_woman,
-    #                'total_athlate_last_month': total_athlate_last_month,
-    #                'total_judge': total_judge, 'total_user': total_user,
-    #                # 'total_notifications_refere': total_notifications_refere,
-    #                # 'total_notifications_coach': total_notifications_coach,
-    #                # 'total_notifications_clup': total_notifications_clup,
-    #                # 'notifications_tatal': notifications_tatal
-    #
-    #                })
+
+
+def city_count(request):
+
+
+    if request.GET.get('city'):
+        print(request.GET.get('city'))
+        athletecout = Athlete.objects.filter(communication__city__name__icontains=request.GET.get('city')).count()
+        coachcout = Coach.objects.filter(communication__city__name__icontains=request.GET.get('city')).count()
+        refereecout = Judge.objects.filter(communication__city__name__icontains=request.GET.get('city')).count()
+        sportsClub = SportsClub.objects.filter(
+            communication__city__name__icontains=request.GET.get('city')).count()
+
+        response = JsonResponse({
+            'athlete': athletecout,
+            'coach': coachcout,
+            'referee': refereecout,
+            'sportsClub': sportsClub
+        })
+
+        return response
+
+    else:
+        response = JsonResponse({
+            'success': 'else',
+        })
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        return  response
