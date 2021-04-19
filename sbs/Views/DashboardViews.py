@@ -215,6 +215,13 @@ def return_admin_dashboard(request):
                    })
 
 
+
+
+
+
+
+
+
 def City_athlete_cout(request):
 
     if request.method == 'POST' and request.is_ajax():
@@ -224,18 +231,31 @@ def City_athlete_cout(request):
             refereecout = Judge.objects.filter(communication__city__name__icontains=request.POST.get('city')).count()
             sportsClub = SportsClub.objects.filter(
                 communication__city__name__icontains=request.POST.get('city')).count()
-            data = {
+
+            response = JsonResponse({
                 'athlete': athletecout,
                 'coach': coachcout,
                 'referee': refereecout,
                 'sportsClub': sportsClub
+            })
 
-            }
-            return JsonResponse(data)
-        except Level.DoesNotExist:
-            return JsonResponse({'status': 'Fail'})
+            return response
+        except:
+            response = JsonResponse({
+                'success': 'GET',
+            })
+            response["Access-Control-Allow-Origin"] = "*"
+            response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+            response["Access-Control-Max-Age"] = "1000"
+            response["Access-Control-Allow-Headers"] = "*"
+            return response
 
     else:
-        return JsonResponse({'status': 'Fail'})
-#
-#
+        response = JsonResponse({
+            'success': 'GET',
+        })
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        return  response
