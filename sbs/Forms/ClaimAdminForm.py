@@ -1,19 +1,21 @@
 from django import forms
 from django.forms import ModelForm
 from sbs.models.Claim import Claim
-
-
-class ClaimForm(ModelForm):
+class ClaimAdminForm(ModelForm):
     class Meta:
         model = Claim
         fields = (
-             'title', 'project','definition','importanceSort',)
+             'title', 'project','definition','importanceSort','status')
         labels = {
                    'title': 'Başlık ',
+                   'status': 'Onay Durumu  ',
                    'definition': 'Açıklama ',
                    'importanceSort':'Önem Durumu',
-                   'project':'Proje Seçiniz',}
+                   'project':'Proje Seçiniz',
+        }
         widgets = {
+            'status': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                  'style': 'width: 100%; '}),
             'importanceSort': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),
             'project': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',

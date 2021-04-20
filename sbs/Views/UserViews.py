@@ -54,8 +54,6 @@ def return_users(request):
                     query &= Q(is_active=True)
                 if active == 'False':
                     query &= Q(is_active=False)
-
-                    print('geldim ')
                 users = User.objects.filter(query)
     return render(request, 'kullanici/kullanicilar.html', {'users': users, 'user_form': user_form})
 

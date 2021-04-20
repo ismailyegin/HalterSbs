@@ -2,24 +2,26 @@ import enum
 
 from django.db import models
 
-from sbs.models.Coach import Coach
-from sbs.models.Judge import Judge
-from sbs.models.EnumFields import EnumFields
-from sbs.models.CoachApplication import CoachApplication
-from sbs.models.JudgeApplication import JudgeApplication
+from sbs.models.File import File
 
+
+
+
+from django.contrib.auth.models import User
 class Claim(models.Model):
 
     WAITED = 'Beklemede'
-    APPROVED = 'Onaylandı'
+    APPROVED = 'İzlemeye Alındı'
     PROPOUND = 'İşlem Devam Ediliyor'
     DENIED = 'Reddedildi'
+    END='Bitti'
 
     STATUS_CHOICES = (
-        (APPROVED, 'Onaylandı'),
-        (PROPOUND, 'İşlem Devam Ediliyor'),
-        (DENIED, 'Reddedildi'),
-        (WAITED, 'Beklemede'),
+        (APPROVED, 'İşlem izlenmeye alındı'),
+        (PROPOUND, 'İşlem Devam Ediyor'),
+        (DENIED, 'İşlem Reddedildi'),
+        (WAITED, 'İşlem Beklemede'),
+        (END,'İşlem Bitti')
     )
 
     SBS = 'SPOR BİLGİ SİSTEMİ'
@@ -47,15 +49,11 @@ class Claim(models.Model):
         (ONEMLİ, 'ÖNEMLİ'),
         (AZONEMLİ, 'AZ ÖNEMLİ'),
     )
-
-
-
-
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
     # baslık
     title= models.CharField(blank=False, null=False, max_length=1000)
-    # proje durumu
+    # proje secimi
     project = models.CharField(max_length=128, verbose_name='Proje Seçiniz', choices=STATUS_PROJECT, default=SBS)
     # proje durumu
     status = models.CharField(max_length=128, verbose_name='Kayıt Durumu', choices=STATUS_CHOICES, default=WAITED)
@@ -63,9 +61,8 @@ class Claim(models.Model):
     definition= models.CharField(blank=False, null=False, max_length=1000)
     # önem durumu
     importanceSort = models.CharField(max_length=128, verbose_name='Önem Durumu', choices=İMPORTANCE, default=ACİL)
-    # ücret
-    pay =models.IntegerField(blank=False, null=False)
-
+    user=models.ForeignKey(User,on_delete=models.SET_NULL,null=True, blank=True)
+    files=models.ManyToManyField(File)
 
 
     def __str__(self):

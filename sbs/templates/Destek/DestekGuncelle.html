@@ -1,0 +1,343 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+
+
+
+    <!-- success modal -->
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediginizden emin misiniz?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags == 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+    {% endif %}
+
+
+
+
+
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <section class="content">
+
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+
+
+            <section class="col-lg-12 ">
+
+
+                <div class="box-body">
+
+
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Desktek-Talep Güncelle</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form method="post" enctype="multipart/form-data" role="form">
+                            <div class="box-body">
+                                {% csrf_token %}
+
+
+                                <div class="col-lg-6">
+                                    <label> {{ claim_form.project.label }}</label>
+                                    {{ claim_form.project }}
+                                </div>
+                                <div class="col-lg-6">
+                                    <label> {{ claim_form.importanceSort.label }}</label>
+                                    {{ claim_form.importanceSort }}
+                                </div>
+
+
+                                <div class="col-lg-6">
+                                    <label> {{ claim_form.title.label }}</label>
+                                    {{ claim_form.title }}
+                                </div>
+                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
+                                    <div class="col-lg-6">
+                                        <label> {{ claim_form.status.label }}</label>
+                                        {{ claim_form.status }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="col-lg-6">
+                                    <label> Evrakları Seçiniz:</label>
+                                    <input type="file" id="files" name="files" multiple>
+
+                                </div>
+                                <div class="col-lg-12">
+                                    <label> {{ claim_form.definition.label }}</label>
+                                    {{ claim_form.definition }}
+                                </div>
+
+
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                    <!-- /.box -->
+
+
+                </div>
+
+
+            </section>
+
+
+        </div>
+        <!-- /.row (main row) -->
+        <div class="row">
+
+
+            <section class="col-lg-12 ">
+
+
+                <div class="box-body">
+
+
+                    <div class="box box-warning">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Dökümanlar</h3>
+                        </div>
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table id="dokuman" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Dosya</th>
+                                            <th>İşlemler</th>
+
+
+                                        </tr>
+                                        </thead>
+
+
+
+
+                                        {% if claim_form.instance.files.all %}
+                                            {% for item in claim_form.instance.files.all %}
+                                                <tr id="documents-{{ item.pk }}">
+                                                    <td>{{ forloop.counter }} </td>
+                                                    <td>{{ item.file }}</td>
+
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-success"
+                                                               data-toggle="modal"
+                                                               href="{{ MEDIA_URL }}{{ item.file }}" download><i
+                                                                    class="fa fa-download"></i></a>
+
+
+                                                            <a class="btn btn-danger"
+                                                               data-toggle="modal"
+                                                               onclick=deletedocument({{ item.pk }})><i
+                                                                    class="fa fa-trash"></i></a>
+
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+
+                                            {% endfor %}
+                                        {% endif %}
+
+
+                                    </table>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                        <!-- /.box-body -->
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                        </div>
+
+
+                    </div>
+                    <!-- /.box -->
+
+
+                </div>
+
+
+            </section>
+
+
+        </div>
+
+
+    </section>
+
+    <script>
+
+        function deletedocument(id) {
+
+            var html = '';
+            $("#modal-danger").on("shown.bs.modal", function (e) {
+                $("#btn-conf").click(function (e) {
+
+
+                    $.ajax({
+                        url: "{% url "sbs:dokuman-kaldir" claim_pk=claim_form.instance.pk pk=999999999999999 %}".replace(/999999999999999/, id.toString()),
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False'
+                        },
+                        success: function (result) {
+                            html = 'Döküman başarıyla kaldırıldı.';
+                            $(".successModal").html(html);
+                            $('#modal-success').on("shown.bs.modal", function () {
+
+                                $(".btn-ok").click(function () {
+                                    if (e.handled !== true) { // This will prevent event triggering more then once
+                                        e.handled = true;
+
+                                        window.location.replace("{%  url "sbs:destek-guncelle" claim_form.instance.pk %}");
+
+                                    }
+
+                                });
+
+                            }).modal('show');
+
+
+                            console.log(result.status)
+                        }
+                    });
+
+                });
+            }).modal('show');
+            $('#btn-close').click(function () {
+                $('#modal-danger').modal('hide');
+            });
+
+        }
+
+    </script>
+
+{% endblock %}

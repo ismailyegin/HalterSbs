@@ -440,6 +440,8 @@ urlpatterns = [
     url(r'destek/Destekekle', ClaimView.claim_add, name='destek-talep-ekle'),
     url(r'destek/sil/(?P<pk>\d+)$', ClaimView.claim_delete,name='destek-delete'),
     url(r'destek/guncelle/(?P<pk>\d+)$', ClaimView.claim_update, name='destek-guncelle'),
+    url(r'destek/dokuman/sil/(?P<claim_pk>\d+)/(?P<pk>\d+)/$', ClaimView.dokuman_delete, name='dokuman-kaldir'),
+
 
     url(r'menu', ClaimView.menu, name='destek-talep-menu'),
 
