@@ -4,6 +4,7 @@ from operator import attrgetter
 from os import name
 
 from django.db.models.functions import Lower
+import os
 
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -93,3 +94,15 @@ def return_log(request):
             logs = Logs.objects.filter(query).order_by('-creationDate')
 
     return render(request, 'Log/Logs.html', {'logs': logs, 'user_form': user_form})
+
+
+
+@login_required
+def return_files(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    return render(request, 'Log/indirmeler.html',)

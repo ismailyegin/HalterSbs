@@ -380,15 +380,17 @@ def return_add_athlete(request):
         surname = request.POST.get('last_name')
         year = request.POST.get('birthDate')
         year = year.split('/')
+        if request.POST.get('country') =="Türkiye":
+            client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+            if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+                messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+                return render(request, 'sporcu/sporcu-ekle.html',
+                              {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
+                               'communication_form': communication_form
 
-        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-            return render(request, 'sporcu/sporcu-ekle.html',
-                          {'user_form': user_form, 'person_form': person_form, 'license_form': license_form,
-                           'communication_form': communication_form
+                               })
 
-                           })
+
 
         if user_form.is_valid() and person_form.is_valid() and license_form.is_valid() and communication_form.is_valid():
             user = User()
@@ -437,7 +439,7 @@ def return_add_athlete(request):
 
             messages.success(request, 'Sporcu Başarıyla Kayıt Edilmiştir.')
 
-            return redirect('sbs:sporcular')
+            return redirect('sbs:update-athletes', athlete.pk)
 
         else:
             for x in user_form.errors.as_data():

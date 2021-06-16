@@ -430,6 +430,11 @@ urlpatterns = [
 
     url(r'log/log-kayıtlari/$', LogViews.return_log,
         name='logs'),
+    #
+    # indirme linkleri
+    url(r'file$', LogViews.return_files,
+        name='files-all'),
+
 
     url(r'message/messages/$', DashboardViews.return_message,
         name='message'),
