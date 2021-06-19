@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from sbs.Views import DashboardViews, AthleteViews, RefereeViews, ClubViews, CoachViews, DirectoryViews, UserViews, \
     CompetitionViews, AdminViews, HelpViews, PageViews, PreRegistration, ActivityView, ReferenceView, QuestionViews, \
-    LogViews, ClaimView
+    LogViews, ClaimView,RecortView
 
 app_name = 'sbs'
 
@@ -449,6 +449,11 @@ urlpatterns = [
 
 
     url(r'menu', ClaimView.menu, name='destek-talep-menu'),
+
+    # rekorlar
+    url(r'rekorlar', RecortView.return_recort, name='rekor-listesi'),
+    url(r'rekor/Ekle', RecortView.return_newRecort, name='rekor-add'),
+    url(r'rekor/guncelle/(?P<pk>\d+)$', RecortView.return_updateRecort, name='rekor-guncelle'),
 
 
 
