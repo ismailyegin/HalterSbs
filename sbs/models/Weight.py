@@ -1,6 +1,4 @@
 from django.db import models
-
-
 class Weight(models.Model):
     creationdate = models.DateTimeField(db_column='creationDate', blank=True, null=True)  # Field name made lowercase.
     kobilid = models.IntegerField(db_column='kobilId')  # Field name made lowercase.

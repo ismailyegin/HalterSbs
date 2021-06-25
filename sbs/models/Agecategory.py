@@ -1,17 +1,17 @@
 from django.db import models
+
+from sbs.models.City import City
+from sbs.models.Country import Country
+
 class Agecategory(models.Model):
-    creationdate = models.DateTimeField(db_column='creationDate', blank=True, null=True)  # Field name made lowercase.
-    finishyear = models.IntegerField(db_column='finishYear')  # Field name made lowercase.
-    kobilid = models.IntegerField(db_column='kobilId')  # Field name made lowercase.
-    name = models.IntegerField(blank=True, null=True)
-    operationdate = models.DateTimeField(db_column='operationDate', blank=True, null=True)  # Field name made lowercase.
-    sex = models.IntegerField(blank=True, null=True)
-    startyear = models.IntegerField(db_column='startYear')  # Field name made lowercase.
-
-
-    def __str__(self):
-        return '%s' % (self.name)
+    postalCode = models.CharField(max_length=120, null=True, blank=True)
+    phoneNumber = models.CharField(max_length=120, null=True, blank=True)
+    phoneNumber2 = models.CharField(max_length=120, null=True, blank=True)
+    address = models.TextField(blank=True, null=True, verbose_name='Adres')
+    city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl', db_column='city')
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke', db_column='country')
 
     class Meta:
+        default_permissions = ()
+        db_table = 'communication'
         managed = False
-        db_table = 'agecategory'
