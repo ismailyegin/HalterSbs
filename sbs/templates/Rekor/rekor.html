@@ -288,15 +288,12 @@
                                 <tr>
                                     <th>#</th>
                                     <th>İsim</th>
-                                    <th>Kategori</th>
+                                    <th>Rekor Yeri</th>
                                     <th>Türü</th>
-                                    <th>Tarihi</th>
-                                    <th>Yeri</th>
+                                    <th>Kategori</th>
                                     <th>Müsabaka</th>
-<th>Siklet</th>
+                                    <th>Siklet</th>
                                     <th>Rekor</th>
-
-
                                     <th>Yapılan işlem</th>
                                 </tr>
                                 </thead>
@@ -306,14 +303,74 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ log.name }} </td>
-                                            <td>{{ log.recordwhich }}</td>
-                                            <td>{{ log.recordtype }}</td>
-                                            <td>{{ log.eventdate }} </td>
-                                            <td>{{ log.eventplace }}</td>
+                                            <td>
+
+                                                {% if log.recordwhich == 0 %}
+
+                                                    KOPARMA
+
+                                                {% elif log.recordwhich == 1 %}
+                                                    SİLKME
+                                                {% elif log.recordwhich == 2 %}
+                                                    TOPLAM
+
+                                                {% endif %}</td>
+
+                                            </td>
+                                            <td>
+                                                {% if log.recordtype == 0 %}
+
+                                                    Türkiye
+
+                                                {% elif log.recordtype == 1 %}
+                                                    Dünya
+                                                {% elif log.recordtype == 2 %}
+                                                    Olimpiyat
+                                                {% elif log.recordtype == 3 %}
+                                                    Avrupa
+
+                                                {% endif %}</td>
+                                            <td>
+                                                {% if log.agecategory.name == 0 %}
+
+                                                    {% if log.agecategory.sex == 0 %}
+                                                        YILDIZ ERKEK
+                                                    {% elif  log.agecategory.sex == 1 %}
+                                                        YILDIZ BAYAN
+                                                    {% endif %}
+                                                {% elif log.agecategory.name == 1 %}
+                                                    {% if log.agecategory.sex == 0 %}
+                                                        GENÇ ERKEK
+                                                    {% elif  log.agecategory.sex == 1%}
+                                                        GENÇ BAYAN
+                                                    {% endif %}
+                                                {% elif log.agecategory.name == 2 %}
+                                                    {% if log.agecategory.sex == 0 %}
+                                                        BÜYÜK ERKEK
+                                                    {% elif  log.agecategory.sex == 1 %}
+                                                        BÜYÜK BAYAN
+                                                    {% endif %}
+                                                {% elif log.agecategory.name == 3 %}
+                                                    {% if log.agecategory.sex == 0 %}
+                                                        AU23 ERKEK
+                                                    {% elif  log.agecategory.sex == 1 %}
+                                                        AU23 BAYAN
+                                                    {% endif %}
+                                                {% elif log.agecategory.name == 4 %}
+                                                    {% if log.agecategory.sex == 0 %}
+                                                        U15 ERKEK
+                                                    {% elif  log.agecategory.sex == 1 %}
+                                                        U15 BAYAN
+
+                                                    {% endif %}
+
+
+                                                {% endif %} </td>
+
                                             <td>{{ log.competition.name }} </td>
 
                                             <th>{{ log.weight.weight }}</th>
-                                                <th>{{ log.record }}</th>
+                                            <th>{{ log.record }}</th>
 
                                             <td>
                                                 <div class="btn-group">

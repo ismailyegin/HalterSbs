@@ -51,5 +51,5 @@ def return_updateRecort(request,pk ):
         if recort_form.is_valid():
             recort_form.save()
         return redirect('sbs:rekor-listesi')
-    return render(request, 'Rekor/rekortEkle.html', {'recort_form': recort_form})
+    return render(request, 'Rekor/rekorGuncelle.html', {'recort_form': recort_form})
 

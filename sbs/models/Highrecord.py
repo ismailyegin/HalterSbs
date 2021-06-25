@@ -21,7 +21,6 @@ class Highrecord(models.Model):
     PERSONAL = 2
     GRANDPRİX = 3
 
-
     COMPTYPE = (
         (INTERUNIVERSITY, 'Üniversiteler Arası'),
         (INTERSCHOOL, 'Okullar Arası'),
@@ -34,7 +33,7 @@ class Highrecord(models.Model):
     creationdate = models.DateTimeField(db_column='creationDate', blank=True, null=True)  # Field name made lowercase.
     eventdate = models.CharField(db_column='eventDate', max_length=255, blank=True, null=True)  # Field name made lowercase.
     eventplace = models.CharField(db_column='eventPlace', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    kobilid = models.IntegerField(db_column='kobilId')  # Field name made lowercase.
+    kobilid = models.IntegerField(db_column='kobilId',default=1)  # Field name made lowercase.
     name = models.CharField(max_length=255, blank=True, null=True)
     operationdate = models.DateTimeField(db_column='operationDate', blank=True, null=True)  # Field name made lowercase.
     record = models.IntegerField()
@@ -47,3 +46,5 @@ class Highrecord(models.Model):
     class Meta:
         managed = False
         db_table = 'highrecord'
+
+
