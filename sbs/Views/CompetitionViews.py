@@ -13,7 +13,7 @@ from django.urls import reverse
 from sbs.Forms.CompetitionForm import CompetitionForm
 from sbs.Forms.CompetitionSearchForm import CompetitionSearchForm
 from django.db.models import Q
-from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight, CompCategory, Coach
+from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight, CompCategory, Coach, City
 from sbs.models.SimpleCategory import SimpleCategory
 from sbs.models.EnumFields import EnumFields
 from sbs.models.SandaAthlete import SandaAthlete
@@ -82,8 +82,11 @@ def aplication(request, pk):
     elif user.groups.filter(name='Antrenor'):
         coach = Coach.objects.get(user=user)
         comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__coach=coach).distinct()
+    city=City.objects.none()
+    if musabaka.compType==Competition.PERSONAL:
+        city=City.objects.all()
     return render(request, 'musabaka/basvuru.html',
-                  {'athletes': comAthlete, 'competition': musabaka, 'weights': weights})
+                  {'athletes': comAthlete, 'competition': musabaka, 'weights': weights,'city':city})
 
 
 
@@ -250,7 +253,15 @@ def musabaka_sporcu_sec(request, pk):
 
     weights = Weight.objects.all()
 
-    competition = Competition.objects.filter(registerStartDate__lte=timezone.now(),
+    competition=Competition.objects.none()
+    city = City.objects.none();
+    if Competition.objects.filter(pk=pk):
+        competition=Competition.objects.get(pk=pk)
+    if competition.compType==Competition.PERSONAL:
+
+        city=City.objects.all()
+
+    pre_competition = Competition.objects.filter(registerStartDate__lte=timezone.now(),
                                              registerFinishDate__gte=timezone.now())
 
     # login_user = request.user
@@ -266,9 +277,8 @@ def musabaka_sporcu_sec(request, pk):
     #     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
     # elif user.groups.filter(name__in=['Yonetim', 'Admin']):
     #     athletes = Athlete.objects.all()
-    print(pk)
     return render(request, 'musabaka/musabaka-sporcu-sec.html',
-                  {'pk': pk, 'weights': weights, 'application': competition})
+                  {'competition': competition, 'city':city,'weights': weights, 'pre_competition': pre_competition})
                   # ,{'athletes': athletes, 'competition': competition, })
 
 
@@ -598,6 +608,9 @@ def update_athlete(request, pk, competition):
                 compAthlete.silk1 = silk
             if kop is not None:
                 compAthlete.kop1 = kop
+            if request.POST.get('city'):
+                if City.objects.filter(pk=request.POST.get('city')):
+                    compAthlete.city=City.objects.get(pk=request.POST.get('city'))
             compAthlete.save()
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -667,6 +680,8 @@ def choose_athlete(request, pk, competition):
         logout(request)
         return redirect('accounts:login')
     if request.method == 'POST' and request.is_ajax():
+        print("---------------------")
+        print(request.POST.get('city'))
 
 
         try:
@@ -685,10 +700,10 @@ def choose_athlete(request, pk, competition):
                 compAthlete.silk1 = request.POST.get('silk')
                 compAthlete.kop1 = request.POST.get('kop')
 
-
-
-
-
+                if request.POST.get('city'):
+                    print('deger geldi')
+                    if City.objects.filter(pk=request.POST.get('city')):
+                        compAthlete.city=City.objects.get(pk=request.POST.get('city'))
 
                 if (int(request.POST.get('silk')) + int(request.POST.get('kop'))) - 20 <= int(
                         request.POST.get('total')):

@@ -216,28 +216,29 @@
     </div>
 
     <!-- Modal -->
-<div class="modal fade modal-dialog" tabindex="-1" role="dialog"  id="kural20" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="Kural20title">Kural İhlali </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          <p>Verilen degerler 20 kg kuralına uymadıgı için güncellenemedi. </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+    <div class="modal fade modal-dialog" tabindex="-1" role="dialog" id="kural20"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Kural20title">Kural İhlali </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Verilen degerler 20 kg kuralına uymadıgı için güncellenemedi. </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
 
-      </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
 
- <div class="modal modal-dialog fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
+    <div class="modal modal-dialog fade in deneme23" tabindex="-1" role="dialog" id="reddetwhy"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -256,19 +257,29 @@
                     </select>
 
 
-                                    <label for="silk">Silkme </label>
+                    <label for="silk">Silkme </label>
                     <input type="number" name="silk" id="silk" class="form-control" required>
 
 
-                                    <label for="kop">Koparma</label>
-                    <input type="number"   name="kop" id="kop" class="form-control" required>
-
-
-
+                    <label for="kop">Koparma</label>
+                    <input type="number" name="kop" id="kop" class="form-control" required>
 
 
                     <label for="total">Toplam Kaldırış</label>
-                    <input type="number"  name="total" id="total" class="form-control" required>
+                    <input type="number" name="total" id="total" class="form-control" required>
+
+                    {% if competition.compType == 2 %}
+                        <label for="total">Sehir Seçiniz</label>
+                        <select name="city" class="form-control select2 select2-hidden-accessible"
+                                style="width: 100%; " id="city" tabindex="-1"
+                                aria-hidden="true">
+                            <option value="" selected="">Seçiniz</option>
+                            {% for item in city %}
+                                <option value="{{ item.pk }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                    {% endif %}
 
                 </div>
 
@@ -347,8 +358,7 @@
                 </div><!-- profile-left -->
                 <br>
             </div>
-
-
+        </section>
     </div>
 
 
@@ -374,7 +384,7 @@
                         <tr>
                             <th>#</th>
                             <th>Ad Soyad</th>
-{#                            <th>Doğum Tarihi</th>#}
+                            {#                            <th>Doğum Tarihi</th>#}
                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                 <th>Kulüp</th>
                             {% endif %}
@@ -382,7 +392,11 @@
                             <th>Silkme</th>
                             <th>Koparma</th>
 
+
                             <th>Giriş Toplamı</th>
+                            {% if competition.compType == 2 %}
+                                <th>Şehir</th>
+                            {% endif %}
                             <th>İşlemler</th>
 
 
@@ -394,14 +408,17 @@
                                 <tr>
                                     <td>{{ forloop.counter }} </td>
                                     <td>{{ compathlete.athlete.user.first_name }} {{ compathlete.athlete.user.last_name }} </td>
-{#                                    <td>{{ compathlete.athlete.person.birthDate |date }} </td>#}
+                                    {#                                    <td>{{ compathlete.athlete.person.birthDate |date }} </td>#}
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <td>{{ compathlete.athlete.licenses.last.sportsClub }}</td>
                                     {% endif %}
                                     <td>{{ compathlete.sıklet.weight }}</td>
-                                 <td>{{ compathlete.silk1 }}</td>
-                                 <td>{{ compathlete.kop1 }}</td>
+                                    <td>{{ compathlete.silk1 }}</td>
+                                    <td>{{ compathlete.kop1 }}</td>
                                     <td>{{ compathlete.total }}</td>
+                                    {% if competition.compType == 2 %}
+                                        <td>{{ compathlete.city }}</td>
+                                    {% endif %}
                                     <td>
                                         <div class="btn-group">
                                             <a onclick=" addPlayer( {{ compathlete.athlete.pk }},{{ compathlete.id }},
@@ -414,7 +431,7 @@
 
                                                     {% endif %}
 
-                                                    ,{{ compathlete.total }},{{compathlete.silk1  }},{{ compathlete.kop1 }})"
+                                                    ,{{ compathlete.total }},{{ compathlete.silk1 }},{{ compathlete.kop1 }})"
                                                type="button" class="btn btn-primary"><i
                                                     class="fa fa-edit"></i>Güncelle
                                             </a>
@@ -529,7 +546,7 @@
                         title: 'Sbs Bilgi Sistemi',
                         text: '<i class="fa  fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5,6]
+                            columns: [0, 1, 2, 3, 4, 5, 6]
                         },
                         titleAttr: 'Yazdır'
                     },
@@ -538,7 +555,7 @@
                         download: 'open',
                         text: '<i class="fa fa-file-pdf-o"></i>',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5,6]
+                            columns: [0, 1, 2, 3, 4, 5, 6]
                         },
                         titleAttr: 'Pfd Kaydet'
                     },
@@ -550,8 +567,8 @@
                         messageTop: 'Sbs Bilgi Sistemi ',
                         footer: true,
                         exportOptions: {
-                                 {#yer degisimi de yapilabilir.#}
-                            columns: [0,1,2, 3, 4, 5,6]
+                            {#yer degisimi de yapilabilir.#}
+                            columns: [0, 1, 2, 3, 4, 5, 6]
 
                         },
                         titleAttr: 'Excel Kaydet'
@@ -581,7 +598,7 @@
 
         });
 
-        function addPlayer(id, competitionId, siklet, total,silk,kop) {
+        function addPlayer(id, competitionId, siklet, total, silk, kop) {
 
             $('#weight option:selected').text();
             $('#total').val();
@@ -597,18 +614,16 @@
                 $('#total').val(total);
 
             }
-                        if (kop != null) {
+            if (kop != null) {
 
                 $('#kop').val(kop);
 
             }
-                        if (silk != null) {
+            if (silk != null) {
 
                 $('#silk').val(silk);
 
             }
-
-
 
 
             $("#reddetwhy").on("shown.bs.modal", function (e) {
@@ -616,59 +631,59 @@
 
                 $("#btn-gonder").click(function () {
 
-
-                    console.log('buradan girdi', competitionId)
-
-
-
-                     var kop=parseInt($('#kop').val());
-                     var silk=parseInt($('#silk').val());
-                     var toplam=kop+silk;
-                     if ((total-20)<= toplam  && (total+20)>= toplam )
-                     {
-                         $.ajax({
-                        url: "{% url "sbs:catagori-sporcu-guncelle-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            total: $('#total').val(),
-                            weight: $('#weight').val(),
-                            silk:$('#silk').val(),
-                            kop:$('#kop').val(),
-                            isActive: 'False'
-
-                        },
-                        success: function (result) {
-
-                            html = 'Sporcu Başarıyla Güncellendi  .';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
-
-                                    window.location.replace("{% url "sbs:basvuru"  competition.pk  %}");
-
-                                    $('#modal-warning').modal('hide');
-                                    $('.modal').modal('hide');
+                    if (e.handled !== true) {
+                        e.handled = true;
 
 
-                                });
+                        var kop = parseInt($('#kop').val());
+                        var silk = parseInt($('#silk').val());
+                        var toplam = kop + silk;
 
-                            }).modal('show');
+                        if ((total + 20) >= toplam && (total - 20) <= toplam) {
+                            $.ajax({
+                                url: "{% url "sbs:catagori-sporcu-guncelle-ajax" pk=212121223232323232 competition=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, competitionId.toString()),
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    total: $('#total').val(),
+                                    weight: $('#weight').val(),
+                                    silk: $('#silk').val(),
+                                    kop: $('#kop').val(),
+                                    {% if competition.compType == 2 %}
+                                        city: $('#city').val(),
+
+                                    {% endif %}
+                                    isActive: 'False'
+
+                                },
+                                success: function (result) {
+
+                                    html = 'Sporcu Başarıyla Güncellendi  .';
+                                    debugger;
+                                    $(".successModal").html(html);
+                                    $('#modal-success').on("shown.bs.modal", function (e) {
+                                        $(".btn-ok").click(function () {
+
+                                            window.location.replace("{% url "sbs:basvuru"  competition.pk  %}");
+
+                                            $('#modal-warning').modal('hide');
+                                            $('.modal').modal('hide');
+
+
+                                        });
+
+                                    }).modal('show');
+                                }
+                            });
+
+
+                        } else {
+
+
+                            $('#kural20').modal('show');
+
                         }
-                    });
-
-
-
-                     }
-
-                     else
-                     {
-
-
-                         $('#kural20').modal('show');
-
-                     }
+                    }
 
 
                 });

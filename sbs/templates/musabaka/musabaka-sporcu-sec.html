@@ -121,6 +121,19 @@
                     <label for="total">Total</label>
                     <input type="number" name="total" id="total" class="form-control" required>
 
+                    {% if competition.compType == 2 %}
+                        <label for="total">Sehir Seçiniz</label>
+                        <select name="city" class="form-control select2 select2-hidden-accessible"
+                                style="width: 100%; " id="city"  tabindex="-1"
+                                aria-hidden="true">
+                            <option value="" selected="">Seçiniz</option>
+                            {% for item in city %}
+                                <option value="{{ item.pk }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                    {% endif %}
+
                 </div>
 
 
@@ -230,34 +243,28 @@
 
 
                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                            <a href="{% url "sbs:musabaka-duzenle" pk=pk %}"
+                            <a href="{% url "sbs:musabaka-duzenle" competition.pk %}"
                                type="button" class="btn btn-success"><i
                                     class="fa fa-edit"></i>Müsabaka Düzenle
                             </a>
+
+
+
+
                         {% endif %}
-
-
-
-                        {% if application.all %}
-                            {% for competition in application %}
+                        {% if pre_competition.all %}
+                            {% for competition in pre_competition %}
                                 <div class="box-header with-border">
                                     <div class="btn-group">
                                         <a href="{% url "sbs:basvuru" pk=competition.pk %}"
                                            type="button" class="btn btn-success"><i
-                                                class="fa fa-edit"></i> Başvurularim
+                                                class="fa fa-edit"></i> Başvurularim ({{ competition.name }})
                                         </a>
                                     </div>
                                 </div>
                             {% endfor %}
-
-
-
-
                         {% endif %}
-
-
-
-                        <div class="box-body berktug">
+                        <div class="box-body ">
                             <form method="post" enctype="multipart/form-data" role="form">
                                 {% csrf_token %}
                                 <table id="sporcular" class="table table-bordered table-hover">
@@ -321,19 +328,7 @@
 
 
     <script>
-        $(function () {
-            //Enable iCheck plugin for checkboxes
-            //iCheck for checkbox and radio inputs
-            $('.berktug input[type="checkbox"]').iCheck({
 
-                checkboxClass: 'icheckbox_flat-blue',
-
-            });
-
-        });
-
-
-        {#    --------------------------------------------------------------------#}
         $(function () {
 
 
@@ -364,7 +359,7 @@
                     "url": '{% url "sbs:Kategorilerin-Sporculari"%}',
                     "methot": 'POST',
                     "data": {
-                        "cmd":{{ pk }},
+                        "cmd":{{ competition.pk }},
                     },
                 },
 
@@ -384,7 +379,7 @@
                         "mRender": function (data) {
 
 
-                            return '<div class="btn-group"><a class="btn btn-primary" data-toggle="modal" onclick="addPlayer(' + data.pk + ',' + {{ pk }}+')" ><i class="fa fa-plus"></i>' + 'Ekle' + '</a></div>';
+                            return '<div class="btn-group"><a class="btn btn-primary" data-toggle="modal" onclick="addPlayer(' + data.pk + ',' + {{ competition.pk }}+')" ><i class="fa fa-plus"></i>' + 'Ekle' + '</a></div>';
 
 
                         }
@@ -472,17 +467,21 @@
 
         function addPlayer(id, competitionId) {
 
+
+
             $("#reddetwhy").on("shown.bs.modal", function (e) {
 
                 $('#total').val('');
                 $('#silk').val('');
                 $('#kop').val('');
+
                 $("#btn-gonder").click(function () {
 
                     console.log('buradan girdi', competitionId)
 
                     if (e.handled !== true) {
                         e.handled = true;
+
 
                         if ($('#weight').val() && $('#total').val() && $('#silk').val() && $('#kop').val()) {
                             // This will prevent event triggering more then once
@@ -496,6 +495,10 @@
                                     weight: $('#weight').val(),
                                     silk: $('#silk').val(),
                                     kop: $('#kop').val(),
+                                    {% if competition.compType == 2 %}
+                                        city: $('#city').val(),
+                                    {% endif %}
+
                                     isActive: 'False',
 
                                 },
@@ -529,7 +532,7 @@
                                         html = 'Sporcu Başarıyla Eklendi .';
                                         debugger;
                                         $(".successModal").html(html);
-                                        window.location.replace("{% url "sbs:musabaka-sporcu-sec" pk %}");
+                                        window.location.replace("{% url "sbs:musabaka-sporcu-sec" competition.pk %}");
 
 
                                     }

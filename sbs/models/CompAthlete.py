@@ -4,6 +4,7 @@ from sbs.models.Competition import Competition
 from sbs.models.Weight import Weight
 from sbs.models.CompCategory import CompCategory
 from sbs.models.Athlete import Athlete
+from sbs.models.City import City
 
 
 class CompAthlete(models.Model):
@@ -39,7 +40,7 @@ class CompAthlete(models.Model):
     lastliftvalue = models.IntegerField(db_column='lastLiftValue', blank=True, null=True,default=0)  # Field name made lowercase.
     lastsilkliftvalue = models.IntegerField(db_column='lastSilkLiftValue', blank=True, null=True,default=0)  # Field name made lowercase.
     competition = models.ForeignKey(Competition, models.DO_NOTHING, db_column='competition', blank=True, null=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, verbose_name='İl', db_column='city',blank=True,null=True)
 
     class Meta:
         db_table = 'compathlete'
-        managed = False
