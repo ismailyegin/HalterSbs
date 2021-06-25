@@ -293,10 +293,10 @@
                                     <th>Tarihi</th>
                                     <th>Yeri</th>
                                     <th>Müsabaka</th>
-
+<th>Siklet</th>
                                     <th>Rekor</th>
 
-                                    <th>Agırlık</th>
+
                                     <th>Yapılan işlem</th>
                                 </tr>
                                 </thead>
@@ -306,13 +306,14 @@
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ log.name }} </td>
-                                            <td>{{ log.agecategory.name }}</td>
+                                            <td>{{ log.recordwhich }}</td>
                                             <td>{{ log.recordtype }}</td>
                                             <td>{{ log.eventdate }} </td>
                                             <td>{{ log.eventplace }}</td>
                                             <td>{{ log.competition.name }} </td>
-                                            <th>{{ log.record }}</th>
+
                                             <th>{{ log.weight.weight }}</th>
+                                                <th>{{ log.record }}</th>
 
                                             <td>
                                                 <div class="btn-group">
