@@ -486,7 +486,7 @@ def return_athletes_antrenor(request):
 
                 elif user.groups.filter(name='Admin'):
                     athletes = Athlete.objects.all()
-            elif firstName or lastName or email or sportsclup or brans:
+            elif firstName or lastName or email :
                 query = Q()
                 if firstName:
                     query &= Q(user__first_name__icontains=firstName)

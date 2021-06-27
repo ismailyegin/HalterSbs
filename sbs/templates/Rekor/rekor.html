@@ -121,9 +121,6 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-
-
-
     {% if messages %}
         {% for message in messages %}
 
@@ -263,6 +260,78 @@
 
         <div class="row">
             <section class="col-lg-12 ">
+
+
+                <div class="box-body">
+
+
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Rekor Filtrele</h3>
+                        </div>
+                        <form method="post" role="form">
+
+                            <div class="box-body">
+                                {% csrf_token %}
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ recort_form.name.label }}</label>
+                                        {{ recort_form.name }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ recort_form.weight.label }}</label>
+                                        {{ recort_form.weight }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ recort_form.recordtype.label }}</label>
+                                        {{ recort_form.recordtype }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ recort_form.agecategory.label }}</label>
+                                        {{ recort_form.agecategory }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ recort_form.recordwhich.label }}</label>
+                                        {{ recort_form.recordwhich }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> {{ recort_form.competition.label }}</label>
+                                        {{ recort_form.competition }}
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Ara</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                    <!-- /.box -->
+
+
+                </div>
+            </section>
+        </div>
+
+        <div class="row">
+            <section class="col-lg-12 ">
                 <div class="box-body">
                     <div class="box box-primary">
                         <div class="box-header with-border">
@@ -288,11 +357,11 @@
                                 <tr>
                                     <th>#</th>
                                     <th>İsim</th>
-                                    <th>Tür </th>
+                                    <th>Tür</th>
                                     <th>Genel Türü</th>
                                     <th>Kategori</th>
                                     <th>Müsabaka</th>
-                                    <th>Siklet</th>
+                                    <th>Sıklet</th>
                                     <th>Rekor</th>
                                     <th>Yapılan işlem</th>
                                 </tr>
@@ -310,7 +379,7 @@
                                                     KOPARMA
 
                                                 {% elif log.recordwhich == 1 %}
-                                                    SİLKME
+                                                    SILKME
                                                 {% elif log.recordwhich == 2 %}
                                                     TOPLAM
 
@@ -341,7 +410,7 @@
                                                 {% elif log.agecategory.name == 1 %}
                                                     {% if log.agecategory.sex == 0 %}
                                                         GENÇ ERKEK
-                                                    {% elif  log.agecategory.sex == 1%}
+                                                    {% elif  log.agecategory.sex == 1 %}
                                                         GENÇ BAYAN
                                                     {% endif %}
                                                 {% elif log.agecategory.name == 2 %}

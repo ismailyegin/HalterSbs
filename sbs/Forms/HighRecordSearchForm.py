@@ -2,13 +2,13 @@ from django import forms
 from django.forms import ModelForm
 from sbs.models.Highrecord import Highrecord
 
-class HighRecortForm(ModelForm):
+class HighRecortSearchForm(ModelForm):
 
     class Meta:
         model = Highrecord
 
         fields = (
-             'eventdate','sportyear', 'eventplace', 'name','record','recordtype','agecategory','competition','weight','recordwhich')
+             'eventdate','sportyear', 'eventplace', 'name','recordtype','agecategory','competition','weight','recordwhich')
 
         labels = { 'eventdate': 'Rekor Tarihi', 'name': 'Sporcu İsim ','eventplace':'Rekor Yeri',
                   'record': 'Rekor ', 'recordtype': 'Rekor Türü ','agecategory':' Yaş Kategori','weight':'Sıklet','recordwhich':'Kaldırış Türü','sportyear':'Sporcunun Dogum Yılı '}
@@ -35,6 +35,6 @@ class HighRecortForm(ModelForm):
 
         }
     def __init__(self, *args, **kwargs):
-        super(HighRecortForm,self).__init__(*args, **kwargs)
+        super(HighRecortSearchForm,self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
