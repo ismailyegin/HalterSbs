@@ -416,9 +416,7 @@ def return_sporcu(request):
     if request.method == 'GET':
         datatables = request.GET
         pk = request.GET.get('cmd')
-        # print('pk beklenen deger =',pk)
         competition = Competition.objects.get(pk=pk)
-        # kategori = CompetitionCategori.objects.get(pk=request.GET.get('cmd'))
 
     elif request.method == 'POST':
         datatables = request.POST
@@ -535,14 +533,10 @@ def return_sporcu(request):
                 clupsPk = []
                 for item in clup:
                     clupsPk.append(item.pk)
-                modeldata = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).exclude(pk__in=athletes).distinct()
-                modeldata |= Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()[start:start + length]
-
-                total = modeldata.count()
-
-
-
-
+                modeldata = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).exclude(pk__in=athletes)
+                modeldata|=Athlete.objects.exclude(pk__in=athletes).filter(licenses__coach__user=user)
+                total=modeldata.distinct().count()
+                modeldata=modeldata.distinct()[start:start + length]
     say = start + 1
     start = start + length
     page = start / length
