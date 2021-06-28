@@ -446,7 +446,7 @@ def return_sporcu(request):
     if length == -1:
 
         athletes = []
-        for comp in compAthlete:
+        for comp in CompAthlete.objects.filter(competition=competition):
             if comp.athlete:
                 athletes.append(comp.athlete.pk)
 
@@ -515,7 +515,6 @@ def return_sporcu(request):
             for comp in compAthlete:
                 if comp.athlete:
                         athletes.append(comp.athlete.pk)
-                        print(comp.athlete)
             if user.groups.filter(name='KulupUye'):
                 sc_user = SportClubUser.objects.get(user=user)
                 clubsPk = []
@@ -531,10 +530,15 @@ def return_sporcu(request):
 
 
             elif user.groups.filter(name='Antrenor'):
-                modeldata = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()[
-                            start:start + length]
+                coach = Coach.objects.get(user=user)
+                clup = SportsClub.objects.filter(coachs=coach)
+                clupsPk = []
+                for item in clup:
+                    clupsPk.append(item.pk)
+                modeldata = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).exclude(pk__in=athletes).distinct()
+                modeldata |= Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()[start:start + length]
 
-                total = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct().count()
+                total = modeldata.count()
 
 
 

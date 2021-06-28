@@ -531,19 +531,20 @@ def return_athletes(request):
     #     athletes = Athlete.objects.all()
     # #     silinecek son
 
-    athletes = Athlete.objects.none()
+    athletes = None
     if request.method == 'POST':
 
         user_form = UserSearchForm(request.POST)
 
         sportsclup = request.POST.get('sportsClub')
         coach = request.POST.get('coach')
-
+        tc = request.POST.get('tc')
         if user_form.is_valid():
             firstName = user_form.cleaned_data.get('first_name')
             lastName = user_form.cleaned_data.get('last_name')
             email = user_form.cleaned_data.get('email')
-            if not (firstName or lastName or email or sportsclup or coach):
+
+            if not (firstName or lastName or email or sportsclup or coach or tc):
 
                 if user.groups.filter(name='KulupUye'):
                     sc_user = SportClubUser.objects.get(user=user)
@@ -554,13 +555,14 @@ def return_athletes(request):
                     athletes = Athlete.objects.filter(licenses__sportsClub__in=clubsPk).distinct()
                 elif user.groups.filter(name__in=['Yonetim', 'Admin']):
                     athletes = Athlete.objects.all()
-            elif firstName or lastName or email or sportsclup or coach:
+            elif firstName or lastName or email or sportsclup or coach or tc:
                 query = Q()
                 clubsPk = []
                 clubs = SportsClub.objects.filter(name=request.POST.get('sportsClub'))
                 for club in clubs:
                     clubsPk.append(club.pk)
-
+                if tc:
+                    query &= Q(person__tc=tc)
                 if firstName:
                     query &= Q(user__first_name__icontains=firstName)
                 if lastName:
@@ -573,6 +575,7 @@ def return_athletes(request):
                 if user.groups.filter(name__in=['Yonetim', 'Admin']):
                     if coach:
                         query &= Q(licenses__coach=coach)
+
 
                 if user.groups.filter(name='KulupUye'):
                     sc_user = SportClubUser.objects.get(user=user)
