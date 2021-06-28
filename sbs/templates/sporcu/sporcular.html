@@ -164,6 +164,12 @@
                                         {{ user_form.email }}
                                     </div>
                                 </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label> T.C.</label>
+                                        <input type="text" name="tc" class="form-control " maxlength="11" id="id_tc">
+                                    </div>
+                                </div>
 
                                 <div class="col-md-2">
                                     <div class="form-group">
@@ -181,6 +187,7 @@
                                             {{ Sportclup.coach }}
                                         </div>
                                     </div>
+
                                 {% endif %}
 
 
@@ -243,15 +250,12 @@
                                             <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
 
                                             <td>
-                                                    {% for license in athlete.licenses.all %}
-                                                        {% if  license.status == 'Onaylandı' %}
-                                                            <p>{{ license.sportsClub }}</p>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </td>
-
-
-
+                                                {% for license in athlete.licenses.all %}
+                                                    {% if  license.status == 'Onaylandı' %}
+                                                        <p>{{ license.sportsClub }}</p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
 
 
                                             {% comment %}<td>

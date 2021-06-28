@@ -465,17 +465,23 @@ def return_sporcu(request):
             total = Athlete.objects.exclude(pk__in=athletes).count()
 
         elif user.groups.filter(name='Antrenor'):
-            modeldata = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()[
-                        start:start + length]
+            coach = Coach.objects.get(user=user)
+            clup = SportsClub.objects.filter(coachs=coach)
+            clupsPk = []
+            for item in clup:
+                clupsPk.append(item.pk)
+            modeldata = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).exclude(pk__in=athletes)
+            modeldata |= Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes)
+            modeldata=modeldata.distinct()
 
-            total = Athlete.objects.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct().count()
+            total = modeldata.count()
 
 
 
 
     else:
         if search:
-            modeldate=Athlete.objects.none()
+            modeldata=Athlete.objects.none()
 
             compAthlete = CompAthlete.objects.filter(competition=competition)
             athletes = []
@@ -502,7 +508,15 @@ def return_sporcu(request):
 
 
             elif user.groups.filter(name='Antrenor'):
-                modeldata = modeldata.filter(licenses__coach__user=user).exclude(pk__in=athletes).distinct()
+                coach = Coach.objects.get(user=user)
+                clup = SportsClub.objects.filter(coachs=coach)
+                clupsPk = []
+                for item in clup:
+                    clupsPk.append(item.pk)
+                modelant = modeldata.filter(licenses__sportsClub_id__in=clupsPk).exclude(pk__in=athletes)
+                modelant |= modeldata.filter(licenses__coach__user=user).exclude(pk__in=athletes)
+                modelant=modelant.distinct()
+                modeldata=modelant
 
             total=modeldata.count()
 
