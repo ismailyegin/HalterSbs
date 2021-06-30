@@ -81,7 +81,18 @@ def aplication(request, pk):
 
     elif user.groups.filter(name='Antrenor'):
         coach = Coach.objects.get(user=user)
-        comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__coach=coach).distinct()
+
+
+        coach = Coach.objects.get(user=user)
+        clup = SportsClub.objects.filter(coachs=coach)
+        clupsPk = []
+        for item in clup:
+            clupsPk.append(item.pk)
+
+        comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__coach=coach)
+        comAthlete |= CompAthlete.objects.filter(competition=pk, licenses__sportsClub_id__in=clupsPk)
+        comAthlete=comAthlete.distinct()
+
     city=City.objects.none()
     if musabaka.compType==Competition.PERSONAL:
         city=City.objects.all()
