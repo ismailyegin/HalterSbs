@@ -90,7 +90,7 @@ def aplication(request, pk):
             clupsPk.append(item.pk)
 
         comAthlete = CompAthlete.objects.filter(competition=pk, athlete__licenses__coach=coach)
-        comAthlete |= CompAthlete.objects.filter(competition=pk, licenses__sportsClub_id__in=clupsPk)
+        comAthlete |= CompAthlete.objects.filter(competition=pk, athlete__licenses__sportsClub_id__in=clupsPk)
         comAthlete=comAthlete.distinct()
 
     city=City.objects.none()
