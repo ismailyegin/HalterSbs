@@ -13,7 +13,8 @@ from django.urls import reverse
 from sbs.Forms.CompetitionForm import CompetitionForm
 from sbs.Forms.CompetitionSearchForm import CompetitionSearchForm
 from django.db.models import Q
-from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight, CompCategory, Coach, City
+from sbs.models import SportClubUser, SportsClub, Competition, Athlete, CompAthlete, Weight, CompCategory, Coach, City, \
+    Person
 from sbs.models.SimpleCategory import SimpleCategory
 from sbs.models.EnumFields import EnumFields
 from sbs.models.SandaAthlete import SandaAthlete
@@ -189,9 +190,9 @@ def musabaka_duzenle(request, pk):
         return redirect('accounts:login')
 
     musabaka = Competition.objects.get(pk=pk)
-    athletes = CompAthlete.objects.filter(competition=pk)
+    athletes_man = CompAthlete.objects.filter(competition=pk, athlete__person__gender=Person.MALE)
 
-
+    athletes_women=CompAthlete.objects.filter(competition=pk,athlete__person__gender=Person.FEMALE)
     weights = Weight.objects.all()
     competition_form = CompetitionForm(request.POST or None, instance=musabaka)
     if request.method == 'POST':
@@ -201,16 +202,11 @@ def musabaka_duzenle(request, pk):
 
             log = str(request.POST.get('name')) + "  Musabaka guncellendi "
             log = general_methods.logwrite(request, request.user, log)
-
-
-
             return redirect('sbs:musabaka-duzenle', pk=pk)
         else:
-
             messages.warning(request, 'Alanları Kontrol Ediniz')
-
     return render(request, 'musabaka/musabaka-duzenle.html',
-                  {'competition_form': competition_form, 'competition': musabaka, 'athletes': athletes,'weights':weights})
+                  {'competition_form': competition_form, 'competition': musabaka, 'athletes_man': athletes_man,'athletes_women':athletes_women ,'weights':weights})
 
 
 @login_required

@@ -287,7 +287,7 @@
                 <div class="col-lg-12">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Sporcular</h3>
+                            <h3 class="box-title"> Erkek Sporcular</h3>
                         </div>
                         <div class="box-header with-border">
                             <div class="btn-group">
@@ -300,7 +300,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="sporcular" class="table table-bordered table-hover">
+                            <table id="athletes_man" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
@@ -313,6 +313,9 @@
                                     <th>Giriş Toplamı</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>Kulüp</th>
+                                        {% if competition.compType == 2 %}
+                                            <th> Şehir </th>
+                                             {% endif %}
                                     {% endif %}
                                     <th>İşlemler</th>
 
@@ -320,8 +323,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if athletes %}
-                                    {% for compathlete in athletes %}
+                                {% if athletes_man %}
+                                    {% for compathlete in athletes_man %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ compathlete.athlete.user.first_name }} {{ compathlete.athlete.user.last_name }} </td>
@@ -333,6 +336,99 @@
 
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                 <td>{{ compathlete.athlete.licenses.last.sportsClub }}</td>
+                                                {% if competition.compType == 2 %}
+                                            <th> {{ compathlete.city.name }} </th>
+                                             {% endif %}
+                                            {% endif %}
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a onclick="addPlayer({{ compathlete.id }},{{ competition.pk }},{{ compathlete.sıklet.weight }},{{ compathlete.total }}, {{ compathlete.silk1 }}, {{ compathlete.kop1 }})"
+                                                       type="button" class="btn btn-primary"><i
+                                                            class="fa fa-edit"></i>Güncelle
+                                                    </a>
+                                                    <a onclick="deleteAthlete({{ compathlete.id }})"
+                                                       type="button" class="btn btn-danger"><i
+                                                            class="fa fa-remove"></i>Kaldır
+                                                    </a>
+
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+         <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"> Bayan Sporcular </h3>
+                        </div>
+                        <div class="box-header with-border">
+                            <div class="btn-group">
+
+                                <a href="{% url "sbs:musabaka-sporcu-sec" competition.pk %}"
+                                   type="button" class="btn btn-success"><i
+                                        class="fa fa-edit"></i>Sporcu Ekle
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="athletes_women" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Doğum Tarihi</th>
+
+                                    <th>Silklet</th>
+                                    <th>Koparma</th>
+                                    <th>Silkme</th>
+                                    <th>Giriş Toplamı</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>Kulüp</th>
+                                        {% if competition.compType == 2 %}
+                                            <th> Şehir </th>
+                                             {% endif %}
+                                    {% endif %}
+                                    <th>İşlemler</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if athletes_women %}
+                                    {% for compathlete in athletes_women %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ compathlete.athlete.user.first_name }} {{ compathlete.athlete.user.last_name }} </td>
+                                            <td>{{ compathlete.athlete.person.birthDate | date }} </td>
+                                            <td>{{ compathlete.sıklet.weight }}</td>
+                                            <td>{{ compathlete.kop1 }}</td>
+                                            <td>{{ compathlete.silk1 }}</td>
+                                            <td>{{ compathlete.total }}</td>
+
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                <td>{{ compathlete.athlete.licenses.last.sportsClub }}</td>
+                                                                    {% if competition.compType == 2 %}
+                                            <th> {{ compathlete.city.name }} </th>
+                                             {% endif %}
                                             {% endif %}
                                             <td>
                                                 <div class="btn-group">
@@ -375,7 +471,102 @@
 
 
         $(function () {
-            $('#sporcular').DataTable({
+            $('#athletes_man').DataTable({
+
+                dom: 'Bfrtip',
+                orderFixed: [[3, 'asc']],
+                rowGroup: {
+                    dataSrc: 3
+                },
+
+                language: {
+                    buttons: {
+                        pageLength: {
+                            _: " %d  Tane Göster",
+                            '-1': "Hepsini Göster"
+                        }
+                    }
+                },
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
+
+                buttons: [
+
+
+                    {
+                        extend: "pageLength",
+
+                    },
+
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class=" fa  fa-th-list"></i>',
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Spor Bilgi Sistemi',
+                        text: '<i class="fa  fa-print"></i>',
+                        exportOptions: {
+                            columns: [0, 1, ':visible']
+                        },
+
+                        titleAttr: 'Yazdır'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        exportOptions: {
+                            columns: [0, 1, ':visible']
+                        },
+
+                        titleAttr: 'Pdf Kaydet'
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Spor Bilgi Sistemi ',
+                        text: '<i class="fa fa-file-excel-o"></i>',
+                        messageTop: 'Başvuru Listesi ',
+                        exportOptions: {
+                            columns: [0, 1, ':visible']
+                        },
+
+                        titleAttr: 'Excel Kaydet'
+                    },
+                    {
+                        text: '<i class="fa fa-file-text-o"></i>',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Projeler.json'
+                            );
+                        }
+                    }
+
+
+                ],
+                'paging': false,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
+
+
+            });
+
+             $('#athletes_women').DataTable({
 
                 dom: 'Bfrtip',
                 orderFixed: [[3, 'asc']],
